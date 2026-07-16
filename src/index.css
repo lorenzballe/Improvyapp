@@ -1,0 +1,314 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Plus Jakarta Sans", "Inter", sans-serif;
+  --font-serif: "Plus Jakarta Sans", "Inter", sans-serif;
+  --font-mono: "Plus Jakarta Sans", "Inter", sans-serif;
+
+  --animate-fade-in: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-spin-slow: spin 15s linear infinite;
+  --animate-shine-pulse: shine-pulse var(--shine-pulse-duration, 8s) linear infinite;
+  --animate-orbit: orbit 4s linear infinite;
+  --animate-rainbow-shift: rainbow-shift 3s linear infinite;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes shine-pulse {
+    0% {
+      background-position: 0% 0%;
+    }
+    50% {
+      background-position: 100% 100%;
+    }
+    100% {
+      background-position: 0% 0%;
+    }
+  }
+
+  @keyframes orbit {
+    0% {
+      transform: rotate(0deg) translateX(42px) rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg) translateX(42px) rotate(-360deg);
+    }
+  }
+
+  @keyframes rainbow-shift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+}
+
+/* Elite Typography Text Glow Effect */
+.text-glow {
+  text-shadow: 0 0 25px rgba(255, 255, 255, 0.15),
+               0 0 50px rgba(234, 83, 88, 0.1);
+}
+
+/* Golden glow effects for elite pricing */
+.text-glow-gold {
+  text-shadow: 0 0 20px rgba(229, 169, 60, 0.3),
+               0 0 40px rgba(229, 169, 60, 0.1);
+}
+
+.rainbow-gold-glow {
+  box-shadow: 0 0 35px rgba(7, 4, 15, 0.8),
+              0 0 45px rgba(229, 169, 60, 0.15),
+              0 0 70px rgba(168, 85, 247, 0.05);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.rainbow-gold-glow:hover {
+  box-shadow: 0 0 40px rgba(7, 4, 15, 0.8),
+              0 0 60px rgba(229, 169, 60, 0.35),
+              0 0 90px rgba(244, 63, 94, 0.2);
+}
+
+/* Custom premium card style requested by user */
+.card-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Epic, slow orbital coordinates for background liquid blobs */
+.animate-first {
+  animation: moveVertical 40s ease infinite;
+}
+.animate-second {
+  animation: moveInCircle 50s linear infinite;
+  transform-origin: calc(50% - 250px);
+}
+.animate-third {
+  animation: moveInCircle 50s linear infinite;
+  transform-origin: calc(50% + 250px);
+}
+.animate-fourth {
+  animation: moveHorizontal 50s ease infinite;
+}
+.animate-fifth {
+  animation: moveInCircle 60s ease infinite;
+  transform-origin: calc(50% - 400px) calc(50% + 100px);
+}
+
+@keyframes moveVertical {
+  0% {
+    transform: translateY(-30%) scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateY(30%) scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-30%) scale(1);
+    opacity: 0.8;
+  }
+}
+
+@keyframes moveHorizontal {
+  0% {
+    transform: translateX(-30%) translateY(-8%) scale(1);
+  }
+  50% {
+    transform: translateX(30%) translateY(8%) scale(1.05);
+  }
+  100% {
+    transform: translateX(-30%) translateY(-8%) scale(1);
+  }
+}
+
+@keyframes moveInCircle {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.shader-bg {
+  display: none; /* Replaced by BackgroundGradientAnimation */
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+}
+
+.card {
+  width: 300px;
+  height: 560px;
+  background: black;
+  border-radius: 44px;
+  border: 2px solid rgb(40, 40, 40);
+  padding: 8px;
+  position: relative;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+}
+
+.card-int {
+  background-image: linear-gradient(to right bottom, #ff0000, #ff0045, #ff0078, #ea00aa, #b81cd7, #8a3ad6, #5746cf, #004ac2, #003d94, #002e66, #001d3a, #020812);
+  background-size: 200% 200%;
+  background-position: 0% 0%;
+  height: 100%;
+  border-radius: 36px;
+  transition: all 0.6s ease-out;
+  overflow: hidden;
+}
+
+.card:hover .card-int {
+  background-position: 100% 100%;
+}
+
+.top {
+  position: absolute;
+  top: 0px;
+  right: 50%;
+  transform: translate(50%, 0%);
+  width: 40%;
+  height: 20px;
+  background-color: black;
+  border-bottom-left-radius: 14px;
+  border-bottom-right-radius: 14px;
+  z-index: 20;
+}
+
+.speaker {
+  position: absolute;
+  top: 3px;
+  right: 50%;
+  transform: translate(50%, 0%);
+  width: 45%;
+  height: 2.5px;
+  border-radius: 2px;
+  background-color: rgb(20, 20, 20);
+  z-index: 21;
+}
+
+.camera {
+  position: absolute;
+  top: 7px;
+  right: 80%;
+  transform: translate(50%, 0%);
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.06);
+  z-index: 21;
+}
+
+.int {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  top: 50%;
+  right: 50%;
+  transform: translate(50%, -50%);
+  background-color: rgba(0, 0, 255, 0.212);
+  z-index: 21;
+}
+
+.btn1, .btn2, .btn3, .btn4 {
+  position: absolute;
+  width: 2px;
+}
+
+.btn1 {
+  height: 45px;
+  top: 30%;
+  right: -4px;
+  background-image: linear-gradient(to right, #111111, #222222, #333333, #464646, #595959);
+}
+
+.btn2, .btn3 {
+  width: -4px;
+}
+
+.btn2, .btn3 {
+  transform: scale(-1);
+  left: -4px;
+}
+
+.btn2 shadow {
+  height: 30px;
+}
+
+.btn2 {
+  height: 30px;
+  top: 26%
+}
+
+.btn3 {
+  height: 30px;
+  top: 36%
+}
+
+.hello {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  line-height: 35px;
+  height: 100%;
+  transition: 0.5s ease-in-out;
+}
+
+.hidden-item {
+  display: block;
+  opacity: 0;
+  transition: all 0.3s ease-in;
+}
+
+.card:hover .hidden-item {
+  opacity: 1;
+}
+
+.card:hover .hello {
+  transform: translateY(-20px);
+}
+
+/* Custom custom scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0a0c;
+}
+::-webkit-scrollbar-thumb {
+  background: #1c1c24;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #2e2e3a;
+}

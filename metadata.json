@@ -1,0 +1,8 @@
+{
+  "name": "Improvy",
+  "description": "An ultra-premium ear training and functional improvisation application, combining Web Audio API relative pitch simulators and verified App Store release bulletins.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
