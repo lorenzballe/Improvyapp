@@ -127,16 +127,12 @@ export default function AboutPage({ onBack, scrollToSection, scrollTrigger }: Ab
             </div>
             
             <div className="text-sm text-zinc-400 font-light leading-relaxed pl-10 space-y-4">
-              <p>Improvy is a two-man team comprised of:</p>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+              <p>Improvy is an independent project, created and developed by one person:</p>
+
+              <div className="grid grid-cols-1 gap-4 pt-2">
                 <div className="bg-zinc-950/40 border border-white/[0.04] p-5 rounded-xl space-y-1">
-                  <h4 className="text-sm font-bold text-white">Max Konyi</h4>
-                  <p className="text-xs text-zinc-450">Music educator and composer from Canada.</p>
-                </div>
-                <div className="bg-zinc-950/40 border border-white/[0.04] p-5 rounded-xl space-y-1">
-                  <h4 className="text-sm font-bold text-white">Tero Saarikivi</h4>
-                  <p className="text-xs text-zinc-450">Software developer and musician from Finland.</p>
+                  <h4 className="text-sm font-bold text-white">Lorenzo Ballestrazzi</h4>
+                  <p className="text-xs text-zinc-450">A young Italian musician and the creator of Improvy.</p>
                 </div>
               </div>
             </div>
