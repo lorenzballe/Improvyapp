@@ -31,7 +31,7 @@ export default function TermsOfServicePage({ onBack }: TermsOfServicePageProps) 
           </h1>
           <div className="space-y-4 text-sm sm:text-base text-zinc-400 font-light leading-relaxed max-w-2xl pt-2">
             <p>
-              Welcome to Improvy Music Trainer! The Improvy Music Trainer app provides a game-like experience to teach functional ear training and improve your musical skills in an engaging and interactive way.
+              Welcome to Improvy Music Trainer! The Improvy Music Trainer app provides a game-like experience to teach functional music theory — instantly recognising and locating scale degrees across every key — and improve your musical skills in an engaging and interactive way.
             </p>
             <p>
               Read these Terms of Service (“Terms”) carefully. These Terms govern the use of the Improvy Music Trainer app and related services (“Service”). By accessing or using the Service, you agree to these Terms. If you do not agree, do not use the Service.

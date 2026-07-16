@@ -221,7 +221,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
         {/* Editorial Masterpiece Title: Direct translation of musician's core vision */}
         <div className="space-y-6 max-w-4xl">
           <h1 className="text-4xl sm:text-6xl font-black text-white font-display tracking-tight uppercase leading-[1.0] select-none text-left">
-            FROM MIND TO SOUND <br />
+            FROM MIND TO INSTRUMENT <br />
             <motion.span 
               className="relative inline-block group/underline cursor-pointer pb-2"
               initial="hidden"
@@ -332,7 +332,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                 </div>
                 <div className="w-full h-[1.5px] bg-gradient-to-r from-[#e5a93c] to-emerald-500 rounded-full" />
                 <p className="text-[10px] text-zinc-400 font-light leading-relaxed">
-                  Improvy reduces the decoding of complex intervals (like a flat 13 from a specific root key) to an instant geometric link between the sound and its keyboard coordinate, eliminating the lag of traditional theory calculation.
+                  Improvy reduces the decoding of complex intervals (like a flat 13 from a specific root key) to an instant geometric link between a scale degree and its keyboard coordinate, eliminating the lag of traditional theory calculation.
                 </p>
               </div>
             </div>

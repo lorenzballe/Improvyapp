@@ -62,10 +62,10 @@ export default function AboutPage({ onBack, scrollToSection, scrollTrigger }: Ab
           </h1>
           <div className="space-y-4 text-sm sm:text-base text-zinc-400 font-light leading-relaxed max-w-2xl pt-2">
             <p>
-              Improvy is a music-learning company dedicated to musical fluency through ear training.
+              Improvy is a music-learning company dedicated to musical fluency through instant scale-degree mastery — knowing exactly where every note lives, in every key.
             </p>
             <p>
-              We design innovative tools that help you play music the way you experience it—by feel and context—so you can play what you hear.
+              We design innovative tools that turn functional music theory into instant mental reflexes, so you can find any note or degree on your instrument the moment you think of it — no slow calculation, no guessing.
             </p>
           </div>
         </div>

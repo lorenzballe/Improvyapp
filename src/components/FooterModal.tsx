@@ -267,7 +267,7 @@ export const FooterModal: React.FC<FooterModalProps> = ({ isOpen, onClose, type 
                 </div>
                 <h4 className="font-bold text-white text-sm">Harmonically Calibrated</h4>
                 <p className="font-light text-zinc-400/90 leading-relaxed">
-                  You have been registered for next Tuesday's premium print. Keep your ear tuned and your spatial grid sharp.
+                  You have been registered for next Tuesday's premium print. Keep your mind sharp and your mental map crisp.
                 </p>
               </motion.div>
             ) : (
@@ -335,7 +335,7 @@ export const FooterModal: React.FC<FooterModalProps> = ({ isOpen, onClose, type 
         return (
           <div className="space-y-4 text-zinc-300 font-sans font-light leading-relaxed text-xs max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
             <p>
-              Welcome to Improvy. By engaging our cognitive pitch system, dynamic circular tonnetz interfaces, or analytical dashboards, you subscribe to these terms.
+              Welcome to Improvy. By engaging our cognitive mapping system, dynamic circular tonnetz interfaces, or analytical dashboards, you subscribe to these terms.
             </p>
             <h4 className="font-bold text-white text-xs uppercase tracking-wider font-sans">1. Absolute Creative Sovereignty</h4>
             <p>
@@ -363,7 +363,7 @@ export const FooterModal: React.FC<FooterModalProps> = ({ isOpen, onClose, type 
   const titles: Record<string, string> = {
     about: "About Improvy Labs",
     affiliates: "Partners & Affiliates",
-    feedback: "Acoustic Feedback System",
+    feedback: "Feedback System",
     newsletter: "Cognitive Harmonics",
     privacy: "Privacy Architecture",
     terms: "Harmonic Agreements",
@@ -373,8 +373,8 @@ export const FooterModal: React.FC<FooterModalProps> = ({ isOpen, onClose, type 
     about: "Theoretical Framework of the Geometric Mind",
     affiliates: "Spread the Spatial Resonance / Earn 30%",
     feedback: "Refining the 12-Tone Analytical Relational Engine",
-    newsletter: "Weekly Drills, Cognitive Papers & Pitch-Maps",
-    privacy: "Sovereignty of Individual Pitch-Training Data",
+    newsletter: "Weekly Drills, Cognitive Papers & Degree-Maps",
+    privacy: "Sovereignty of Individual Practice Data",
     terms: "Creative Freedom Warranty & Domain Use Clauses",
   };
 

@@ -895,7 +895,7 @@ export default function App() {
                   <span className="font-display text-xl sm:text-2xl font-black text-white italic tracking-tight">Improvy</span>
                 </div>
                 <p className="text-xs text-zinc-400 leading-relaxed font-light">
-                  Train your mind to play what you hear. Geometric ear training for instant musical fluency.
+                  Train your mind to see every note before you play it. Instant scale-degree mastery across all 12 keys for real musical fluency.
                 </p>
               </div>
 

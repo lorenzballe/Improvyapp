@@ -16,7 +16,7 @@ export function ShineBorder({
   borderRadius = 24,
   borderWidth = 1.5,
   duration = 8,
-  color = ["#f43f5e", "#ec4899", "#6366f1"], // Premium metallic/neon palette for ear training
+  color = ["#f43f5e", "#ec4899", "#6366f1"], // Premium metallic/neon palette
   className,
   children,
 }: ShineBorderProps) {

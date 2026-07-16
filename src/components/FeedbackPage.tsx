@@ -83,7 +83,7 @@ export default function FeedbackPage({ onBack }: FeedbackPageProps) {
                   </span>
                 </h1>
                 <p className="text-sm text-zinc-400 font-light max-w-xl">
-                  We are constantly refining the Improvy ear trainer. Whether you found a bug, have an idea for a feature, or want to share your learning breakthroughs, we are here to listen!
+                  We are constantly refining Improvy. Whether you found a bug, have an idea for a feature, or want to share your learning breakthroughs, we are here to listen!
                 </p>
               </div>
 
