@@ -4,7 +4,6 @@ import { BackgroundGradientAnimation } from "./components/BackgroundGradientAnim
 import { ButtonColorful } from "./components/ButtonColorful";
 import { ShineBorder } from "./components/ShineBorder";
 import { TypeWriter } from "./components/TypeWriter";
-import { AppLogo } from "./components/AppLogo";
 import { TestimonialsColumn, testimonialsList } from "./components/TestimonialsColumn";
 import { 
   Music, 
@@ -31,6 +30,7 @@ import AboutPage from "./components/AboutPage";
 import FeedbackPage from "./components/FeedbackPage";
 import { cn } from "./lib/utils";
 import { FooterModal } from "./components/FooterModal";
+import heroHomeScreenImg from "./assets/images/method_home_progress.webp";
 
 const revealVariants = {
   visible: (i: number) => ({
@@ -434,22 +434,12 @@ export default function App() {
                     <div className="btn3"></div>
                     <div className="btn4"></div>
  
-                    <div className="hello flex flex-col items-center justify-center">
-                      <AppLogo size={120} className="mb-6 drop-shadow-[0_16px_32px_rgba(0,0,0,0.7)]" />
-                      <span className="font-display text-4xl font-extrabold tracking-tight text-white italic">Improvy</span>
-                      <span className="font-sans text-[10px] text-[#e5a93c] tracking-[0.16em] block font-bold leading-none uppercase mt-2.5">Music Trainer</span>
-
-                      <div className="hidden-item mt-10 space-y-4 px-3 text-center w-full">
-                        <div className="h-[1px] w-12 bg-white/10 mx-auto"></div>
-                        <p className="text-[10px] text-zinc-300 leading-relaxed font-sans font-light">
-                          Total harmonic awareness and instant geometric calculation across all 12 keys.
-                        </p>
-                        <div className="flex items-center justify-center gap-1.5 pt-1">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse animate-duration-1000"></span>
-                          <span className="text-[8.5px] font-sans tracking-[0.12em] text-emerald-400 uppercase font-bold">READY TO PLAY</span>
-                        </div>
-                      </div>
-                    </div>
+                    <img
+                      src={heroHomeScreenImg}
+                      alt="Improvy training home screen with total progress and all-keys mastery"
+                      className="w-full h-full object-cover"
+                      referrerPolicy="no-referrer"
+                    />
                   </div>
                 </div>
               </motion.div>
