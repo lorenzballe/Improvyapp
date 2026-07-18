@@ -1,7 +1,10 @@
 import React from "react";
 import { motion } from "motion/react";
 import { AppLogo } from "./AppLogo";
-import appDashboardImg from "../assets/images/frame_5_dashboard_1782039765702.jpg";
+import methodDiatonicImg from "../assets/images/method_diatonic_grid.webp";
+import methodHomeImg from "../assets/images/method_home_progress.webp";
+import methodStatsImg from "../assets/images/method_stats.webp";
+import methodPianoImg from "../assets/images/method_piano_answer.webp";
 import { 
   ArrowLeft, 
   Sparkle, 
@@ -31,6 +34,8 @@ interface InteractiveIPhoneMockupProps {
   score: string;
   streak: string;
   timer: string;
+  screenshot: string;
+  screenshotAlt: string;
 }
 
 function InteractiveIPhoneMockup({
@@ -41,7 +46,9 @@ function InteractiveIPhoneMockup({
   modeType,
   score,
   streak,
-  timer
+  timer,
+  screenshot,
+  screenshotAlt
 }: InteractiveIPhoneMockupProps) {
   const cardRef = React.useRef<HTMLDivElement>(null);
   const [style, setStyle] = React.useState<React.CSSProperties>({});
@@ -145,10 +152,10 @@ function InteractiveIPhoneMockup({
 
         {/* 3D Depth Content Layer */}
         <div className="absolute inset-0 w-full h-full overflow-hidden rounded-[28px] bg-[#0c0817]" style={{ transform: "translateZ(35px)" }}>
-          <img 
-            src={appDashboardImg} 
-            alt="Improvy Statistics Dashboard" 
-            className="w-full h-full object-cover scale-[1.09] translate-y-[-1px]"
+          <img
+            src={screenshot}
+            alt={screenshotAlt}
+            className="w-full h-full object-cover"
             referrerPolicy="no-referrer"
           />
         </div>
@@ -401,6 +408,8 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                   score="+540 XP"
                   streak="7 Days"
                   timer="0:14"
+                  screenshot={methodDiatonicImg}
+                  screenshotAlt="Improvy diatonic training session in the key of C — degree 6 with the note grid"
                 />
               </div>
             </div>
@@ -436,6 +445,8 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                   score="+920 XP"
                   streak="12 Days"
                   timer="0:08"
+                  screenshot={methodHomeImg}
+                  screenshotAlt="Improvy home screen with total progress and all-keys mastery"
                 />
               </div>
             </div>
@@ -471,6 +482,8 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                   score="+1,450 XP"
                   streak="21 Days"
                   timer="0:03"
+                  screenshot={methodStatsImg}
+                  screenshotAlt="Improvy statistics screen with overall proficiency and response time"
                 />
               </div>
             </div>
@@ -506,6 +519,8 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                   score="+3,120 XP"
                   streak="Continuous"
                   timer="FREEPLAY"
+                  screenshot={methodPianoImg}
+                  screenshotAlt="Improvy interactive piano keyboard with answer feedback"
                 />
               </div>
             </div>
