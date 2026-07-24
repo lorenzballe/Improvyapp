@@ -1,205 +1,193 @@
 import React from "react";
 import { motion } from "motion/react";
-import { ArrowLeft, Scale, CheckCircle } from "lucide-react";
 
 interface TermsOfServicePageProps {
   onBack: () => void;
 }
 
+function Section({ n, title, color, children }: { n: string; title: string; color: string; children: React.ReactNode }) {
+  return (
+    <div className="space-y-4 border-b border-white/[0.04] pb-10">
+      <div className="flex items-baseline gap-4">
+        <span className={`text-3xl font-black font-display ${color} leading-none`}>{n}</span>
+        <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white uppercase font-display">{title}</h2>
+      </div>
+      <div className="text-sm text-zinc-400 font-light leading-relaxed pl-10 space-y-4">
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function Point({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="space-y-1 border-l border-white/5 pl-4 py-1">
+      <h3 className="text-sm font-bold text-white uppercase tracking-wider">{title}</h3>
+      <p className="text-zinc-400">{children}</p>
+    </div>
+  );
+}
+
+const CONTACT_EMAIL = "thebalecompany@gmail.com";
+
 export default function TermsOfServicePage({ onBack }: TermsOfServicePageProps) {
   return (
     <div className="w-full max-w-3xl mx-auto px-6 pt-28 pb-16 md:pt-36 md:pb-24 text-zinc-350 font-sans relative z-30">
-      
-      {/* Main Content Animation Wrapper */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
         className="space-y-14 text-left"
       >
-        
-        {/* Header Block */}
+        {/* Header */}
         <div className="space-y-6 pb-10 border-b border-white/[0.08]">
           <span className="text-[10px] font-extrabold uppercase tracking-[0.25em] text-[#e5a93c]">
-            LEGAL AGREEMENT
+            THE FINE PRINT
           </span>
           <h1 className="text-4xl sm:text-5xl font-black text-white font-display tracking-tight uppercase leading-[1.1] select-none">
-            IMPROVY MUSIC TRAINER <br />
+            IMPROVY <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#e5a93c] via-rose-500 to-purple-500">
               TERMS OF SERVICE
             </span>
           </h1>
           <div className="space-y-4 text-sm sm:text-base text-zinc-400 font-light leading-relaxed max-w-2xl pt-2">
-            <p>
-              Welcome to Improvy Music Trainer! The Improvy Music Trainer app provides a game-like experience to teach functional music theory — instantly recognising and locating scale degrees across every key — and improve your musical skills in an engaging and interactive way.
-            </p>
-            <p>
-              Read these Terms of Service (“Terms”) carefully. These Terms govern the use of the Improvy Music Trainer app and related services (“Service”). By accessing or using the Service, you agree to these Terms. If you do not agree, do not use the Service.
-            </p>
-            <p className="text-xs text-zinc-500 font-medium pt-1">
-              These Terms form a binding agreement between you (“Subscriber” or “User”) and Improvy Music Trainer Ltd. (“Improvy”). Apple Inc. and Google LLC are third-party beneficiaries of these Terms.
-            </p>
+            <p className="text-xs uppercase tracking-widest text-zinc-500">Last updated: 24 July 2026</p>
+            <p>Please read these Terms of Service (“Terms”) carefully before using Improvy.</p>
           </div>
         </div>
 
-        {/* Bulletproof Single Column Point-By-Point Layout */}
         <div className="space-y-12">
-          
-          {/* Section 1 */}
-          <div className="space-y-4 border-b border-white/[0.04] pb-10">
-            <div className="flex items-baseline gap-4">
-              <span className="text-3xl font-black font-display text-[#e5a93c]/90 leading-none">01</span>
-              <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white uppercase font-display">Definitions</h2>
-            </div>
-            <div className="text-sm text-zinc-400 font-light leading-relaxed pl-10 space-y-3.5">
-              <p><strong className="text-white font-medium">Improvy:</strong> Refers to Improvy Music Trainer Ltd.</p>
-              <p><strong className="text-white font-medium">Service:</strong> The Improvy Music Trainer app and any related services.</p>
-              <p><strong className="text-white font-medium">Subscriber:</strong> The individual who creates an account and subscribes to the Service.</p>
-              <p><strong className="text-white font-medium">User:</strong> The Subscriber or any person authorized by the Subscriber to use the Service.</p>
-              <p><strong className="text-white font-medium">Intellectual Property Rights:</strong> Includes copyrights, patents, trademarks, and other proprietary rights.</p>
-              <p><strong className="text-white font-medium">Personal Data:</strong> As defined under applicable data protection laws, including the GDPR.</p>
-            </div>
-          </div>
+          <Section n="01" title="Acceptance" color="text-[#e5a93c]/90">
+            <p>
+              By downloading, installing, or using the Improvy app (“App”), you confirm that you have read and agree
+              to these Terms. If you do not agree, do not use the App.
+            </p>
+          </Section>
 
-          {/* Section 2 */}
-          <div className="space-y-4 border-b border-white/[0.04] pb-10">
-            <div className="flex items-baseline gap-4">
-              <span className="text-3xl font-black font-display text-rose-500/90 leading-none">02</span>
-              <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white uppercase font-display">Right to Use the Service</h2>
-            </div>
-            <div className="text-sm text-zinc-400 font-light leading-relaxed pl-10 space-y-3.5">
-              <p><strong className="text-white font-medium">2.1</strong> Improvy grants you a limited, non-exclusive, non-transferable, and non-sublicensable license to use the Service for personal, non-commercial purposes.</p>
-              <p><strong className="text-white font-medium">2.2</strong> Access to the Service requires a valid subscription for the “Pro” version or a one-time lifetime payment. Free content is available without a subscription or sign-up.</p>
-              <p><strong className="text-white font-medium">2.3</strong> You are responsible for ensuring that all Users comply with these Terms.</p>
-            </div>
-          </div>
+          <Section n="02" title="Description of the App" color="text-rose-500/90">
+            <p>
+              Improvy is a music-training application that helps you master where every scale degree lives across
+              all 12 keys — building the instant recall used for improvisation, transposition, and composition. The
+              App is available on iOS and Android.
+            </p>
+          </Section>
 
-          {/* Section 3 */}
-          <div className="space-y-4 border-b border-white/[0.04] pb-10">
-            <div className="flex items-baseline gap-4">
-              <span className="text-3xl font-black font-display text-purple-500/90 leading-none">03</span>
-              <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white uppercase font-display">User Accounts</h2>
-            </div>
-            <div className="text-sm text-zinc-400 font-light leading-relaxed pl-10 space-y-3.5">
-              <p><strong className="text-white font-medium">3.1</strong> When creating an account, you must provide accurate and up-to-date information.</p>
-              <p><strong className="text-white font-medium">3.2</strong> Keep your account credentials secure. You are responsible for all activity under your account.</p>
-              <p><strong className="text-white font-medium">3.3</strong> Improvy reserves the right to suspend or terminate accounts that breach these Terms or engage in unauthorized use of the Service.</p>
-            </div>
-          </div>
+          <Section n="03" title="License" color="text-purple-500/90">
+            <p>
+              Subject to these Terms, we grant you a limited, personal, non-exclusive, non-transferable, revocable
+              licence to use the App on devices you own or control, solely for personal, non-commercial training.
+            </p>
+            <p>You may not:</p>
+            <Point title="Copy or modify">Copy, modify, distribute, or create derivative works of the App.</Point>
+            <Point title="Reverse-engineer">Reverse-engineer, decompile, or disassemble the App.</Point>
+            <Point title="Commercial use">Use the App for any commercial purpose without our prior written consent.</Point>
+            <Point title="Automation">Use bots, scrapers, or other automated tools to interact with the App.</Point>
+          </Section>
 
-          {/* Section 4 */}
-          <div className="space-y-4 border-b border-white/[0.04] pb-10">
-            <div className="flex items-baseline gap-4">
-              <span className="text-3xl font-black font-display text-blue-500/90 leading-none">04</span>
-              <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white uppercase font-display">Subscription and Payment</h2>
-            </div>
-            <div className="text-sm text-zinc-400 font-light leading-relaxed pl-10 space-y-3.5">
-              <p><strong className="text-white font-medium">4.1</strong> Access to premium features requires a subscription or a one-time lifetime payment. Pricing details are available on our website or within the app.</p>
-              <p><strong className="text-white font-medium">4.2</strong> Payments are processed through third-party providers. Ensure your payment details are accurate and updated.</p>
-              <p><strong className="text-white font-medium">4.3</strong> Subscriptions automatically renew unless canceled before the end of the current billing period. No refunds are provided for unused portions of a subscription unless required by law.</p>
-            </div>
-          </div>
+          <Section n="04" title="Improvy Pro" color="text-[#e5a93c]/90">
+            <p>
+              Certain features (“Improvy Pro”) are unlocked with a <span className="text-white font-semibold">one-time
+              in-app purchase</span> — a lifetime upgrade, not a subscription. There are no recurring fees.
+            </p>
+            <Point title="Price">Displayed in your local currency at the time of purchase.</Point>
+            <Point title="Payment & refunds">
+              Purchases and refunds are handled by Apple (App Store) or Google (Play Store) under their own
+              policies. For a refund, contact Apple Support or Google Play Support directly.
+            </Point>
+            <Point title="Restoring purchases">
+              If you reinstall the App or switch devices, restore Pro from the Settings screen using the same Apple
+              ID or Google account — no additional payment is required.
+            </Point>
+            <p className="pt-1">
+              We may add, modify, or discontinue features at any time. Existing Pro users keep access to the
+              features available at the time of their purchase.
+            </p>
+          </Section>
 
-          {/* Section 5 */}
-          <div className="space-y-4 border-b border-white/[0.04] pb-10">
-            <div className="flex items-baseline gap-4">
-              <span className="text-3xl font-black font-display text-emerald-500/90 leading-none">05</span>
-              <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white uppercase font-display">Restrictions on Use</h2>
-            </div>
-            <div className="text-sm text-zinc-400 font-light leading-relaxed pl-10 space-y-3.5">
-              <p><strong className="text-white font-medium">5.1</strong> You may not:</p>
-              <ul className="list-disc list-inside space-y-2 pl-2 text-zinc-400 text-sm">
-                <li>Reverse engineer or decompile the Service.</li>
-                <li>Use bots or automated tools to interact with the Service.</li>
-                <li>Share your account credentials with unauthorized parties.</li>
-                <li>Use the Service for commercial purposes without explicit permission.</li>
-              </ul>
-              <p><strong className="text-white font-medium">5.2</strong> Any unauthorized use may result in account suspension or termination.</p>
-            </div>
-          </div>
+          <Section n="05" title="Conduct" color="text-rose-500/90">
+            <p>
+              Improvy has no user-generated content or social features. You agree to use the App only for lawful
+              purposes.
+            </p>
+          </Section>
 
-          {/* Section 6 */}
-          <div className="space-y-4 border-b border-white/[0.04] pb-10">
-            <div className="flex items-baseline gap-4">
-              <span className="text-3xl font-black font-display text-teal-500/90 leading-none">06</span>
-              <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white uppercase font-display">Modifications to the Service</h2>
-            </div>
-            <div className="text-sm text-zinc-400 font-light leading-relaxed pl-10 space-y-3.5">
-              <p><strong className="text-white font-medium">6.1</strong> Improvy reserves the right to modify or discontinue any part of the Service without prior notice, provided such changes do not materially reduce the functionality of the Service.</p>
-              <p><strong className="text-white font-medium">6.2</strong> Material changes will be communicated in advance, and you may terminate your subscription if you disagree with such changes.</p>
-            </div>
-          </div>
+          <Section n="06" title="Intellectual Property" color="text-purple-500/90">
+            <p>
+              All content within the App — including the music-engine logic, user interface, graphics, animations,
+              and text — is owned by Lorenzo Ballestrazzi and protected by Italian and international copyright,
+              trademark, and other intellectual property laws.
+            </p>
+            <p>
+              “Improvy” and the Improvy logo are trademarks of Lorenzo Ballestrazzi. You may not use them without
+              prior written permission.
+            </p>
+          </Section>
 
-          {/* Section 7 */}
-          <div className="space-y-4 border-b border-white/[0.04] pb-10">
-            <div className="flex items-baseline gap-4">
-              <span className="text-3xl font-black font-display text-[#e5a93c]/90 leading-none">07</span>
-              <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white uppercase font-display">Personal Data</h2>
-            </div>
-            <div className="text-sm text-zinc-400 font-light leading-relaxed pl-10 space-y-3.5">
-              <p><strong className="text-white font-medium">7.1</strong> Improvy processes your Personal Data in accordance with our Privacy Policy. By using the Service, you consent to such processing.</p>
-            </div>
-          </div>
+          <Section n="07" title="Disclaimer of Warranties" color="text-[#e5a93c]/90">
+            <p className="uppercase text-xs tracking-wide text-zinc-400">
+              The App is provided “as is” and “as available” without warranty of any kind, express or implied,
+              including warranties of merchantability, fitness for a particular purpose, or non-infringement.
+            </p>
+            <p>
+              We do not warrant that the App will always be available or error-free, that defects will be corrected,
+              or that it is free of harmful components.
+            </p>
+          </Section>
 
-          {/* Section 8 */}
-          <div className="space-y-4 border-b border-white/[0.04] pb-10">
-            <div className="flex items-baseline gap-4">
-              <span className="text-3xl font-black font-display text-rose-500/90 leading-none">08</span>
-              <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white uppercase font-display">Intellectual Property Rights</h2>
-            </div>
-            <div className="text-sm text-zinc-400 font-light leading-relaxed pl-10 space-y-3.5">
-              <p><strong className="text-white font-medium">8.1</strong> Improvy retains all rights, title, and interest in the Service and its content. You may not copy, distribute, or create derivative works without explicit permission.</p>
-              <p><strong className="text-white font-medium">8.2</strong> If you believe your Intellectual Property Rights are being infringed, contact us at <a href="mailto:thebalecompany@gmail.com" className="text-[#e5a93c] hover:underline hover:text-white font-medium transition-colors">thebalecompany@gmail.com</a>.</p>
-            </div>
-          </div>
+          <Section n="08" title="Limitation of Liability" color="text-rose-500/90">
+            <p>
+              To the maximum extent permitted by law, Lorenzo Ballestrazzi shall not be liable for any indirect,
+              incidental, special, consequential, or punitive damages arising from your use of, or inability to use,
+              the App.
+            </p>
+            <p>
+              Our total liability for any claim shall not exceed the amount you paid for Improvy Pro (or €0 if you
+              have not purchased Pro).
+            </p>
+          </Section>
 
-          {/* Section 9 */}
-          <div className="space-y-4 border-b border-white/[0.04] pb-10">
-            <div className="flex items-baseline gap-4">
-              <span className="text-3xl font-black font-display text-purple-500/90 leading-none">09</span>
-              <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white uppercase font-display">Availability, Warranties, and Liability</h2>
-            </div>
-            <div className="text-sm text-zinc-400 font-light leading-relaxed pl-10 space-y-3.5">
-              <p><strong className="text-white font-medium">9.1</strong> The Service is provided “as is” and without warranties of any kind.</p>
-              <p><strong className="text-white font-medium">9.2</strong> Improvy is not liable for:</p>
-              <ul className="list-disc list-inside space-y-2 pl-2 text-zinc-400 text-sm">
-                <li>Interruptions or unavailability of the Service.</li>
-                <li>Damages resulting from the use of the Service, to the extent permitted by law.</li>
-              </ul>
-            </div>
-          </div>
+          <Section n="09" title="Governing Law & Jurisdiction" color="text-purple-500/90">
+            <p>
+              These Terms are governed by the laws of Italy, and any dispute shall be subject to the exclusive
+              jurisdiction of the courts of Italy.
+            </p>
+            <p>
+              If you are a consumer resident in the EU, you may also use the EU Online Dispute Resolution platform at{" "}
+              <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noreferrer" className="text-[#e5a93c] hover:text-white hover:underline">
+                ec.europa.eu/consumers/odr
+              </a>.
+            </p>
+          </Section>
 
-          {/* Section 10 */}
-          <div className="space-y-4 border-b border-white/[0.04] pb-10">
-            <div className="flex items-baseline gap-4">
-              <span className="text-3xl font-black font-display text-blue-500/90 leading-none">10</span>
-              <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white uppercase font-display">Term and Termination</h2>
-            </div>
-            <div className="text-sm text-zinc-400 font-light leading-relaxed pl-10 space-y-3.5">
-              <p><strong className="text-white font-medium">10.1</strong> These Terms remain in effect until terminated by you or Improvy.</p>
-              <p><strong className="text-white font-medium">10.2</strong> You may terminate your subscription at any time through your account settings. Termination does not entitle you to a refund unless required by law.</p>
-              <p><strong className="text-white font-medium">10.3</strong> Improvy may terminate these Terms if you breach any provision or misuse the Service.</p>
-            </div>
-          </div>
+          <Section n="10" title="Changes to These Terms" color="text-[#e5a93c]/90">
+            <p>
+              We may update these Terms at any time. We will note significant changes in the App or by updating the
+              “Last updated” date above. Continued use after changes take effect means you accept the revised Terms.
+            </p>
+          </Section>
 
-          {/* Section 11 */}
           <div className="space-y-4 pb-4">
             <div className="flex items-baseline gap-4">
-              <span className="text-3xl font-black font-display text-emerald-500/90 leading-none">11</span>
-              <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white uppercase font-display">Governing Law and Dispute Resolution</h2>
+              <span className="text-3xl font-black font-display text-rose-500/90 leading-none">11</span>
+              <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white uppercase font-display">Contact</h2>
             </div>
-            <div className="text-sm text-zinc-400 font-light leading-relaxed pl-10 space-y-3.5">
-              <p><strong className="text-white font-medium">11.1</strong> These Terms are governed by the laws of Canada.</p>
-              <p><strong className="text-white font-medium">11.2</strong> Any disputes will be resolved through negotiation. If unresolved, disputes will be subject to the exclusive jurisdiction of the courts in Canada.</p>
+            <div className="text-sm text-zinc-400 font-light leading-relaxed pl-10 space-y-2">
+              <p className="font-semibold text-white">Lorenzo Ballestrazzi</p>
+              <a href={`mailto:${CONTACT_EMAIL}`} className="text-[#e5a93c] hover:text-white hover:underline font-medium">
+                {CONTACT_EMAIL}
+              </a>
+              <div className="pt-6">
+                <button
+                  onClick={onBack}
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-white/[0.05] hover:bg-white/[0.08] border border-white/[0.08] rounded-xl font-bold text-xs uppercase tracking-wider text-white cursor-pointer transition-all hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  Back to Home
+                </button>
+              </div>
             </div>
           </div>
-
         </div>
-
-
-
       </motion.div>
-      
     </div>
   );
 }
