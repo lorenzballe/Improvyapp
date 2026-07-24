@@ -257,7 +257,7 @@ export default function FeedbackPage({ onBack }: FeedbackPageProps) {
                   FEEDBACK RECEIVED
                 </h2>
                 <p className="text-sm text-zinc-400 font-light leading-relaxed">
-                  Thank you for your valuable feedback{name ? `, ${name}` : ""}. Your insights have been directly recorded into our active review pipeline.
+                  Thank you for your feedback{name ? `, ${name}` : ""}. Every message is read personally — if it needs a reply, we'll get back to you.
                 </p>
               </div>
 
@@ -267,7 +267,7 @@ export default function FeedbackPage({ onBack }: FeedbackPageProps) {
                   <span className="text-xs font-bold text-white uppercase tracking-wider">The Improvy DNA</span>
                 </div>
                 <p className="text-xs text-zinc-400 font-light leading-normal">
-                  Our curriculum is engineered strictly from feedback of musicians worldwide because musical fluency works best when built together.
+                  Improvy grows with the musicians who use it — the best ideas come straight from your practice, and we build around them.
                 </p>
               </div>
 
