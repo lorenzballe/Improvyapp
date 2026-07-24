@@ -5,6 +5,8 @@ import methodDiatonicImg from "../assets/images/method_diatonic_grid.webp";
 import methodHomeImg from "../assets/images/method_home_progress.webp";
 import methodStatsImg from "../assets/images/method_stats.webp";
 import methodPianoImg from "../assets/images/method_piano_answer.webp";
+import methodOfWhatImg from "../assets/images/method_ofwhat.webp";
+import methodPocketImg from "../assets/images/method_pocket.webp";
 import { 
   ArrowLeft, 
   Sparkle, 
@@ -29,8 +31,8 @@ interface InteractiveIPhoneMockupProps {
   title: string;
   subtitle: string;
   badge: string;
-  badgeColor: "amber" | "rose" | "purple" | "cyan";
-  modeType: "diatonic" | "chromatic" | "inverse" | "piano";
+  badgeColor: "amber" | "rose" | "purple" | "cyan" | "indigo";
+  modeType: "diatonic" | "chromatic" | "inverse" | "piano" | "ofwhat" | "pocket";
   score: string;
   streak: string;
   timer: string;
@@ -101,6 +103,12 @@ function InteractiveIPhoneMockup({
       bgGradient: "from-cyan-500/10 via-transparent to-transparent",
       backglow: "bg-cyan-500/25",
     },
+    indigo: {
+      accent: "#6366f1",
+      shadow: "rgba(99, 102, 241, 0.35)",
+      bgGradient: "from-indigo-500/10 via-transparent to-transparent",
+      backglow: "bg-indigo-500/25",
+    },
   }[badgeColor];
 
   const badgeClasses = {
@@ -108,6 +116,7 @@ function InteractiveIPhoneMockup({
     rose: "bg-rose-500/10 border-rose-500/20 text-rose-455",
     purple: "bg-purple-500/10 border-purple-500/20 text-purple-400",
     cyan: "bg-cyan-500/10 border-cyan-500/20 text-cyan-450",
+    indigo: "bg-indigo-500/10 border-indigo-500/20 text-indigo-300",
   }[badgeColor];
 
   return (
@@ -372,7 +381,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
         {/* 3. SECTION: THE 4 CORE APP MODULES & MODES (THE HEART OF THE METHOD) */}
         <div className="space-y-8">
           <div className="text-center md:text-left space-y-3">
-            <h2 className="text-2xl sm:text-3xl font-black text-white font-display uppercase tracking-tight">Our App's 4 Core Training Modes</h2>
+            <h2 className="text-2xl sm:text-3xl font-black text-white font-display uppercase tracking-tight">Our App's Core Training Modes</h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
@@ -521,6 +530,76 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                   timer="FREEPLAY"
                   screenshot={methodPianoImg}
                   screenshotAlt="Improvy interactive piano keyboard with answer feedback"
+                />
+              </div>
+            </div>
+
+            {/* 5. …OF WHAT? MODE */}
+            <div className="relative group overflow-visible p-8 sm:p-9 rounded-[32px] bg-zinc-950/40 border border-white/[0.04] hover:border-cyan-500/20 hover:bg-zinc-950/70 transition-all duration-700 flex flex-col justify-between space-y-8 shadow-2xl hover:shadow-[0_0_50px_-12px_rgba(6,182,212,0.18)] hover:-translate-y-1.5">
+              <div className="absolute -inset-2 rounded-[34px] bg-cyan-500/10 opacity-0 group-hover:opacity-100 blur-3xl transition-all duration-700 pointer-events-none" />
+
+              <div className="relative z-10 space-y-4">
+                <div className="flex items-center justify-between border-b border-white/[0.04] pb-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+                    <span className="text-[10px] font-sans tracking-[0.18em] text-cyan-400 font-black uppercase">…OF WHAT? MODE</span>
+                  </div>
+                  <span className="text-[9px] text-cyan-400 font-bold uppercase bg-cyan-500/5 px-2.5 py-1 rounded-full border border-cyan-500/10">NAME THE ROOT</span>
+                </div>
+
+                <h4 className="text-xl font-bold text-white uppercase font-display tracking-tight group-hover:text-cyan-400 transition-colors duration-300">One Note, Every Key</h4>
+                <p className="text-xs sm:text-sm text-zinc-400 font-light leading-relaxed">
+                  The reverse challenge that rewires how you hear harmony. A single note is given as a scale degree — the 3rd, the ♭7, the 9th — and you name the key it belongs to. Train the same relationships in both directions until every note instantly reveals the keys it lives in.
+                </p>
+              </div>
+
+              <div className="relative z-10 flex justify-center py-4">
+                <InteractiveIPhoneMockup
+                  title="…Of What?"
+                  subtitle="Note E · the 5th"
+                  badge="OF WHAT"
+                  badgeColor="cyan"
+                  modeType="ofwhat"
+                  score="+680 XP"
+                  streak="9 Days"
+                  timer="0:05"
+                  screenshot={methodOfWhatImg}
+                  screenshotAlt="Improvy …Of What? mode — the note E presented as the 5th, with the twelve root answers"
+                />
+              </div>
+            </div>
+
+            {/* 6. POCKET MODE */}
+            <div className="relative group overflow-visible p-8 sm:p-9 rounded-[32px] bg-zinc-950/40 border border-white/[0.04] hover:border-indigo-500/20 hover:bg-zinc-950/70 transition-all duration-700 flex flex-col justify-between space-y-8 shadow-2xl hover:shadow-[0_0_50px_-12px_rgba(99,102,241,0.18)] hover:-translate-y-1.5">
+              <div className="absolute -inset-2 rounded-[34px] bg-indigo-500/10 opacity-0 group-hover:opacity-100 blur-3xl transition-all duration-700 pointer-events-none" />
+
+              <div className="relative z-10 space-y-4">
+                <div className="flex items-center justify-between border-b border-white/[0.04] pb-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" />
+                    <span className="text-[10px] font-sans tracking-[0.18em] text-indigo-300 font-black uppercase">POCKET MODE</span>
+                  </div>
+                  <span className="text-[9px] text-indigo-300 font-bold uppercase bg-indigo-500/5 px-2.5 py-1 rounded-full border border-indigo-500/10">HANDS-FREE AUDIO</span>
+                </div>
+
+                <h4 className="text-xl font-bold text-white uppercase font-display tracking-tight group-hover:text-indigo-300 transition-colors duration-300">Train With Your Eyes Closed</h4>
+                <p className="text-xs sm:text-sm text-zinc-400 font-light leading-relaxed">
+                  Pure audio practice for your commute, your walk, or your warm-up. A voice calls a degree, waits while you answer in your head, then speaks the note — looping hands-free, even with the screen locked. Choose your key, set the pace, and drill anywhere.
+                </p>
+              </div>
+
+              <div className="relative z-10 flex justify-center py-4">
+                <InteractiveIPhoneMockup
+                  title="Pocket Mode"
+                  subtitle="Hands-free · screen off"
+                  badge="POCKET"
+                  badgeColor="indigo"
+                  modeType="pocket"
+                  score="+1,020 XP"
+                  streak="Continuous"
+                  timer="AUTO"
+                  screenshot={methodPocketImg}
+                  screenshotAlt="Improvy Pocket Mode — hands-free audio trainer with the answer note lit on the keyboard"
                 />
               </div>
             </div>

@@ -334,7 +334,7 @@ export default function App() {
                 transition={{ delay: 0.24, duration: 0.5 }}
                 className="text-zinc-400 text-sm md:text-base leading-relaxed max-w-xl font-sans font-light"
               >
-                A synthetic relational methodology tuned to 12 keys. Instantly translate harmonic structures into spatial geometric vectors to unlock total awareness during improvisation, mental calculation, and composition.
+                Every note is just a number in its key. Improvy trains you to see that number instantly — in all 12 keys — so improvising, transposing, and composing stop being mental math and start feeling like second nature.
               </motion.p>
 
               {/* Actions with glowing custom premium buttons */}
@@ -549,7 +549,7 @@ export default function App() {
                   </div>
 
                   <p className="text-xs text-zinc-450 font-sans font-light leading-relaxed">
-                    Perfect for your first steps. Train mental calculations and practice scale degree relationships in the key of C.
+                    Perfect for your first steps. Master scale-degree relationships in the key of C, plus the free …Of What? and Pocket modes.
                   </p>
 
                   <div className="py-5 border-t border-b border-white/[0.05]">
@@ -567,37 +567,37 @@ export default function App() {
                         <div className="w-5 h-5 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
                           <Check className="w-3 h-3 text-emerald-400 stroke-[3]" />
                         </div>
-                        <span>C Major / Minor key training</span>
+                        <span>Diatonic training in the key of C</span>
                       </li>
                       <li className="flex items-center gap-3">
                         <div className="w-5 h-5 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
                           <Check className="w-3 h-3 text-emerald-400 stroke-[3]" />
                         </div>
-                        <span>Visualize scale degree logic on the keyboard</span>
+                        <span><span className="font-semibold text-white">…Of What?</span> & <span className="font-semibold text-white">Pocket Mode</span> included free</span>
                       </li>
                       <li className="flex items-center gap-3">
                         <div className="w-5 h-5 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
                           <Check className="w-3 h-3 text-emerald-400 stroke-[3]" />
                         </div>
-                        <span>Basic tracking and core diagnostics</span>
+                        <span>Visualize scale degrees on the keyboard</span>
                       </li>
                       <li className="flex items-center gap-3 text-zinc-650 opacity-45">
                         <div className="w-5 h-5 rounded-full bg-zinc-800/20 border border-white/5 flex items-center justify-center shrink-0">
                           <X className="w-3 h-3 text-zinc-500" />
                         </div>
-                        <span className="line-through">Other 11 keys locked (desaturated)</span>
+                        <span className="line-through">Chromatic Mode & the other 11 keys</span>
                       </li>
                       <li className="flex items-center gap-3 text-zinc-650 opacity-45">
                         <div className="w-5 h-5 rounded-full bg-zinc-800/20 border border-white/5 flex items-center justify-center shrink-0">
                           <X className="w-3 h-3 text-zinc-500" />
                         </div>
-                        <span className="line-through">PRO trainings and customization</span>
+                        <span className="line-through">Note-to-Number & Custom modes</span>
                       </li>
                       <li className="flex items-center gap-3 text-zinc-650 opacity-45">
                         <div className="w-5 h-5 rounded-full bg-zinc-800/20 border border-white/5 flex items-center justify-center shrink-0">
                           <X className="w-3 h-3 text-zinc-500" />
                         </div>
-                        <span className="line-through">Adaptive difficulty and detailed analytics</span>
+                        <span className="line-through">Adaptive difficulty & deep analytics</span>
                       </li>
                     </ul>
                   </div>
@@ -666,13 +666,13 @@ export default function App() {
                           <div className="w-5 h-5 rounded-full bg-[#e5a93c]/12 border border-[#e5a93c]/25 flex items-center justify-center shrink-0">
                             <Check className="w-3 h-3 text-[#e5a93c] stroke-[3]" />
                           </div>
-                          <span>Exclusive: <span className="font-semibold text-white">Note-to-Number</span> Mode (Note to scale degree)</span>
+                          <span><span className="font-semibold text-white">Chromatic Mode</span> + jazz extensions (9 · 11 · 13, altered)</span>
                         </li>
                         <li className="flex items-center gap-3">
                           <div className="w-5 h-5 rounded-full bg-[#e5a93c]/12 border border-[#e5a93c]/25 flex items-center justify-center shrink-0">
                             <Check className="w-3 h-3 text-[#e5a93c] stroke-[3]" />
                           </div>
-                          <span>Custom configuration of notes and scale degrees</span>
+                          <span>Note-to-Number, Custom, <span className="font-semibold text-white">…Of What?</span> & <span className="font-semibold text-white">Pocket</span> unlocks</span>
                         </li>
                         <li className="flex items-center gap-3">
                           <div className="w-5 h-5 rounded-full bg-[#e5a93c]/12 border border-[#e5a93c]/25 flex items-center justify-center shrink-0">
@@ -1008,7 +1008,7 @@ export default function App() {
                   </button>
                 </div>
                 <div className="pt-6 mt-2 text-[11px] text-zinc-500 font-light">
-                  <p>2026 Imprivilabs Inc. All Rights Reserved</p>
+                  <p>© 2026 Improvy. All rights reserved.</p>
                 </div>
               </div>
 

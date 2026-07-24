@@ -94,11 +94,11 @@ export function CheckoutPro({ onBack }: CheckoutProProps) {
                 
                 <ul className="space-y-4">
                   {[
-                    "Complete unlock of all 12 chromatic keys",
-                    "Exclusive mode: Note-to-Number (Note to scale degree)",
-                    "Custom configurations of scale degrees and notes",
+                    "Complete unlock of all 12 keys",
+                    "Chromatic Mode + jazz extensions (9, 11, 13, altered)",
+                    "Note-to-Number, Custom, …Of What? & Pocket unlocks",
                     "Real-time Adaptive Difficulty algorithm",
-                    "Deep Analytics: Keyboard heatmap and reaction times",
+                    "Deep Analytics: keyboard heatmap and reaction times",
                     "No subscription, seamless lifetime access"
                   ].map((benefit, idx) => (
                     <li key={idx} className="flex items-start gap-3 text-xs text-zinc-300 font-light leading-snug">
