@@ -306,7 +306,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
               Before you even play a key, <strong className="text-[#e5a93c]">the note in your mind must light up</strong>. The geometric mind works in perfect synergy with the ear: it instantly calculates where you are and where you need to go within the musical architecture, translating theoretical concepts into living spatial coordinates before your fingers even touch the board.
             </p>
             <p>
-              This framework turns your relative ear training into an active visual map. Those who play by ear are constantly translating sound to numbers; with Improvy, you train your brain to map those very numbers into instant physical configurations on the instrument, unlocking your ultimate creative potential.
+              This framework turns harmonic theory into an active visual map. Those who play by ear are constantly translating sound to numbers; with Improvy, you train your brain to map those very numbers into instant physical configurations on the instrument, unlocking your ultimate creative potential.
             </p>
           </div>
 

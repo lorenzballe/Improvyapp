@@ -188,8 +188,12 @@ export default function App() {
     }
   };
 
-  const handleInstallClick = (store: string) => {
-    console.log(`Inizializzazione del download gratuito di Improvy su ${store}...`);
+  // The app isn't on the stores yet, so the badges say so instead of being
+  // dead buttons that silently do nothing when tapped.
+  const [storeNotice, setStoreNotice] = useState(false);
+  const handleInstallClick = (_store: string) => {
+    setStoreNotice(true);
+    setTimeout(() => setStoreNotice(false), 3200);
   };
 
   return (
@@ -359,7 +363,7 @@ export default function App() {
                 className="pt-6 space-y-4"
               >
                 <div className="flex items-center gap-2">
-                  <p className="text-[12.5px] sm:text-sm font-sans uppercase tracking-[0.22em] bg-gradient-to-r from-[#f43f5e] via-[#d946ef] to-[#6366f1] bg-clip-text text-transparent font-black">Download for free</p>
+                  <p className="text-[12.5px] sm:text-sm font-sans uppercase tracking-[0.22em] bg-gradient-to-r from-[#f43f5e] via-[#d946ef] to-[#6366f1] bg-clip-text text-transparent font-black">Launching soon — free to start</p>
                 </div>
                 <div className="flex flex-wrap gap-4">
                   {/* Premium Apple App Store Button */}
@@ -374,7 +378,7 @@ export default function App() {
                       <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 1.15-3.27 1.2-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5 1.07 3.29 1.07.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.02.07-.43 1.44-1.38 2.82M15.97 4.17c.66-.8 1.1-1.89 1.08-3.17-.91.04-2.01.6-2.67 1.38-.56.66-1.05 1.76-.9 3.01 1.05.08 2.06-.51 2.49-1.22z"/>
                     </svg>
                     <div className="flex flex-col items-start leading-none text-left">
-                      <span className="text-[10.5px] text-zinc-500 font-sans tracking-[0.12em] font-bold uppercase mb-1">Download on</span>
+                      <span className="text-[10.5px] text-zinc-500 font-sans tracking-[0.12em] font-bold uppercase mb-1">Coming soon on</span>
                       <span className="text-base font-sans font-bold text-white">App Store</span>
                     </div>
                   </button>
@@ -394,11 +398,16 @@ export default function App() {
                       <path d="M13.84 11.66L17.34 8.18L4.88 1.1C4.19 0.71 3.59 0.73 3.25 1.07L13.84 11.66Z" fill="#00E676" />
                     </svg>
                     <div className="flex flex-col items-start leading-none text-left">
-                      <span className="text-[10.5px] text-zinc-500 font-sans tracking-[0.12em] font-bold uppercase mb-1">Available on</span>
+                      <span className="text-[10.5px] text-zinc-500 font-sans tracking-[0.12em] font-bold uppercase mb-1">Coming soon on</span>
                       <span className="text-base font-sans font-bold text-white">Google Play</span>
                     </div>
                   </button>
                 </div>
+                {storeNotice && (
+                  <p className="text-[11.5px] text-[#e5a93c] font-sans font-semibold pt-1">
+                    Improvy is launching soon — the download links go live at release.
+                  </p>
+                )}
               </motion.div>
 
             </div>

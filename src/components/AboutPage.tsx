@@ -85,13 +85,13 @@ export default function AboutPage({ onBack, scrollToSection, scrollTrigger }: Ab
               {/* Point 1 */}
               <div className="space-y-1 border-l border-white/5 pl-4 py-1">
                 <h3 className="text-sm font-bold text-white uppercase tracking-wider">Feeling-first</h3>
-                <p className="text-zinc-400">Start with raw experience, then name what you hear.</p>
+                <p className="text-zinc-400">Start from playing, then put numbers to what you play.</p>
               </div>
 
               {/* Point 2 */}
               <div className="space-y-1 border-l border-white/5 pl-4 py-1">
                 <h3 className="text-sm font-bold text-white uppercase tracking-wider">Context-driven</h3>
-                <p className="text-zinc-400">Anchor your ear with a clear tonal center.</p>
+                <p className="text-zinc-400">Anchor every note to a clear tonal center.</p>
               </div>
 
               {/* Point 3 */}
