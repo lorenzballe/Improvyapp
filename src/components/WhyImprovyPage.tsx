@@ -3,7 +3,8 @@ import { motion } from "motion/react";
 import { AppLogo } from "./AppLogo";
 import methodDiatonicImg from "../assets/images/method_diatonic_grid.webp";
 import methodHomeImg from "../assets/images/method_home_progress.webp";
-import methodStatsImg from "../assets/images/method_stats.webp";
+import methodChromaticImg from "../assets/images/method_chromatic.webp";
+import methodN2NImg from "../assets/images/method_n2n.webp";
 import methodPianoImg from "../assets/images/method_piano_answer.webp";
 import methodOfWhatImg from "../assets/images/method_ofwhat.webp";
 import methodPocketImg from "../assets/images/method_pocket.webp";
@@ -454,8 +455,8 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                   score="+920 XP"
                   streak="12 Days"
                   timer="0:08"
-                  screenshot={methodHomeImg}
-                  screenshotAlt="Improvy home screen with total progress and all-keys mastery"
+                  screenshot={methodChromaticImg}
+                  screenshotAlt="Improvy chromatic training in the key of E flat — the flat 5 degree with the enharmonic answer grid"
                 />
               </div>
             </div>
@@ -491,8 +492,8 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                   score="+1,450 XP"
                   streak="21 Days"
                   timer="0:03"
-                  screenshot={methodStatsImg}
-                  screenshotAlt="Improvy statistics screen with overall proficiency and response time"
+                  screenshot={methodN2NImg}
+                  screenshotAlt="Improvy Note-to-Number training — the note E flat shown for its scale degree"
                 />
               </div>
             </div>
