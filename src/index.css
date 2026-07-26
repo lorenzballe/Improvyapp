@@ -162,7 +162,8 @@
 
 .card {
   width: 300px;
-  height: 560px;
+  /* 9:19.5 — matches the 720x1558 app screenshots so nothing is cropped. */
+  height: 626px;
   background: black;
   border-radius: 44px;
   border: 2px solid rgb(40, 40, 40);

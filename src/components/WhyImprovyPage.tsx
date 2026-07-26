@@ -126,7 +126,7 @@ function InteractiveIPhoneMockup({
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       style={style}
-      className="relative w-full max-w-[270px] h-[480px] rounded-[36px] bg-zinc-950 p-2 transition-all duration-300 transform-style-3d shadow-2xl hover:shadow-[0_25px_60px_rgba(0,0,0,0.9)] border border-white/[0.05] group"
+      className="relative w-full max-w-[270px] h-[566px] rounded-[36px] bg-zinc-950 p-2 transition-all duration-300 transform-style-3d shadow-2xl hover:shadow-[0_25px_60px_rgba(0,0,0,0.9)] border border-white/[0.05] group"
     >
       {/* Magical Outer Neon Edge Glow & Dual-Border Shadowing */}
       <div 
