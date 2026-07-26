@@ -5,9 +5,9 @@ import { Plus } from "lucide-react";
 type Faq = { q: string; a: string };
 
 /**
- * Objection-handling FAQ, placed last on the home page — right after the offer
- * and just before the footer, where the remaining doubts get answered.
- * Every answer describes what the app actually does today.
+ * Objection-handling FAQ, closing the Method page: once the modes have been
+ * explained, this answers what's left. Every answer describes what the app
+ * actually does today.
  */
 const FAQS: Faq[] = [
   {
@@ -103,7 +103,7 @@ function FaqItem({ faq, isOpen, onToggle }: { faq: Faq; isOpen: boolean; onToggl
   );
 }
 
-export function FaqSection({ onContact }: { onContact: () => void }) {
+export function FaqSection({ onContact }: { onContact?: () => void }) {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
@@ -134,12 +134,21 @@ export function FaqSection({ onContact }: { onContact: () => void }) {
       <div className="mt-10 text-center">
         <p className="text-xs text-zinc-500 font-light">
           Still wondering about something?{" "}
-          <button
-            onClick={onContact}
-            className="text-[#e5a93c] hover:text-white hover:underline font-medium transition-colors cursor-pointer focus:outline-none"
-          >
-            Ask us directly
-          </button>
+          {onContact ? (
+            <button
+              onClick={onContact}
+              className="text-[#e5a93c] hover:text-white hover:underline font-medium transition-colors cursor-pointer focus:outline-none"
+            >
+              Ask us directly
+            </button>
+          ) : (
+            <a
+              href="mailto:thebalecompany@gmail.com?subject=Improvy%20%E2%80%94%20a%20question"
+              className="text-[#e5a93c] hover:text-white hover:underline font-medium transition-colors"
+            >
+              Ask us directly
+            </a>
+          )}
           {" "}— we answer every message.
         </p>
       </div>

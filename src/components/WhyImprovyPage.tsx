@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "motion/react";
 import { AppLogo } from "./AppLogo";
+import { FaqSection } from "./FaqSection";
 import methodDiatonicImg from "../assets/images/method_diatonic_grid.webp";
 import methodHomeImg from "../assets/images/method_home_progress.webp";
 import methodChromaticImg from "../assets/images/method_chromatic.webp";
@@ -946,6 +947,9 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
         </div>
 
       </motion.div>
+
+      {/* Closing FAQ — the last doubts, after the method has been explained */}
+      <FaqSection />
 
     </div>
   );

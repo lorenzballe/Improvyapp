@@ -30,7 +30,6 @@ import AboutPage from "./components/AboutPage";
 import FeedbackPage from "./components/FeedbackPage";
 import { cn } from "./lib/utils";
 import { FooterModal } from "./components/FooterModal";
-import { FaqSection } from "./components/FaqSection";
 import heroHomeScreenImg from "./assets/images/method_home_progress.webp";
 
 const revealVariants = {
@@ -868,20 +867,6 @@ export default function App() {
               </div>
             </div>
           </motion.section>
-
-          {/* SECTION 4: FAQ — last objections answered before the footer */}
-          <motion.div
-            custom={9}
-            initial="hidden"
-            animate="visible"
-            variants={revealVariants}
-          >
-            <FaqSection onContact={() => {
-              setAboutPageScrollTo("get-in-touch");
-              setAboutScrollTrigger(prev => prev + 1);
-              setCurrentPage("about");
-            }} />
-          </motion.div>
         </div>
           </>
         )}
@@ -958,19 +943,6 @@ export default function App() {
                     className="hover:text-white transition-colors duration-200 cursor-pointer text-left focus:outline-none"
                   >
                     Pricing
-                  </button>
-                  <button 
-                    onClick={() => {
-                      if (currentPage !== "home") {
-                        setCurrentPage("home");
-                        setTimeout(() => scrollToSection("faq"), 100);
-                      } else {
-                        scrollToSection("faq");
-                      }
-                    }}
-                    className="hover:text-white transition-colors duration-200 cursor-pointer text-left focus:outline-none"
-                  >
-                    FAQ
                   </button>
                 </div>
               </div>
