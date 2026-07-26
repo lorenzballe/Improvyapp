@@ -258,7 +258,7 @@ export default function App() {
                 className="relative px-2 py-1 sm:px-4 sm:py-2 rounded-[11px] text-[8px] sm:text-[10px] font-black uppercase tracking-widest transition-all duration-350 active:scale-95 cursor-pointer whitespace-nowrap bg-white text-zinc-950 hover:bg-transparent hover:text-white focus:outline-none"
               >
                 {currentPage === "checkout" ? (
-                  "Check-out Pro"
+                  "Improvy Pro"
                 ) : (
                   <>
                     <span className="inline sm:hidden">Improvy Pro</span>
@@ -717,11 +717,11 @@ export default function App() {
                         className="relative w-full py-4 rounded-xl bg-gradient-to-r from-rose-500 via-purple-600 via-[#e5a93c] to-amber-500 bg-[length:100%_auto] group-hover/btn:bg-[length:200%_auto] group-hover/btn:animate-rainbow-shift text-white text-xs font-black uppercase tracking-widest transition-all duration-300 active:scale-95 cursor-pointer flex items-center justify-center gap-2 border border-white/10 shadow-xl shadow-rose-600/10 z-10 focus:outline-none focus:ring-0"
                       >
                         <Lock className="w-3.5 h-3.5" />
-                        <span>Get Improvy PRO</span>
+                        <span>Get notified at launch</span>
                       </button>
                     </div>
                     <span className="text-[8.5px] font-sans text-zinc-500 block text-center mt-2.5 uppercase tracking-widest">
-                      One-time purchase forever - No Recurring Fees
+                      One-time in-app purchase at launch — no recurring fees
                     </span>
                   </div>
                 </div>
