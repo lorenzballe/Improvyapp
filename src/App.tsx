@@ -29,7 +29,6 @@ import PrivacyPolicyPage from "./components/PrivacyPolicyPage";
 import AboutPage from "./components/AboutPage";
 import FeedbackPage from "./components/FeedbackPage";
 import { cn } from "./lib/utils";
-import { FooterModal } from "./components/FooterModal";
 import heroHomeScreenImg from "./assets/images/method_home_progress.webp";
 
 const revealVariants = {
@@ -95,18 +94,42 @@ function Text_03({
     );
 }
 
+/**
+ * The legal pages are the only ones that need an address of their own: the
+ * store listing and the app's own Settings screen link straight to them, and
+ * a reviewer has to be able to open the policy without hunting through the
+ * footer. A hash keeps them linkable on GitHub Pages without a router or a
+ * 404 fallback. Everything else stays plain in-page state.
+ */
+function legalPageFromHash(): "privacy" | "terms" | null {
+  const hash = window.location.hash.replace(/^#\/?/, "");
+  return hash === "privacy" || hash === "terms" ? hash : null;
+}
+
 export default function App() {
-  const [currentPage, setCurrentPage] = useState<"home" | "checkout" | "why" | "terms" | "privacy" | "about" | "feedback">("home");
+  const [currentPage, setCurrentPage] = useState<"home" | "checkout" | "why" | "terms" | "privacy" | "about" | "feedback">(
+    () => legalPageFromHash() ?? "home"
+  );
   const [aboutPageScrollTo, setAboutPageScrollTo] = useState<"top" | "get-in-touch" | null>(null);
   const [aboutScrollTrigger, setAboutScrollTrigger] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [footerModalOpen, setFooterModalOpen] = useState(false);
-  const [footerModalType, setFooterModalType] = useState<"about" | "affiliates" | "feedback" | "newsletter" | "privacy" | "terms" | null>(null);
 
-  const openFooterModal = (type: "about" | "affiliates" | "feedback" | "newsletter" | "privacy" | "terms") => {
-    setFooterModalType(type);
-    setFooterModalOpen(true);
-  };
+  // Mirror the legal pages into the address bar so the URL can be copied and
+  // shared. replaceState rather than push: the in-page Back buttons already
+  // handle navigation, and we don't want to grow the history stack.
+  useEffect(() => {
+    const hash = currentPage === "privacy" || currentPage === "terms" ? `#${currentPage}` : "";
+    if (window.location.hash !== hash) {
+      window.history.replaceState(null, "", window.location.pathname + window.location.search + hash);
+    }
+  }, [currentPage]);
+
+  // Someone pasting or editing #privacy / #terms in the address bar.
+  useEffect(() => {
+    const onHashChange = () => setCurrentPage(legalPageFromHash() ?? "home");
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
 
   const logoRef = useRef<HTMLDivElement | null>(null);
   const [mousePct, setMousePct] = useState({ x: 50, y: 50 });
@@ -1025,13 +1048,6 @@ export default function App() {
 
           </div>
         </motion.footer>
-
-        {/* Footer dynamic overlay modals */}
-        <FooterModal 
-          isOpen={footerModalOpen}
-          type={footerModalType}
-          onClose={() => setFooterModalOpen(false)}
-        />
 
       </div>
     </BackgroundGradientAnimation>

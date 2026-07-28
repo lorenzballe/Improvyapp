@@ -31,6 +31,15 @@ function Point({ title, children }: { title: string; children: React.ReactNode }
 
 const CONTACT_EMAIL = "thebalecompany@gmail.com";
 
+/** Outbound link to a processor's own policy, styled like the rest of the page. */
+function Ext({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <a href={href} target="_blank" rel="noreferrer" className="text-[#e5a93c] hover:text-white hover:underline">
+      {children}
+    </a>
+  );
+}
+
 export default function PrivacyPolicyPage({ onBack }: PrivacyPolicyPageProps) {
   return (
     <div className="w-full max-w-3xl mx-auto px-6 pt-28 pb-16 md:pt-36 md:pb-24 text-zinc-350 font-sans relative z-30">
@@ -101,15 +110,18 @@ export default function PrivacyPolicyPage({ onBack }: PrivacyPolicyPageProps) {
           <Section n="03" title="Third-Party Services" color="text-purple-500/90">
             <Point title="PostHog (analytics)">
               Collects anonymous usage events and may process data on servers located in the EU. No personal data
-              is sent to PostHog, and you can opt out of analytics in the app’s Settings at any time.
+              is sent to PostHog, and you can opt out of analytics in the app’s Settings at any time.{" "}
+              <Ext href="https://posthog.com/privacy">PostHog Privacy Policy</Ext>.
             </Point>
             <Point title="Apple / Google (in-app purchases)">
               In-app purchases are processed directly by Apple (App Store) or Google (Play Store) under their own
-              privacy policies.
+              privacy policies: <Ext href="https://www.apple.com/legal/privacy">Apple</Ext> ·{" "}
+              <Ext href="https://policies.google.com/privacy">Google</Ext>.
             </Point>
             <Point title="RevenueCat (purchase management)">
               Verifies and manages your purchase status. It receives your store purchase receipt — a non-personal
-              cryptographic token — and nothing more.
+              cryptographic token — and nothing more.{" "}
+              <Ext href="https://www.revenuecat.com/privacy">RevenueCat Privacy Policy</Ext>.
             </Point>
           </Section>
 

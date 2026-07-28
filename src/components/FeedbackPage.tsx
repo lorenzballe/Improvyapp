@@ -8,6 +8,8 @@ interface FeedbackPageProps {
 
 type FeedbackCategory = "feature" | "bug" | "curriculum" | "other" | null;
 
+const SUPPORT_EMAIL = "thebalecompany@gmail.com";
+
 export default function FeedbackPage({ onBack }: FeedbackPageProps) {
   const [category, setCategory] = useState<FeedbackCategory>(null);
   const [rating, setRating] = useState<number>(0);
@@ -19,24 +21,41 @@ export default function FeedbackPage({ onBack }: FeedbackPageProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!category || !message.trim()) return;
-
-    setIsSubmitting(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setIsSuccess(true);
-    }, 1200);
-  };
-
   const categories = [
     { id: "feature" as const, label: "Feature Suggestion", icon: Lightbulb, color: "text-[#e5a93c]" },
     { id: "bug" as const, label: "Bug Report", icon: Bug, color: "text-rose-500" },
     { id: "curriculum" as const, label: "Curriculum Feedback", icon: Sparkles, color: "text-purple-500" },
     { id: "other" as const, label: "General & Hello", icon: MessageSquare, color: "text-emerald-500" },
   ];
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!category || !message.trim()) return;
+
+    setIsSubmitting(true);
+
+    // The site is a static build with no backend to post to, so hand the
+    // message to the visitor's mail client rather than dropping it.
+    const label = categories.find((c) => c.id === category)?.label ?? "Feedback";
+    const body = [
+      message.trim(),
+      "",
+      "—",
+      name.trim() ? `From: ${name.trim()}` : null,
+      email.trim() ? `Reply to: ${email.trim()}` : null,
+      rating > 0 ? `Rating: ${rating}/5` : null,
+    ]
+      .filter((line) => line !== null)
+      .join("\n");
+
+    window.location.href =
+      `mailto:${SUPPORT_EMAIL}` +
+      `?subject=${encodeURIComponent(`Improvy — ${label}`)}` +
+      `&body=${encodeURIComponent(body)}`;
+
+    setIsSubmitting(false);
+    setIsSuccess(true);
+  };
 
   return (
     <div className="w-full max-w-3xl mx-auto px-6 pt-28 pb-16 md:pt-36 md:pb-24 text-zinc-350 font-sans relative z-30">
@@ -254,10 +273,14 @@ export default function FeedbackPage({ onBack }: FeedbackPageProps) {
               
               <div className="space-y-2 max-w-md mx-auto">
                 <h2 className="text-2xl sm:text-3xl font-black text-white font-display uppercase tracking-tight">
-                  FEEDBACK RECEIVED
+                  ONE LAST STEP
                 </h2>
                 <p className="text-sm text-zinc-400 font-light leading-relaxed">
-                  Thank you for your feedback{name ? `, ${name}` : ""}. Every message is read personally — if it needs a reply, we'll get back to you.
+                  Your mail app should have opened with the message ready{name ? `, ${name}` : ""} — press send and it reaches us.
+                  If nothing opened, write to{" "}
+                  <a href={`mailto:${SUPPORT_EMAIL}`} className="text-[#e5a93c] hover:text-white hover:underline">
+                    {SUPPORT_EMAIL}
+                  </a>. Every message is read personally.
                 </p>
               </div>
 
