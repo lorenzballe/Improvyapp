@@ -80,7 +80,7 @@ export function CheckoutPro({ onBack }: CheckoutProProps) {
             {/* Price */}
             <div className="py-5 border-t border-b border-white/[0.06]">
               <div className="flex items-baseline gap-2">
-                <span className="text-5xl font-black text-white font-sans tracking-tight">€16.99</span>
+                <span className="text-5xl font-black text-white font-sans tracking-tight">€19.99</span>
                 <span className="text-xs text-zinc-500 font-sans font-medium">/ one-time, at launch</span>
               </div>
               <span className="text-[9px] text-[#e5a93c] block mt-2 uppercase tracking-widest font-extrabold">

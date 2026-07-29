@@ -679,7 +679,7 @@ export default function App() {
                     {/* Elite Gold pricing block with exactly the same font-size layout as Section 1 */}
                     <div className="py-5 border-t border-b border-white/[0.05]">
                       <div className="flex items-baseline gap-1">
-                        <span className="text-5xl font-black text-white font-sans tracking-tight">€16.99</span>
+                        <span className="text-5xl font-black text-white font-sans tracking-tight">€19.99</span>
                         <span className="text-xs text-zinc-500 font-sans font-medium">/ single payment</span>
                       </div>
                       <span className="text-[9px] text-[#e5a93c] block mt-1.5 uppercase tracking-widest font-extrabold">PRO ACCESS FOR LIFE • NO RECURRING SUBSCRIPTIONS</span>
