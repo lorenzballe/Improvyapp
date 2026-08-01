@@ -420,7 +420,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                   streak="7 Days"
                   timer="0:14"
                   screenshot={methodDiatonicImg}
-                  screenshotAlt="Improvy diatonic training session in the key of C — degree 6 with the note grid"
+                  screenshotAlt="Improvy diatonic training session in the key of C — degree 7 with the note grid"
                 />
               </div>
             </div>
@@ -449,7 +449,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
               <div className="relative z-10 flex justify-center py-4">
                 <InteractiveIPhoneMockup 
                   title="Chromatic Extensions"
-                  subtitle="Key of F♯ Alt"
+                  subtitle="Key of C · all 12"
                   badge="CHROMATIC"
                   badgeColor="rose"
                   modeType="chromatic"
@@ -457,7 +457,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                   streak="12 Days"
                   timer="0:08"
                   screenshot={methodChromaticImg}
-                  screenshotAlt="Improvy chromatic training in the key of E flat — the flat 5 degree with the enharmonic answer grid"
+                  screenshotAlt="Improvy chromatic training in the key of C — the sharp-5 degree with the twelve-semitone enharmonic answer grid"
                 />
               </div>
             </div>
@@ -486,7 +486,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
               <div className="relative z-10 flex justify-center py-4">
                 <InteractiveIPhoneMockup 
                   title="Reverse Translation"
-                  subtitle="Key of A♭ Maj"
+                  subtitle="Key of C Major"
                   badge="REVERSE"
                   badgeColor="purple"
                   modeType="inverse"
@@ -494,7 +494,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                   streak="21 Days"
                   timer="0:03"
                   screenshot={methodN2NImg}
-                  screenshotAlt="Improvy Note-to-Number training — the note E flat shown for its scale degree"
+                  screenshotAlt="Improvy Note-to-Number training in the key of C — the note A shown for its scale degree"
                 />
               </div>
             </div>
@@ -558,7 +558,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
               <div className="relative z-10 flex justify-center py-4">
                 <InteractiveIPhoneMockup
                   title="…Of What?"
-                  subtitle="Note E · the 5th"
+                  subtitle="Note C · the 7th"
                   badge="OF WHAT"
                   badgeColor="cyan"
                   modeType="ofwhat"
@@ -566,7 +566,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                   streak="9 Days"
                   timer="0:05"
                   screenshot={methodOfWhatImg}
-                  screenshotAlt="Improvy …Of What? mode — the note E presented as the 5th, with the twelve root answers"
+                  screenshotAlt="Improvy …Of What? mode — the note C presented as the 7th, with the twelve root answers"
                 />
               </div>
             </div>
@@ -601,7 +601,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                   streak="Continuous"
                   timer="AUTO"
                   screenshot={methodPocketImg}
-                  screenshotAlt="Improvy Pocket Mode — hands-free audio trainer with the answer note lit on the keyboard"
+                  screenshotAlt="Improvy Pocket Mode setup — choosing key, degrees, answer delay and length for a hands-free audio session"
                 />
               </div>
             </div>
