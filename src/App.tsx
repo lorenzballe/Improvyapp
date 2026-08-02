@@ -386,7 +386,7 @@ export default function App() {
                 className="pt-6 space-y-4"
               >
                 <div className="flex items-center gap-2">
-                  <p className="text-[12.5px] sm:text-sm font-sans uppercase tracking-[0.22em] bg-gradient-to-r from-[#f43f5e] via-[#d946ef] to-[#6366f1] bg-clip-text text-transparent font-black">Launching soon — free to start</p>
+                  <p className="text-[12.5px] sm:text-sm font-sans uppercase tracking-[0.22em] bg-gradient-to-r from-[#f43f5e] via-[#d946ef] to-[#6366f1] bg-clip-text text-transparent font-black">Now on Android — free to start</p>
                 </div>
                 <div className="flex flex-wrap gap-4">
                   {/* Premium Apple App Store Button */}
@@ -406,9 +406,12 @@ export default function App() {
                     </div>
                   </button>
 
-                  {/* Premium Google Play Button */}
-                  <button 
-                    onClick={() => handleInstallClick("Google Play Android")}
+                  {/* Premium Google Play Button — live on Android */}
+                  <a
+                    href="https://play.google.com/store/apps/details?id=com.improvy.app"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Get Improvy on Google Play"
                     className="flex items-center w-full sm:w-[220px] gap-4 bg-zinc-900 border border-white/10 hover:border-indigo-500/50 text-white px-6 py-4 rounded-2xl transition-all duration-300 active:scale-95 cursor-pointer shadow-lg hover:shadow-[0_0_20px_rgba(99,102,241,0.15)] group relative overflow-hidden focus:outline-none focus:ring-0"
                   >
                     {/* Magic sweep glass reflex beam */}
@@ -421,14 +424,14 @@ export default function App() {
                       <path d="M13.84 11.66L17.34 8.18L4.88 1.1C4.19 0.71 3.59 0.73 3.25 1.07L13.84 11.66Z" fill="#00E676" />
                     </svg>
                     <div className="flex flex-col items-start leading-none text-left">
-                      <span className="text-[10.5px] text-zinc-500 font-sans tracking-[0.12em] font-bold uppercase mb-1">Coming soon on</span>
+                      <span className="text-[10.5px] text-zinc-500 font-sans tracking-[0.12em] font-bold uppercase mb-1">Get it on</span>
                       <span className="text-base font-sans font-bold text-white">Google Play</span>
                     </div>
-                  </button>
+                  </a>
                 </div>
                 {storeNotice && (
                   <p className="text-[11.5px] text-[#e5a93c] font-sans font-semibold pt-1">
-                    Improvy is launching soon — the download links go live at release.
+                    The iOS version is coming soon — Improvy is live now on Google Play.
                   </p>
                 )}
               </motion.div>

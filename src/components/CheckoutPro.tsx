@@ -73,7 +73,7 @@ export function CheckoutPro({ onBack }: CheckoutProProps) {
             </div>
 
             <p className="text-sm text-zinc-350 font-light leading-relaxed">
-              Improvy is launching soon on the App Store and Google Play. Pro unlocks with a
+              Improvy is on Google Play now, with the App Store to follow. Pro unlocks with a
               single in-app purchase — no subscription, no recurring fees, yours for life.
             </p>
 

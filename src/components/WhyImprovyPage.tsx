@@ -601,7 +601,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                   streak="Continuous"
                   timer="AUTO"
                   screenshot={methodPocketImg}
-                  screenshotAlt="Improvy Pocket Mode setup — choosing key, degrees, answer delay and length for a hands-free audio session"
+                  screenshotAlt="Improvy Pocket Mode in play — the hands-free audio drill revealing degree 11 with the answer note F lit on the keyboard"
                 />
               </div>
             </div>
