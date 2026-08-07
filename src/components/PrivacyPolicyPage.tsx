@@ -91,7 +91,8 @@ export default function PrivacyPolicyPage({ onBack }: PrivacyPolicyPageProps) {
             </Point>
             <Point title="Device metadata (via PostHog)">
               Our analytics provider may automatically record app version, operating system version, device model,
-              and screen resolution.
+              and screen resolution. It also assigns a random, per-install identifier so that events from the same
+              device can be grouped together — it is tied to no account and identifies no person.
             </Point>
             <Point title="Approximate location">
               PostHog derives a coarse location — roughly your city, region, and country — from the IP address of
@@ -114,8 +115,8 @@ export default function PrivacyPolicyPage({ onBack }: PrivacyPolicyPageProps) {
 
           <Section n="03" title="Third-Party Services" color="text-purple-500/90">
             <Point title="PostHog (analytics)">
-              Collects anonymous usage events and may process data on servers located in the EU. No personal data
-              is sent to PostHog, and you can opt out of analytics in the app’s Settings at any time.{" "}
+              Collects anonymous usage events and a coarse, IP-based location, and may process data on servers
+              located in the EU. No account or directly identifying information is sent to PostHog.{" "}
               <Ext href="https://posthog.com/privacy">PostHog Privacy Policy</Ext>.
             </Point>
             <Point title="Apple / Google (in-app purchases)">
