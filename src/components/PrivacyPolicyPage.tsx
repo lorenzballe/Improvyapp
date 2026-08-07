@@ -67,8 +67,8 @@ export default function PrivacyPolicyPage({ onBack }: PrivacyPolicyPageProps) {
               Privacy Policy explains what information we collect, how we use it, and your rights.
             </p>
             <p>
-              The short version: Improvy has no accounts and collects no personal data. Everything below simply
-              spells that out.
+              The short version: Improvy has no accounts and collects nothing that identifies you — only anonymous
+              usage data and a coarse, IP-based location. Everything below simply spells that out.
             </p>
           </div>
         </div>
@@ -91,8 +91,13 @@ export default function PrivacyPolicyPage({ onBack }: PrivacyPolicyPageProps) {
             </Point>
             <Point title="Device metadata (via PostHog)">
               Our analytics provider may automatically record app version, operating system version, device model,
-              screen resolution, and a country derived from your IP address at the time of the request. Your IP
-              address is not stored by PostHog.
+              and screen resolution.
+            </Point>
+            <Point title="Approximate location">
+              PostHog derives a coarse location — roughly your city, region, and country — from the IP address of
+              each request, so we can see broadly where Improvy is used. The app itself never asks for location
+              access and cannot read your device’s GPS. This location is coarse, tied to no account or identity,
+              used only for anonymous analytics, and never for advertising or tracking.
             </Point>
           </Section>
 
