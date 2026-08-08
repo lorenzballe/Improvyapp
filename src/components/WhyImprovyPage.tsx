@@ -948,6 +948,30 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
 
       </motion.div>
 
+      {/* Coming soon — the method's next step: seeing and calculating the
+          harmony, not just hearing it. Sits at the very bottom of the Method,
+          just before the closing FAQ. */}
+      <div className="w-full max-w-3xl mx-auto px-6 pb-4">
+        <div className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-white/[0.02] px-7 py-9 sm:px-10 sm:py-11 text-center">
+          <div className="pointer-events-none absolute inset-x-0 -top-24 h-48 bg-gradient-to-b from-[#e5a93c]/10 via-rose-500/5 to-transparent blur-2xl" />
+          <span className="relative text-[10px] font-extrabold uppercase tracking-[0.28em] text-[#e5a93c]">
+            Coming soon
+          </span>
+          <h3 className="relative mt-4 text-2xl sm:text-3xl font-black font-display uppercase tracking-tight text-white leading-tight">
+            See the harmony,{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#e5a93c] via-rose-500 to-purple-500">
+              not just hear it
+            </span>
+          </h3>
+          <p className="relative mx-auto mt-4 max-w-xl text-sm sm:text-base font-light leading-relaxed text-zinc-400">
+            New tools are on the way inside the app: <strong className="text-white font-semibold">chord and
+            scale visualization and calculation</strong> — build any chord or scale, see it light up on the
+            instrument, and read the exact notes and degrees behind it. The next step of the method,
+            coming to Improvy soon.
+          </p>
+        </div>
+      </div>
+
       {/* Closing FAQ — the last doubts, after the method has been explained */}
       <FaqSection />
 
