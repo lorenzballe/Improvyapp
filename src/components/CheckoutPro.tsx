@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "motion/react";
 import { ArrowLeft, Check, Bell, ShieldCheck, Apple, Smartphone } from "lucide-react";
 import { AppLogo } from "./AppLogo";
+import { PRO_PRICE, PRO_PRICE_NOTE } from "../lib/pricing";
 
 interface CheckoutProProps {
   onBack: () => void;
@@ -80,8 +81,8 @@ export function CheckoutPro({ onBack }: CheckoutProProps) {
             {/* Price */}
             <div className="py-5 border-t border-b border-white/[0.06]">
               <div className="flex items-baseline gap-2">
-                <span className="text-5xl font-black text-white font-sans tracking-tight">€19.99</span>
-                <span className="text-xs text-zinc-500 font-sans font-medium">/ one-time, at launch</span>
+                <span className="text-5xl font-black text-white font-sans tracking-tight">{PRO_PRICE}</span>
+                <span className="text-xs text-zinc-500 font-sans font-medium">{PRO_PRICE_NOTE}</span>
               </div>
               <span className="text-[9px] text-[#e5a93c] block mt-2 uppercase tracking-widest font-extrabold">
                 The app itself is free to download and start

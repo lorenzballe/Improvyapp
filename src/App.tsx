@@ -29,6 +29,7 @@ import PrivacyPolicyPage from "./components/PrivacyPolicyPage";
 import AboutPage from "./components/AboutPage";
 import FeedbackPage from "./components/FeedbackPage";
 import { cn } from "./lib/utils";
+import { PRO_PRICE, PRO_PRICE_NOTE } from "./lib/pricing";
 import heroHomeScreenImg from "./assets/images/method_home_progress.webp";
 
 const revealVariants = {
@@ -682,8 +683,8 @@ export default function App() {
                     {/* Elite Gold pricing block with exactly the same font-size layout as Section 1 */}
                     <div className="py-5 border-t border-b border-white/[0.05]">
                       <div className="flex items-baseline gap-1">
-                        <span className="text-5xl font-black text-white font-sans tracking-tight">€19.99</span>
-                        <span className="text-xs text-zinc-500 font-sans font-medium">/ single payment</span>
+                        <span className="text-5xl font-black text-white font-sans tracking-tight">{PRO_PRICE}</span>
+                        <span className="text-xs text-zinc-500 font-sans font-medium">{PRO_PRICE_NOTE}</span>
                       </div>
                       <span className="text-[9px] text-[#e5a93c] block mt-1.5 uppercase tracking-widest font-extrabold">PRO ACCESS FOR LIFE • NO RECURRING SUBSCRIPTIONS</span>
                     </div>
