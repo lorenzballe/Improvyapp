@@ -1,9 +1,9 @@
 /**
  * The Pro price, in one place.
  *
- * It was written out by hand on both the home page and the checkout page, and
- * they drifted: a price change updated one and left the other saying something
- * else. Anything that prints the price imports it from here.
+ * It used to be written out by hand in more than one place, and those copies
+ * drifted: a price change updated one and left the other saying something else.
+ * Anything that prints the price imports it from here.
  *
  * What a customer actually pays is set in App Store Connect / Play Console and
  * shown live by the app's own paywall, which reads it from the store. This is

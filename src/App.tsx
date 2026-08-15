@@ -10,7 +10,7 @@ import {
   Smartphone, 
   ChevronRight, 
   Sparkle,
-  Lock,
+  ArrowUp,
   ShieldCheck,
   Check,
   X,
@@ -21,7 +21,6 @@ import {
   Coins,
   HelpCircle
 } from "lucide-react";
-import { CheckoutPro } from "./components/CheckoutPro";
 import { WhyImprovySection } from "./components/WhyImprovySection";
 import { WhyImprovyPage } from "./components/WhyImprovyPage";
 import TermsOfServicePage from "./components/TermsOfServicePage";
@@ -108,7 +107,7 @@ function legalPageFromHash(): "privacy" | "terms" | null {
 }
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState<"home" | "checkout" | "why" | "terms" | "privacy" | "about" | "feedback">(
+  const [currentPage, setCurrentPage] = useState<"home" | "why" | "terms" | "privacy" | "about" | "feedback">(
     () => legalPageFromHash() ?? "home"
   );
   const [aboutPageScrollTo, setAboutPageScrollTo] = useState<"top" | "get-in-touch" | null>(null);
@@ -212,13 +211,9 @@ export default function App() {
     }
   };
 
-  // The app isn't on the stores yet, so the badges say so instead of being
-  // dead buttons that silently do nothing when tapped.
-  const [storeNotice, setStoreNotice] = useState(false);
-  const handleInstallClick = (_store: string) => {
-    setStoreNotice(true);
-    setTimeout(() => setStoreNotice(false), 3200);
-  };
+  // Pro is an in-app purchase, so every buy intent on this site can only end
+  // in one place: the store badges at the top. Nothing here takes a payment.
+  const scrollToStores = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   return (
     <BackgroundGradientAnimation 
@@ -270,9 +265,7 @@ export default function App() {
               
               <button 
                 onClick={() => {
-                  if (currentPage === "checkout") {
-                    window.scrollTo({ top: 0, behavior: "smooth" });
-                  } else if (currentPage !== "home") {
+                  if (currentPage !== "home") {
                     setCurrentPage("home");
                     setTimeout(() => scrollToSection("pricing"), 100);
                   } else {
@@ -281,26 +274,15 @@ export default function App() {
                 }}
                 className="relative px-2 py-1 sm:px-4 sm:py-2 rounded-[11px] text-[8px] sm:text-[10px] font-black uppercase tracking-widest transition-all duration-350 active:scale-95 cursor-pointer whitespace-nowrap bg-white text-zinc-950 hover:bg-transparent hover:text-white focus:outline-none"
               >
-                {currentPage === "checkout" ? (
-                  "Improvy Pro"
-                ) : (
-                  <>
-                    <span className="inline sm:hidden">Improvy Pro</span>
-                    <span className="hidden sm:inline">Get Improvy Pro</span>
-                  </>
-                )}
+                <span className="inline sm:hidden">Improvy Pro</span>
+                <span className="hidden sm:inline">Get Improvy Pro</span>
               </button>
             </div>
           </div>
         </header>
 
         {/* PAGES COMPONENT */}
-        {currentPage === "checkout" ? (
-          <CheckoutPro onBack={() => {
-            setCurrentPage("home");
-            window.scrollTo({ top: 0, behavior: "smooth" });
-          }} />
-        ) : currentPage === "why" ? (
+        {currentPage === "why" ? (
           <WhyImprovyPage onBack={() => {
             setCurrentPage("home");
             window.scrollTo({ top: 0, behavior: "smooth" });
@@ -387,12 +369,17 @@ export default function App() {
                 className="pt-6 space-y-4"
               >
                 <div className="flex items-center gap-2">
-                  <p className="text-[12.5px] sm:text-sm font-sans uppercase tracking-[0.22em] bg-gradient-to-r from-[#f43f5e] via-[#d946ef] to-[#6366f1] bg-clip-text text-transparent font-black">Now on Android — free to start</p>
+                  <p className="text-[12.5px] sm:text-sm font-sans uppercase tracking-[0.22em] bg-gradient-to-r from-[#f43f5e] via-[#d946ef] to-[#6366f1] bg-clip-text text-transparent font-black">Now on iOS and Android — free to start</p>
                 </div>
                 <div className="flex flex-wrap gap-4">
-                  {/* Premium Apple App Store Button */}
-                  <button 
-                    onClick={() => handleInstallClick("App Store iOS")}
+                  {/* Premium Apple App Store Button — live on iOS.
+                      No locale in the URL: Apple routes each visitor to their
+                      own storefront, which /it/ would not do. */}
+                  <a
+                    href="https://apps.apple.com/app/id6775236759"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Download Improvy on the App Store"
                     className="flex items-center w-full sm:w-[220px] gap-4 bg-zinc-900 border border-white/10 hover:border-[#e5a93c]/50 text-white px-6 py-4 rounded-2xl transition-all duration-300 active:scale-95 cursor-pointer shadow-lg hover:shadow-[0_0_20px_rgba(229,169,60,0.15)] group relative overflow-hidden focus:outline-none focus:ring-0"
                   >
                     {/* Magic sweep glass reflex beam */}
@@ -402,10 +389,10 @@ export default function App() {
                       <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 1.15-3.27 1.2-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5 1.07 3.29 1.07.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.02.07-.43 1.44-1.38 2.82M15.97 4.17c.66-.8 1.1-1.89 1.08-3.17-.91.04-2.01.6-2.67 1.38-.56.66-1.05 1.76-.9 3.01 1.05.08 2.06-.51 2.49-1.22z"/>
                     </svg>
                     <div className="flex flex-col items-start leading-none text-left">
-                      <span className="text-[10.5px] text-zinc-500 font-sans tracking-[0.12em] font-bold uppercase mb-1">Coming soon on</span>
+                      <span className="text-[10.5px] text-zinc-500 font-sans tracking-[0.12em] font-bold uppercase mb-1">Download on the</span>
                       <span className="text-base font-sans font-bold text-white">App Store</span>
                     </div>
-                  </button>
+                  </a>
 
                   {/* Premium Google Play Button — live on Android */}
                   <a
@@ -430,11 +417,6 @@ export default function App() {
                     </div>
                   </a>
                 </div>
-                {storeNotice && (
-                  <p className="text-[11.5px] text-[#e5a93c] font-sans font-semibold pt-1">
-                    The iOS version is coming soon — Improvy is live now on Google Play.
-                  </p>
-                )}
               </motion.div>
 
             </div>
@@ -641,9 +623,10 @@ export default function App() {
 
                 <div className="relative z-10 pt-8 mt-8 border-t border-white/[0.05]">
                   <button
-                    onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                    onClick={scrollToStores}
                     className="w-full py-4 rounded-xl bg-white/[0.03] hover:bg-white/[0.07] text-white border border-white/10 text-xs font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer flex items-center justify-center gap-2 active:scale-95 focus:outline-none focus:ring-0"
                   >
+                    <ArrowUp className="w-3.5 h-3.5" />
                     <span>Start for Free</span>
                   </button>
                 </div>
@@ -737,18 +720,15 @@ export default function App() {
                       <div className="absolute -inset-[3.5px] rounded-xl bg-gradient-to-r from-rose-500 via-purple-600 via-[#e5a93c] to-amber-500 opacity-0 group-hover/btn:opacity-75 blur-[10px] transition-all duration-500 bg-[length:100%_auto] group-hover/btn:bg-[length:200%_auto] group-hover/btn:animate-rainbow-shift" />
                       
                       <button
-                        onClick={() => {
-                          setCurrentPage("checkout");
-                          window.scrollTo({ top: 0, behavior: "smooth" });
-                        }}
+                        onClick={scrollToStores}
                         className="relative w-full py-4 rounded-xl bg-gradient-to-r from-rose-500 via-purple-600 via-[#e5a93c] to-amber-500 bg-[length:100%_auto] group-hover/btn:bg-[length:200%_auto] group-hover/btn:animate-rainbow-shift text-white text-xs font-black uppercase tracking-widest transition-all duration-300 active:scale-95 cursor-pointer flex items-center justify-center gap-2 border border-white/10 shadow-xl shadow-rose-600/10 z-10 focus:outline-none focus:ring-0"
                       >
-                        <Lock className="w-3.5 h-3.5" />
-                        <span>Get notified at launch</span>
+                        <ArrowUp className="w-3.5 h-3.5" />
+                        <span>Get Pro</span>
                       </button>
                     </div>
                     <span className="text-[8.5px] font-sans text-zinc-500 block text-center mt-2.5 uppercase tracking-widest">
-                      One-time in-app purchase at launch — no recurring fees
+                      Download the app, then unlock Pro inside it — one payment, no recurring fees
                     </span>
                   </div>
                 </div>
