@@ -5,6 +5,7 @@ import { cn } from "../lib/utils";
 import { PRO_PRICE_WEB, PRO_PRICE_STORE } from "../lib/pricing";
 import { StoreBadges } from "./StoreBadges";
 import {
+  firebaseReady,
   watchUser,
   finishRedirectSignIn,
   signInWithApple,
@@ -114,7 +115,7 @@ function BuyView({
   // Signed in: is this account Pro already? Nobody should pay twice.
   useEffect(() => {
     let alive = true;
-    if (!user) {
+    if (!user || !firebaseReady) {
       setStatus("unknown");
       return;
     }
@@ -151,7 +152,7 @@ function BuyView({
   };
 
   const signedIn = !!user;
-  const step2Open = signedIn && status === "free";
+  const step2Open = firebaseReady && signedIn && status === "free";
 
   return (
     <div className="space-y-12">
@@ -187,14 +188,16 @@ function BuyView({
         <div className="lg:col-span-7 space-y-5">
           {/* Step 1 */}
           <StepCard n="1" title="Your account" done={signedIn} active={!signedIn}>
-            {user === undefined ? (
+            {!firebaseReady ? (
+              <NotReadyYet />
+            ) : user === undefined ? (
               <p className="text-xs text-zinc-500">Checking…</p>
             ) : user ? (
               <SignedInRow user={user} />
             ) : (
               <SignInForm />
             )}
-            {!signedIn && (
+            {firebaseReady && !signedIn && (
               <p className="text-[11px] text-zinc-500 leading-relaxed pt-1">
                 The licence is tied to this account, not to a phone. Use the same account later in the app — Apple, Google or
                 email, whichever you pick here.
@@ -203,7 +206,7 @@ function BuyView({
           </StepCard>
 
           {/* Step 2 */}
-          <StepCard n="2" title={`Pay ${PRO_PRICE_WEB}`} done={status === "pro"} active={step2Open} dim={!signedIn}>
+          <StepCard n="2" title={`Pay ${PRO_PRICE_WEB}`} done={status === "pro"} active={step2Open} dim={!signedIn || !firebaseReady}>
             {status === "pro" ? (
               <div className="space-y-4">
                 <p className="text-sm text-white font-medium">This account already has Pro. There is nothing to pay.</p>
@@ -310,7 +313,7 @@ function SuccessView({ user, sessionId, onBack }: { user: User | null | undefine
   const tries = useRef(0);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user || !firebaseReady) return;
     let alive = true;
     let timer: number | undefined;
     const ask = async () => {
@@ -417,6 +420,31 @@ function StepCard({ n, title, children, done = false, active = false, dim = fals
         <h3 className="text-base sm:text-lg font-black text-white font-display tracking-tight">{title}</h3>
       </div>
       <div className="pl-0 sm:pl-13 space-y-3">{children}</div>
+    </div>
+  );
+}
+
+/**
+ * Accounts exist in the app but are not switched on for this address yet
+ * (Firebase Auth → Settings → Authorized domains, and a Web app registered
+ * on the project). Better to say it than to offer a button that answers with
+ * an internal error.
+ */
+function NotReadyYet() {
+  return (
+    <div className="space-y-4">
+      <div className="rounded-2xl border border-[#e5a93c]/25 bg-[#e5a93c]/[0.06] px-5 py-4 space-y-2">
+        <p className="text-sm font-semibold text-white">Buying here opens shortly.</p>
+        <p className="text-xs text-zinc-400 leading-relaxed">
+          Accounts and checkout are being switched on for this page. In the meantime Improvy Pro is available inside the
+          app, and everything you unlock there is the same thing.
+        </p>
+      </div>
+      <StoreBadges compact />
+      <p className="text-[11px] text-zinc-500 leading-relaxed">
+        Want to know when this page opens? Write to{" "}
+        <a href="mailto:thebalecompany@gmail.com" className="text-[#e5a93c] hover:text-white hover:underline">thebalecompany@gmail.com</a>.
+      </p>
     </div>
   );
 }
