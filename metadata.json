@@ -1,8 +1,0 @@
-{
-  "name": "Improvy",
-  "description": "An ultra-premium mental music-theory trainer for functional improvisation — master where every scale degree lives across all 12 keys and find any note on your instrument instantly.",
-  "requestFramePermissions": [],
-  "majorCapabilities": [
-    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
-  ]
-}

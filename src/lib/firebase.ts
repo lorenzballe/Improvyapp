@@ -1,0 +1,167 @@
+import { initializeApp, type FirebaseApp } from "firebase/app";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  OAuthProvider,
+  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
+  sendEmailVerification,
+  signOut,
+  onAuthStateChanged,
+  type User,
+} from "firebase/auth";
+import { getFunctions, httpsCallable } from "firebase/functions";
+
+/**
+ * The same Firebase project as the app — improvy-f470f — so an account made
+ * here IS the account in the app, and a licence granted to it on this site
+ * is found the moment that account signs in on a phone.
+ *
+ * Nothing in this block is a secret: these values identify the project, they
+ * authorise nothing. What protects the data is the project's Firestore rules
+ * and the fact that every function that grants anything checks who is asking.
+ */
+const firebaseConfig = {
+  apiKey: "AIzaSyC_Vo90VIrNYLxkatgBSRNruUq_uaQ6uhA",
+  authDomain: "improvy-f470f.firebaseapp.com",
+  projectId: "improvy-f470f",
+};
+
+let app: FirebaseApp | null = null;
+function firebaseApp() {
+  if (!app) app = initializeApp(firebaseConfig);
+  return app;
+}
+
+export function auth() {
+  return getAuth(firebaseApp());
+}
+
+/** The functions live in europe-west1; the default would look in us-central1. */
+function functions() {
+  return getFunctions(firebaseApp(), "europe-west1");
+}
+
+export type { User };
+
+/** Watches the signed-in user. Returns the unsubscribe. */
+export function watchUser(cb: (u: User | null) => void) {
+  return onAuthStateChanged(auth(), cb);
+}
+
+/**
+ * A popup where one will open, a redirect where it will not. Mobile Safari
+ * and some in-app browsers refuse popups outright; the redirect lands back
+ * on this page and getRedirectResult below picks the answer up.
+ */
+async function withProvider(provider: GoogleAuthProvider | OAuthProvider) {
+  try {
+    await signInWithPopup(auth(), provider);
+  } catch (e: unknown) {
+    const code = (e as { code?: string })?.code ?? "";
+    if (code === "auth/popup-blocked" || code === "auth/operation-not-supported-in-this-environment") {
+      await signInWithRedirect(auth(), provider);
+      return;
+    }
+    throw e;
+  }
+}
+
+export async function signInWithGoogle() {
+  const p = new GoogleAuthProvider();
+  p.setCustomParameters({ prompt: "select_account" });
+  await withProvider(p);
+}
+
+export async function signInWithApple() {
+  const p = new OAuthProvider("apple.com");
+  p.addScope("email");
+  await withProvider(p);
+}
+
+export function finishRedirectSignIn() {
+  return getRedirectResult(auth()).catch(() => null);
+}
+
+export async function signInWithEmail(email: string, password: string) {
+  await signInWithEmailAndPassword(auth(), email.trim(), password);
+}
+
+export async function createWithEmail(email: string, password: string) {
+  const cred = await createUserWithEmailAndPassword(auth(), email.trim(), password);
+  // Best effort: a verified address is what lets the licence be found by
+  // email on a phone where the same person signed in another way.
+  try {
+    await sendEmailVerification(cred.user);
+  } catch {
+    /* the account works either way */
+  }
+}
+
+export function resetPassword(email: string) {
+  return sendPasswordResetEmail(auth(), email.trim());
+}
+
+export function signOutUser() {
+  return signOut(auth());
+}
+
+// ── The server ─────────────────────────────────────────────────────────────
+
+export interface ProStatus {
+  pro: boolean;
+  via: "uid" | "email" | null;
+  grantedAt: string | null;
+  email: string | null;
+}
+
+export async function proStatus(): Promise<ProStatus> {
+  const call = httpsCallable<Record<string, never>, ProStatus>(functions(), "proStatus");
+  return (await call({})).data;
+}
+
+export interface CheckoutAnswer {
+  url?: string;
+  sessionId?: string;
+  alreadyPro?: boolean;
+}
+
+/** Opens a Stripe Checkout for the signed-in account. Consent is required. */
+export async function createCheckoutSession(): Promise<CheckoutAnswer> {
+  const call = httpsCallable<{ consent: true }, CheckoutAnswer>(functions(), "createCheckoutSession");
+  return (await call({ consent: true })).data;
+}
+
+/** One sentence for each way Firebase Auth can say no. */
+export function describeAuthError(e: unknown): string {
+  const code = (e as { code?: string })?.code ?? "";
+  switch (code) {
+    case "auth/invalid-credential":
+    case "auth/wrong-password":
+    case "auth/user-not-found":
+      return "Wrong email or password.";
+    case "auth/email-already-in-use":
+    case "auth/account-exists-with-different-credential":
+      return "That email already has an account. Sign in instead.";
+    case "auth/weak-password":
+      return "Password too short: use at least 6 characters.";
+    case "auth/invalid-email":
+    case "auth/missing-email":
+      return "That does not look like an email address.";
+    case "auth/popup-closed-by-user":
+    case "auth/cancelled-popup-request":
+      return "";
+    case "auth/network-request-failed":
+      return "No connection. Try again.";
+    case "auth/unauthorized-domain":
+      return "Sign-in is not enabled for this address yet.";
+    case "auth/operation-not-allowed":
+      return "This sign-in method is not enabled yet.";
+    default:
+      return "Sign-in failed. Try again.";
+  }
+}

@@ -1,26 +1,11 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { motion } from "motion/react";
 import { BackgroundGradientAnimation } from "./components/BackgroundGradientAnimation";
 import { ButtonColorful } from "./components/ButtonColorful";
 import { ShineBorder } from "./components/ShineBorder";
 import { TypeWriter } from "./components/TypeWriter";
 import { TestimonialsColumn, testimonialsList } from "./components/TestimonialsColumn";
-import { 
-  Music, 
-  Smartphone, 
-  ChevronRight, 
-  Sparkle,
-  ArrowUp,
-  ShieldCheck,
-  Check,
-  X,
-  KeyRound,
-  Brain,
-  LineChart,
-  SlidersHorizontal,
-  Coins,
-  HelpCircle
-} from "lucide-react";
+import { Sparkle, ArrowUp, Check, X } from "lucide-react";
 import { WhyImprovySection } from "./components/WhyImprovySection";
 import { WhyImprovyPage } from "./components/WhyImprovyPage";
 import TermsOfServicePage from "./components/TermsOfServicePage";
@@ -28,7 +13,12 @@ import PrivacyPolicyPage from "./components/PrivacyPolicyPage";
 import AboutPage from "./components/AboutPage";
 import FeedbackPage from "./components/FeedbackPage";
 import { cn } from "./lib/utils";
-import { PRO_PRICE, PRO_PRICE_NOTE } from "./lib/pricing";
+import { PRO_PRICE_WEB, PRO_PRICE_NOTE, PRO_PRICE_STORE_NOTE } from "./lib/pricing";
+// Only the Pro page needs Firebase and the checkout client, and they are
+// most of the JavaScript on the site. Nobody reading the home page pays for
+// them.
+const ProPage = lazy(() => import("./components/ProPage"));
+import { StoreBadges } from "./components/StoreBadges";
 import heroHomeScreenImg from "./assets/images/method_home_progress.webp";
 
 const revealVariants = {
@@ -101,14 +91,18 @@ function Text_03({
  * footer. A hash keeps them linkable on GitHub Pages without a router or a
  * 404 fallback. Everything else stays plain in-page state.
  */
-function legalPageFromHash(): "privacy" | "terms" | null {
+function pageFromHash(): "privacy" | "terms" | "pro" | null {
   const hash = window.location.hash.replace(/^#\/?/, "");
-  return hash === "privacy" || hash === "terms" ? hash : null;
+  if (hash === "privacy" || hash === "terms") return hash;
+  // #pro, and the two addresses Stripe sends people back to:
+  // #pro/success?session_id=… and #pro/cancel. ProPage reads the rest.
+  if (hash === "pro" || hash.startsWith("pro/")) return "pro";
+  return null;
 }
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState<"home" | "why" | "terms" | "privacy" | "about" | "feedback">(
-    () => legalPageFromHash() ?? "home"
+  const [currentPage, setCurrentPage] = useState<"home" | "why" | "terms" | "privacy" | "about" | "feedback" | "pro">(
+    () => pageFromHash() ?? "home"
   );
   const [aboutPageScrollTo, setAboutPageScrollTo] = useState<"top" | "get-in-touch" | null>(null);
   const [aboutScrollTrigger, setAboutScrollTrigger] = useState(0);
@@ -118,15 +112,18 @@ export default function App() {
   // shared. replaceState rather than push: the in-page Back buttons already
   // handle navigation, and we don't want to grow the history stack.
   useEffect(() => {
-    const hash = currentPage === "privacy" || currentPage === "terms" ? `#${currentPage}` : "";
-    if (window.location.hash !== hash) {
+    const addressed = currentPage === "privacy" || currentPage === "terms" || currentPage === "pro";
+    const hash = addressed ? `#${currentPage}` : "";
+    // #pro/success?… and #pro/cancel are still "pro": leave them be.
+    const already = currentPage === "pro" && window.location.hash.startsWith("#pro");
+    if (!already && window.location.hash !== hash) {
       window.history.replaceState(null, "", window.location.pathname + window.location.search + hash);
     }
   }, [currentPage]);
 
   // Someone pasting or editing #privacy / #terms in the address bar.
   useEffect(() => {
-    const onHashChange = () => setCurrentPage(legalPageFromHash() ?? "home");
+    const onHashChange = () => setCurrentPage(pageFromHash() ?? "home");
     window.addEventListener("hashchange", onHashChange);
     return () => window.removeEventListener("hashchange", onHashChange);
   }, []);
@@ -211,9 +208,16 @@ export default function App() {
     }
   };
 
-  // Pro is an in-app purchase, so every buy intent on this site can only end
-  // in one place: the store badges at the top. Nothing here takes a payment.
+  // Free is a download, so that intent goes to the store badges at the top.
   const scrollToStores = () => window.scrollTo({ top: 0, behavior: "smooth" });
+
+  // Pro is bought on the #pro page: sign in, pay with Stripe, and the app
+  // finds the licence on the same account. Every "get Pro" on the site
+  // lands there.
+  const goPro = () => {
+    setCurrentPage("pro");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <BackgroundGradientAnimation 
@@ -264,15 +268,11 @@ export default function App() {
               <div className="absolute -inset-[3px] rounded-xl bg-gradient-to-r from-rose-500 via-purple-500 to-[#e5a93c] opacity-0 group-hover/btn:opacity-60 blur-[8px] transition-all duration-500 bg-[length:200%_auto] group-hover/btn:animate-rainbow-shift" />
               
               <button 
-                onClick={() => {
-                  if (currentPage !== "home") {
-                    setCurrentPage("home");
-                    setTimeout(() => scrollToSection("pricing"), 100);
-                  } else {
-                    scrollToSection("pricing");
-                  }
-                }}
-                className="relative px-2 py-1 sm:px-4 sm:py-2 rounded-[11px] text-[8px] sm:text-[10px] font-black uppercase tracking-widest transition-all duration-350 active:scale-95 cursor-pointer whitespace-nowrap bg-white text-zinc-950 hover:bg-transparent hover:text-white focus:outline-none"
+                onClick={goPro}
+                className={cn(
+                  "relative px-2 py-1 sm:px-4 sm:py-2 rounded-[11px] text-[8px] sm:text-[10px] font-black uppercase tracking-widest transition-all duration-350 active:scale-95 cursor-pointer whitespace-nowrap focus:outline-none",
+                  currentPage === "pro" ? "bg-transparent text-white" : "bg-white text-zinc-950 hover:bg-transparent hover:text-white"
+                )}
               >
                 <span className="inline sm:hidden">Improvy Pro</span>
                 <span className="hidden sm:inline">Get Improvy Pro</span>
@@ -287,6 +287,23 @@ export default function App() {
             setCurrentPage("home");
             window.scrollTo({ top: 0, behavior: "smooth" });
           }} />
+        ) : currentPage === "pro" ? (
+          <Suspense fallback={<div className="min-h-[60vh]" aria-busy="true" />}>
+            <ProPage
+              onBack={() => {
+                setCurrentPage("home");
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              onOpenTerms={() => {
+                setCurrentPage("terms");
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              onOpenPrivacy={() => {
+                setCurrentPage("privacy");
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+            />
+          </Suspense>
         ) : currentPage === "terms" ? (
           <TermsOfServicePage onBack={() => {
             setCurrentPage("home");
@@ -355,8 +372,8 @@ export default function App() {
                 className="flex flex-col sm:flex-row gap-4 pt-2 items-stretch sm:items-center"
               >
                 <ButtonColorful
-                  onClick={() => scrollToSection("pricing")}
-                  label="Explore Memberships"
+                  onClick={goPro}
+                  label={`Get Improvy Pro — ${PRO_PRICE_WEB}`}
                   className="sm:w-auto"
                 />
               </motion.div>
@@ -371,52 +388,7 @@ export default function App() {
                 <div className="flex items-center gap-2">
                   <p className="text-[12.5px] sm:text-sm font-sans uppercase tracking-[0.22em] bg-gradient-to-r from-[#f43f5e] via-[#d946ef] to-[#6366f1] bg-clip-text text-transparent font-black">Now on iOS and Android — free to start</p>
                 </div>
-                <div className="flex flex-wrap gap-4">
-                  {/* Premium Apple App Store Button — live on iOS.
-                      No locale in the URL: Apple routes each visitor to their
-                      own storefront, which /it/ would not do. */}
-                  <a
-                    href="https://apps.apple.com/app/id6775236759"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Download Improvy on the App Store"
-                    className="flex items-center w-full sm:w-[220px] gap-4 bg-zinc-900 border border-white/10 hover:border-[#e5a93c]/50 text-white px-6 py-4 rounded-2xl transition-all duration-300 active:scale-95 cursor-pointer shadow-lg hover:shadow-[0_0_20px_rgba(229,169,60,0.15)] group relative overflow-hidden focus:outline-none focus:ring-0"
-                  >
-                    {/* Magic sweep glass reflex beam */}
-                    <span className="absolute inset-0 w-[200%] h-full bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out pointer-events-none" />
-                    
-                    <svg className="w-7 h-7 text-white fill-current shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 1.15-3.27 1.2-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5 1.07 3.29 1.07.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.02.07-.43 1.44-1.38 2.82M15.97 4.17c.66-.8 1.1-1.89 1.08-3.17-.91.04-2.01.6-2.67 1.38-.56.66-1.05 1.76-.9 3.01 1.05.08 2.06-.51 2.49-1.22z"/>
-                    </svg>
-                    <div className="flex flex-col items-start leading-none text-left">
-                      <span className="text-[10.5px] text-zinc-500 font-sans tracking-[0.12em] font-bold uppercase mb-1">Download on the</span>
-                      <span className="text-base font-sans font-bold text-white">App Store</span>
-                    </div>
-                  </a>
-
-                  {/* Premium Google Play Button — live on Android */}
-                  <a
-                    href="https://play.google.com/store/apps/details?id=com.improvy.app"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Get Improvy on Google Play"
-                    className="flex items-center w-full sm:w-[220px] gap-4 bg-zinc-900 border border-white/10 hover:border-indigo-500/50 text-white px-6 py-4 rounded-2xl transition-all duration-300 active:scale-95 cursor-pointer shadow-lg hover:shadow-[0_0_20px_rgba(99,102,241,0.15)] group relative overflow-hidden focus:outline-none focus:ring-0"
-                  >
-                    {/* Magic sweep glass reflex beam */}
-                    <span className="absolute inset-0 w-[200%] h-full bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out pointer-events-none" />
-
-                    <svg className="w-7 h-7 shrink-0 group-hover:scale-110 group-hover:-rotate-3 transition-all duration-300" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M3.25 1.75C3.06 1.93 2.95 2.22 2.95 2.6V21.4C2.95 21.78 3.06 22.07 3.25 22.25L3.32 22.32L13.84 11.8V11.53L3.32 1.01L3.25 1.75Z" fill="#00A0FF" />
-                      <path d="M17.34 15.33L13.84 11.82V11.51L17.34 8L17.42 8.04L21.57 10.4C22.75 11.07 22.75 12.26 21.57 12.93L17.42 15.29L17.34 15.33Z" fill="#FFE000" />
-                      <path d="M13.84 11.66L3.25 22.25C3.59 22.59 4.19 22.61 4.88 22.22L17.34 15.14L13.84 11.66Z" fill="#FF2C00" />
-                      <path d="M13.84 11.66L17.34 8.18L4.88 1.1C4.19 0.71 3.59 0.73 3.25 1.07L13.84 11.66Z" fill="#00E676" />
-                    </svg>
-                    <div className="flex flex-col items-start leading-none text-left">
-                      <span className="text-[10.5px] text-zinc-500 font-sans tracking-[0.12em] font-bold uppercase mb-1">Get it on</span>
-                      <span className="text-base font-sans font-bold text-white">Google Play</span>
-                    </div>
-                  </a>
-                </div>
+                <StoreBadges />
               </motion.div>
 
             </div>
@@ -545,7 +517,7 @@ export default function App() {
                 </span>
               </h2>
               <p className="text-xs sm:text-sm text-zinc-400 font-light max-w-xl mx-auto leading-relaxed">
-                From essential basic training to full twelve-tone chromatic mastery. Single lifetime access fee, no subscription.
+                Start free in the key of C. Go Pro once, for good — {PRO_PRICE_WEB} here, a euro less than in the app stores, no subscription.
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto items-stretch">
@@ -665,11 +637,11 @@ export default function App() {
 
                     {/* Elite Gold pricing block with exactly the same font-size layout as Section 1 */}
                     <div className="py-5 border-t border-b border-white/[0.05]">
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-5xl font-black text-white font-sans tracking-tight">{PRO_PRICE}</span>
+                      <div className="flex items-baseline gap-1.5">
+                        <span className="text-5xl font-black text-white font-sans tracking-tight">{PRO_PRICE_WEB}</span>
                         <span className="text-xs text-zinc-500 font-sans font-medium">{PRO_PRICE_NOTE}</span>
                       </div>
-                      <span className="text-[9px] text-[#e5a93c] block mt-1.5 uppercase tracking-widest font-extrabold">PRO ACCESS FOR LIFE • NO RECURRING SUBSCRIPTIONS</span>
+                      <span className="text-[9px] text-[#e5a93c] block mt-1.5 uppercase tracking-widest font-extrabold">ON THIS SITE · {PRO_PRICE_STORE_NOTE}</span>
                     </div>
 
                     <div className="space-y-4">
@@ -720,15 +692,15 @@ export default function App() {
                       <div className="absolute -inset-[3.5px] rounded-xl bg-gradient-to-r from-rose-500 via-purple-600 via-[#e5a93c] to-amber-500 opacity-0 group-hover/btn:opacity-75 blur-[10px] transition-all duration-500 bg-[length:100%_auto] group-hover/btn:bg-[length:200%_auto] group-hover/btn:animate-rainbow-shift" />
                       
                       <button
-                        onClick={scrollToStores}
+                        onClick={goPro}
                         className="relative w-full py-4 rounded-xl bg-gradient-to-r from-rose-500 via-purple-600 via-[#e5a93c] to-amber-500 bg-[length:100%_auto] group-hover/btn:bg-[length:200%_auto] group-hover/btn:animate-rainbow-shift text-white text-xs font-black uppercase tracking-widest transition-all duration-300 active:scale-95 cursor-pointer flex items-center justify-center gap-2 border border-white/10 shadow-xl shadow-rose-600/10 z-10 focus:outline-none focus:ring-0"
                       >
-                        <ArrowUp className="w-3.5 h-3.5" />
-                        <span>Get Pro</span>
+                        <Sparkle className="w-3.5 h-3.5" />
+                        <span>Get Pro — {PRO_PRICE_WEB}</span>
                       </button>
                     </div>
                     <span className="text-[8.5px] font-sans text-zinc-500 block text-center mt-2.5 uppercase tracking-widest">
-                      Download the app, then unlock Pro inside it — one payment, no recurring fees
+                      Sign in, pay once with Stripe, and the app unlocks on the same account — any phone
                     </span>
                   </div>
                 </div>
@@ -950,6 +922,15 @@ export default function App() {
                     className="hover:text-white transition-colors duration-200 cursor-pointer text-left focus:outline-none"
                   >
                     Pricing
+                  </button>
+                  <button 
+                    onClick={goPro}
+                    className={cn(
+                      "hover:text-white transition-colors duration-200 cursor-pointer text-left focus:outline-none",
+                      currentPage === "pro" ? "text-[#e5a93c]" : ""
+                    )}
+                  >
+                    Get Improvy Pro
                   </button>
                 </div>
               </div>

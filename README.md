@@ -1,20 +1,42 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# Improvy — the website
 
-# Run and deploy your AI Studio app
+What the app is, the method behind it, and the place to buy Pro.
 
-This contains everything you need to run your app locally.
+Live at <https://lorenzballe.github.io/Improvyapp/>. A static Vite + React
+site; `.github/workflows/deploy.yml` builds it and publishes it to GitHub
+Pages on every push to `main`.
 
-View your app in AI Studio: https://ai.studio/apps/ec14e814-7a57-406a-ac24-668f89e710bb
+```
+npm install
+npm run dev      # http://localhost:5173
+npm run build    # dist/, with a relative base so it works under /Improvyapp/
+npm run lint     # tsc
+```
 
-## Run Locally
+## Pages
 
-**Prerequisites:**  Node.js
+Everything is one page with in-page state, except the addresses other things
+link to, which are hashes so they survive GitHub Pages having no router:
 
+| Address | What |
+|---|---|
+| `#privacy`, `#terms` | The legal texts. The app's Settings and the store listings link here. |
+| `#pro` | Buy Improvy Pro: sign in, pay with Stripe, done. |
+| `#pro/success?session_id=…` | Where Stripe sends a buyer back. Waits for the licence to land. |
+| `#pro/cancel` | Where Stripe sends someone who backed out. |
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## Buying Pro on the site
+
+The site never touches money and never grants anything. `src/lib/firebase.ts`
+signs the buyer into the **same Firebase project as the app**, then asks a
+Cloud Function (in the app's repository, `functions/`) for a Stripe Checkout
+URL that carries the account id. Stripe takes the payment and calls the
+webhook; the webhook writes `entitlements/{uid}`; the app reads that on
+sign-in. So a licence bought here is found on any phone the same account
+signs in on.
+
+The price on the site (`src/lib/pricing.ts`) is a euro under the store price
+on purpose: no store commission.
+
+Setting up Stripe and the functions is written out in the app repository's
+`STRIPE_SETUP.md`.
