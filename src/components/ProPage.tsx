@@ -66,7 +66,9 @@ export default function ProPage({ onBack, onOpenTerms, onOpenPrivacy }: ProPageP
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
       >
-        {route.kind === "success" ? (
+        {route.kind === "preview" ? (
+          <SuccessView user={user} sessionId={null} onBack={onBack} preview />
+        ) : route.kind === "success" ? (
           <SuccessView user={user} sessionId={route.sessionId} onBack={onBack} />
         ) : (
           <BuyView
@@ -83,10 +85,16 @@ export default function ProPage({ onBack, onOpenTerms, onOpenPrivacy }: ProPageP
 
 // ── The hash, read ──────────────────────────────────────────────────────────
 
-type ProRoute = { kind: "buy" } | { kind: "cancel" } | { kind: "success"; sessionId: string | null };
+type ProRoute =
+  | { kind: "buy" }
+  | { kind: "cancel" }
+  | { kind: "success"; sessionId: string | null }
+  /** The success screen, drawn without a purchase behind it. See PreviewNote. */
+  | { kind: "preview" };
 
 function readProRoute(): ProRoute {
   const hash = window.location.hash.replace(/^#\/?/, "");
+  if (hash.startsWith("pro/preview")) return { kind: "preview" };
   if (hash.startsWith("pro/success")) {
     // Stripe puts the id in the query string, before the fragment. Older
     // links carried it inside the fragment instead; both are read, because a
@@ -238,6 +246,8 @@ function BuyView({
 
                 {payError && <p className="text-xs text-rose-400 font-medium">{payError}</p>}
 
+                <PreviewLink />
+
                 <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] text-zinc-500">
                   <span className="inline-flex items-center gap-1.5"><Lock className="w-3 h-3" /> Cards, Apple Pay, Google Pay</span>
                   <span className="inline-flex items-center gap-1.5"><ShieldCheck className="w-3 h-3" /> Handled by Stripe — your card never reaches us</span>
@@ -307,17 +317,34 @@ function BuyView({
 
 // ── After Stripe ────────────────────────────────────────────────────────────
 
-function SuccessView({ user, sessionId, onBack }: { user: User | null | undefined; sessionId: string | null; onBack: () => void }) {
+function SuccessView({
+  user,
+  sessionId,
+  onBack,
+  preview = false,
+}: {
+  user: User | null | undefined;
+  sessionId: string | null;
+  onBack: () => void;
+  /**
+   * Draw the screen a buyer lands on, with nothing bought.
+   *
+   * It asks the server nothing and is granted nothing — a page that could
+   * hand out a licence on a click would hand it to everyone who found the
+   * click. This is the same pixels, for looking at.
+   */
+  preview?: boolean;
+}) {
   // Two ways this page can end well, and it tries both. First it hands the
   // session id to the server, which asks Stripe directly — that works even if
   // the webhook is not wired up yet, which on day one it may not be. Then it
   // falls back to asking whether the licence has landed, a few times over
   // half a minute, before saying anything discouraging.
-  const [landed, setLanded] = useState<"waiting" | "yes" | "slow">("waiting");
+  const [landed, setLanded] = useState<"waiting" | "yes" | "slow">(preview ? "yes" : "waiting");
   const tries = useRef(0);
 
   useEffect(() => {
-    if (!user) return;
+    if (preview || !user) return;
     let alive = true;
     let timer: number | undefined;
     const ask = async () => {
@@ -355,12 +382,13 @@ function SuccessView({ user, sessionId, onBack }: { user: User | null | undefine
       alive = false;
       if (timer) window.clearTimeout(timer);
     };
-  }, [user, sessionId]);
+  }, [user, sessionId, preview]);
 
-  const signedOut = user === null;
+  const signedOut = !preview && user === null;
 
   return (
     <div className="max-w-2xl mx-auto text-center space-y-8 py-6">
+      {preview && <PreviewNote />}
       <div
         className={cn(
           "inline-flex items-center justify-center w-20 h-20 rounded-full border mb-2 transition-colors",
@@ -436,6 +464,25 @@ function StepCard({ n, title, children, done = false, active = false, dim = fals
         <h3 className="text-base sm:text-lg font-black text-white font-display tracking-tight">{title}</h3>
       </div>
       <div className="pl-0 sm:pl-13 space-y-3">{children}</div>
+    </div>
+  );
+}
+
+/**
+ * Says, on the page itself, that nothing was bought.
+ *
+ * A screen that reads "Pro is on your account" is exactly the screen that
+ * must never be mistaken for the real thing — by whoever is looking at it
+ * now, and by whoever finds the link later.
+ */
+function PreviewNote() {
+  return (
+    <div className="rounded-2xl border border-[#e5a93c]/30 bg-[#e5a93c]/[0.07] px-5 py-4 text-left">
+      <p className="text-xs font-extrabold uppercase tracking-[0.2em] text-[#e5a93c]">Preview</p>
+      <p className="mt-2 text-xs text-zinc-300 leading-relaxed">
+        This is the screen a buyer lands on after paying, drawn with nothing behind it. No payment was
+        made and no licence was granted — the account you are signed in with is unchanged.
+      </p>
     </div>
   );
 }
@@ -596,6 +643,28 @@ function BrandButton({ label, onClick, disabled, icon }: { label: string; onClic
         </svg>
       )}
       {label}
+    </button>
+  );
+}
+
+/**
+ * A way to look at the screen that comes after paying, without paying.
+ *
+ * Shown only when the address carries `debug` — #pro?debug — so it is there
+ * for whoever is building the page and invisible to everybody else. It
+ * grants nothing; it changes the address, and the page draws its other half.
+ */
+function PreviewLink() {
+  if (!window.location.hash.includes("debug")) return null;
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        window.location.hash = "pro/preview";
+      }}
+      className="w-full py-2.5 rounded-xl border border-dashed border-white/20 text-[11px] font-bold uppercase tracking-wider text-zinc-400 hover:text-white hover:border-white/40 cursor-pointer transition-colors"
+    >
+      Preview the post-purchase screen
     </button>
   );
 }
