@@ -17,6 +17,7 @@ import {
   confirmCheckout,
   createCheckoutSession,
   describeAuthError,
+  describeCheckoutError,
   type User,
 } from "../lib/firebase";
 
@@ -145,12 +146,10 @@ function BuyView({
       if (!answer.url) throw new Error("no url");
       window.location.assign(answer.url);
     } catch (e: unknown) {
-      const msg = (e as { message?: string })?.message ?? "";
-      setPayError(
-        /unauthenticated/i.test(msg)
-          ? "Sign in first, then try again."
-          : "Could not open the checkout. Nothing was charged — try again in a moment."
-      );
+      // The code is what says which failure this is; keep it in the console
+      // for whoever is debugging, and give the buyer the sentence.
+      console.error("checkout", (e as { code?: string })?.code, e);
+      setPayError(describeCheckoutError(e));
       setPaying(false);
     }
   };

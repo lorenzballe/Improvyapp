@@ -157,6 +157,32 @@ export async function createCheckoutSession(): Promise<CheckoutAnswer> {
   return (await call({ consent: true })).data;
 }
 
+/**
+ * One sentence for each way the checkout can fail to open.
+ *
+ * "Try again in a moment" was the answer to everything, and for the most
+ * likely failure of all — the server side not deployed yet — it is a lie:
+ * trying again in a moment does nothing, and the person waits. A callable
+ * carries a code; each one means something different to whoever reads it.
+ */
+export function describeCheckoutError(e: unknown): string {
+  const code = String((e as { code?: string })?.code ?? "");
+  const message = String((e as { message?: string })?.message ?? "");
+  if (code.endsWith("not-found") || /not[- ]found/i.test(message)) {
+    // The function is not deployed, or not in this project. Nothing the
+    // buyer can do, and nothing a retry will change.
+    return "Card payments are not switched on for this page yet. Improvy Pro is available inside the app in the meantime.";
+  }
+  if (code.endsWith("unauthenticated")) return "Sign in first, then try again.";
+  if (code.endsWith("failed-precondition")) return "Tick the box above first.";
+  if (code.endsWith("permission-denied")) return "This account cannot open a checkout. Write to us and we will sort it out.";
+  if (code.endsWith("unavailable") || code.endsWith("deadline-exceeded")) {
+    return "No answer from the server. Check your connection and try again.";
+  }
+  if (code.endsWith("resource-exhausted")) return "Too many attempts. Wait a minute and try again.";
+  return "Could not open the checkout. Nothing was charged — try again in a moment.";
+}
+
 /** One sentence for each way Firebase Auth can say no. */
 export function describeAuthError(e: unknown): string {
   const code = (e as { code?: string })?.code ?? "";
