@@ -11,13 +11,17 @@
  * ⚙️ Project settings → Your apps → Add app → Web. Two values come out of it
  * and go below; STRIPE_SETUP.md has the walkthrough.
  *
- * None of this is a secret. These values identify the project and authorise
- * nothing: what protects the data is the Firestore rules and the fact that
- * every function checks who is asking. They ship in the page either way.
+ * They can also arrive from the build instead of from this file — set
+ * VITE_FIREBASE_API_KEY and VITE_FIREBASE_APP_ID and they win. Either way
+ * none of it is a secret: these values identify the project and authorise
+ * nothing. What protects the data is the Firestore rules and the fact that
+ * every function checks who is asking. They ship in the page regardless.
  */
+const env = import.meta.env as Record<string, string | undefined>;
+
 export const firebaseConfig = {
-  apiKey: "REPLACE_ME_WEB_API_KEY",
-  appId: "REPLACE_ME_WEB_APP_ID",
+  apiKey: env.VITE_FIREBASE_API_KEY || "REPLACE_ME_WEB_API_KEY",
+  appId: env.VITE_FIREBASE_APP_ID || "REPLACE_ME_WEB_APP_ID",
   authDomain: "improvy-f470f.firebaseapp.com",
   projectId: "improvy-f470f",
   messagingSenderId: "376089080639",
@@ -27,8 +31,9 @@ export const firebaseConfig = {
 /**
  * Whether the two values above are real yet.
  *
- * Until they are, nothing here tries to reach Firebase. The Pro page says so
- * in words rather than offering buttons that answer with an internal error —
- * an unconfigured site that looks broken is worse than one that is honest.
+ * The page does not hide behind this. Every button is live and the flow is
+ * the finished one; if the registration is still missing, Firebase says so
+ * on the attempt and describeAuthError turns that into a sentence. A page
+ * that refuses to try is harder to finish than one that tries and reports.
  */
 export const firebaseReady = !firebaseConfig.apiKey.startsWith("REPLACE_ME");

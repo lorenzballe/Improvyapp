@@ -5,7 +5,6 @@ import { cn } from "../lib/utils";
 import { PRO_PRICE_WEB, PRO_PRICE_STORE } from "../lib/pricing";
 import { StoreBadges } from "./StoreBadges";
 import {
-  firebaseReady,
   watchUser,
   finishRedirectSignIn,
   signInWithApple,
@@ -115,7 +114,7 @@ function BuyView({
   // Signed in: is this account Pro already? Nobody should pay twice.
   useEffect(() => {
     let alive = true;
-    if (!user || !firebaseReady) {
+    if (!user) {
       setStatus("unknown");
       return;
     }
@@ -152,7 +151,7 @@ function BuyView({
   };
 
   const signedIn = !!user;
-  const step2Open = firebaseReady && signedIn && status === "free";
+  const step2Open = signedIn && status === "free";
 
   return (
     <div className="space-y-12">
@@ -188,16 +187,14 @@ function BuyView({
         <div className="lg:col-span-7 space-y-5">
           {/* Step 1 */}
           <StepCard n="1" title="Your account" done={signedIn} active={!signedIn}>
-            {!firebaseReady ? (
-              <NotReadyYet />
-            ) : user === undefined ? (
+            {user === undefined ? (
               <p className="text-xs text-zinc-500">Checking…</p>
             ) : user ? (
               <SignedInRow user={user} />
             ) : (
               <SignInForm />
             )}
-            {firebaseReady && !signedIn && (
+            {!signedIn && (
               <p className="text-[11px] text-zinc-500 leading-relaxed pt-1">
                 The licence is tied to this account, not to a phone. Use the same account later in the app — Apple, Google or
                 email, whichever you pick here.
@@ -206,7 +203,7 @@ function BuyView({
           </StepCard>
 
           {/* Step 2 */}
-          <StepCard n="2" title={`Pay ${PRO_PRICE_WEB}`} done={status === "pro"} active={step2Open} dim={!signedIn || !firebaseReady}>
+          <StepCard n="2" title={`Pay ${PRO_PRICE_WEB}`} done={status === "pro"} active={step2Open} dim={!signedIn}>
             {status === "pro" ? (
               <div className="space-y-4">
                 <p className="text-sm text-white font-medium">This account already has Pro. There is nothing to pay.</p>
@@ -313,7 +310,7 @@ function SuccessView({ user, sessionId, onBack }: { user: User | null | undefine
   const tries = useRef(0);
 
   useEffect(() => {
-    if (!user || !firebaseReady) return;
+    if (!user) return;
     let alive = true;
     let timer: number | undefined;
     const ask = async () => {
@@ -424,31 +421,6 @@ function StepCard({ n, title, children, done = false, active = false, dim = fals
   );
 }
 
-/**
- * Accounts exist in the app but are not switched on for this address yet
- * (Firebase Auth → Settings → Authorized domains, and a Web app registered
- * on the project). Better to say it than to offer a button that answers with
- * an internal error.
- */
-function NotReadyYet() {
-  return (
-    <div className="space-y-4">
-      <div className="rounded-2xl border border-[#e5a93c]/25 bg-[#e5a93c]/[0.06] px-5 py-4 space-y-2">
-        <p className="text-sm font-semibold text-white">Buying here opens shortly.</p>
-        <p className="text-xs text-zinc-400 leading-relaxed">
-          Accounts and checkout are being switched on for this page. In the meantime Improvy Pro is available inside the
-          app, and everything you unlock there is the same thing.
-        </p>
-      </div>
-      <StoreBadges compact />
-      <p className="text-[11px] text-zinc-500 leading-relaxed">
-        Want to know when this page opens? Write to{" "}
-        <a href="mailto:thebalecompany@gmail.com" className="text-[#e5a93c] hover:text-white hover:underline">thebalecompany@gmail.com</a>.
-      </p>
-    </div>
-  );
-}
-
 function SignedInRow({ user }: { user: User }) {
   const provider = user.providerData[0]?.providerId ?? "password";
   const label = provider === "apple.com" ? "Apple" : provider === "google.com" ? "Google" : "Email";
@@ -468,9 +440,16 @@ function SignedInRow({ user }: { user: User }) {
   );
 }
 
+/**
+ * Step one is making an account, so that is what this offers first: the two
+ * one-tap ways, then email with "create" as the default. Somebody who
+ * already has one is a tap away; somebody who does not would otherwise be
+ * typing a password into a form that was about to tell them they are
+ * unknown.
+ */
 function SignInForm() {
   const [emailOpen, setEmailOpen] = useState(false);
-  const [creating, setCreating] = useState(false);
+  const [creating, setCreating] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
@@ -505,13 +484,16 @@ function SignInForm() {
     <div className="space-y-3">
       <BrandButton label="Continue with Apple" onClick={() => run(signInWithApple)} disabled={busy} icon="apple" />
       <BrandButton label="Continue with Google" onClick={() => run(signInWithGoogle)} disabled={busy} icon="google" />
+      <p className="text-[11px] text-zinc-500 text-center leading-relaxed">
+        Either one makes the account if you do not have it yet.
+      </p>
 
       <button
         type="button"
         onClick={() => setEmailOpen((v) => !v)}
         className="w-full flex items-center justify-center gap-2 py-3 text-sm font-semibold text-zinc-300 hover:text-white cursor-pointer transition-colors"
       >
-        <Mail className="w-4 h-4" /> Continue with email
+        <Mail className="w-4 h-4" /> {creating ? "Create an account with email" : "Sign in with email"}
         <span className={cn("transition-transform text-zinc-500", emailOpen && "rotate-180")}>⌄</span>
       </button>
 

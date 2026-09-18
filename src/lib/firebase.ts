@@ -23,17 +23,12 @@ import { firebaseConfig, firebaseReady } from "./firebase-config";
  */
 export { firebaseReady };
 
-/** Thrown when the project has not been wired up yet. Never shown raw. */
-export class NotConfigured extends Error {
-  constructor() {
-    super("Firebase is not configured for this site yet.");
-    this.name = "NotConfigured";
-  }
-}
-
 let app: FirebaseApp | null = null;
 function firebaseApp() {
-  if (!firebaseReady) throw new NotConfigured();
+  // Initialised whatever the config says. Firebase validates the key when a
+  // call is made, not here, so a missing registration surfaces as one named
+  // error on the attempt — which describeAuthError puts into words — rather
+  // than as a page that will not even offer to try.
   if (!app) app = initializeApp(firebaseConfig);
   return app;
 }
@@ -51,11 +46,12 @@ export type { User };
 
 /** Watches the signed-in user. Returns the unsubscribe. */
 export function watchUser(cb: (u: User | null) => void) {
-  if (!firebaseReady) {
+  try {
+    return onAuthStateChanged(auth(), cb);
+  } catch {
     cb(null);
     return () => {};
   }
-  return onAuthStateChanged(auth(), cb);
 }
 
 /**
@@ -89,8 +85,11 @@ export async function signInWithApple() {
 }
 
 export function finishRedirectSignIn() {
-  if (!firebaseReady) return Promise.resolve(null);
-  return getRedirectResult(auth()).catch(() => null);
+  try {
+    return getRedirectResult(auth()).catch(() => null);
+  } catch {
+    return Promise.resolve(null);
+  }
 }
 
 export async function signInWithEmail(email: string, password: string) {
@@ -144,7 +143,6 @@ export async function createCheckoutSession(): Promise<CheckoutAnswer> {
 
 /** One sentence for each way Firebase Auth can say no. */
 export function describeAuthError(e: unknown): string {
-  if (e instanceof NotConfigured) return "Sign-in is not set up on this site yet.";
   const code = (e as { code?: string })?.code ?? "";
   switch (code) {
     case "auth/invalid-credential":
