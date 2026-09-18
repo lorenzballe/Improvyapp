@@ -20,7 +20,12 @@ const env = import.meta.env as Record<string, string | undefined>;
 export const firebaseConfig = {
   apiKey: env.VITE_FIREBASE_API_KEY || "AIzaSyB3iTsYccxr0YzgY6kL-fKZOheKPnjf3Co",
   appId: env.VITE_FIREBASE_APP_ID || "1:376089080639:web:a383ab70d5ebe5c32c198a",
-  authDomain: "improvy-f470f.firebaseapp.com",
+  // Sign-in happens on a domain of ours, so the page that completes the
+  // exchange with Google or Apple reads auth.improvy.app rather than a
+  // project id nobody recognises. It is a Firebase Hosting domain of this
+  // same project: Firebase serves /__/auth/handler on it, as it does on
+  // improvy-f470f.firebaseapp.com, which stays authorised as a way back.
+  authDomain: "auth.improvy.app",
   projectId: "improvy-f470f",
   messagingSenderId: "376089080639",
   storageBucket: "improvy-f470f.firebasestorage.app",
