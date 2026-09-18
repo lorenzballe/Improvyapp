@@ -135,6 +135,22 @@ export interface CheckoutAnswer {
   alreadyPro?: boolean;
 }
 
+/**
+ * Asks the server to look at the checkout the buyer just came back from.
+ *
+ * The webhook is the normal way a licence is written, and it usually wins the
+ * race. This is the other way in: the server fetches the session from Stripe
+ * with its secret key and writes the licence if Stripe says it was paid. The
+ * browser supplies an id and nothing more — the answer is Stripe's.
+ */
+export async function confirmCheckout(sessionId: string): Promise<{ pro: boolean; outcome: string }> {
+  const call = httpsCallable<{ sessionId: string }, { pro: boolean; outcome: string }>(
+    functions(),
+    "confirmCheckout"
+  );
+  return (await call({ sessionId })).data;
+}
+
 /** Opens a Stripe Checkout for the signed-in account. Consent is required. */
 export async function createCheckoutSession(): Promise<CheckoutAnswer> {
   const call = httpsCallable<{ consent: true }, CheckoutAnswer>(functions(), "createCheckoutSession");

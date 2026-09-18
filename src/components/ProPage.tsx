@@ -14,6 +14,7 @@ import {
   resetPassword,
   signOutUser,
   proStatus,
+  confirmCheckout,
   createCheckoutSession,
   describeAuthError,
   type User,
@@ -304,8 +305,11 @@ function BuyView({
 // ── After Stripe ────────────────────────────────────────────────────────────
 
 function SuccessView({ user, sessionId, onBack }: { user: User | null | undefined; sessionId: string | null; onBack: () => void }) {
-  // The webhook usually beats the buyer back to this page, but not always:
-  // ask a few times over half a minute before saying anything discouraging.
+  // Two ways this page can end well, and it tries both. First it hands the
+  // session id to the server, which asks Stripe directly — that works even if
+  // the webhook is not wired up yet, which on day one it may not be. Then it
+  // falls back to asking whether the licence has landed, a few times over
+  // half a minute, before saying anything discouraging.
   const [landed, setLanded] = useState<"waiting" | "yes" | "slow">("waiting");
   const tries = useRef(0);
 
@@ -314,6 +318,18 @@ function SuccessView({ user, sessionId, onBack }: { user: User | null | undefine
     let alive = true;
     let timer: number | undefined;
     const ask = async () => {
+      try {
+        if (sessionId && tries.current === 0) {
+          const c = await confirmCheckout(sessionId);
+          if (!alive) return;
+          if (c.pro) {
+            setLanded("yes");
+            return;
+          }
+        }
+      } catch {
+        /* the webhook may still do it — fall through and watch for it */
+      }
       try {
         const s = await proStatus();
         if (!alive) return;
@@ -336,7 +352,7 @@ function SuccessView({ user, sessionId, onBack }: { user: User | null | undefine
       alive = false;
       if (timer) window.clearTimeout(timer);
     };
-  }, [user]);
+  }, [user, sessionId]);
 
   const signedOut = user === null;
 
