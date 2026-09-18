@@ -1,0 +1,28 @@
+;; improvy.app — BIND zone file, for Cloudflare's "Import DNS records".
+;;
+;; What it sets up: the apex (improvy.app) points at GitHub Pages' four
+;; anycast addresses, in both IPv4 and IPv6, and www is a CNAME to the Pages
+;; host, which serves the repository named by public/CNAME.
+;;
+;; TTL 1 means "Auto" in Cloudflare.
+;;
+;; IMPORTANT, on import: leave "Proxy imported DNS records" UNCHECKED. With
+;; Cloudflare's proxy on, GitHub cannot complete the HTTP challenge and never
+;; issues the certificate — and improvy.app is a .app domain, which browsers
+;; refuse to open without HTTPS. Turn the proxy on later, once the padlock
+;; works, if you want it at all.
+
+;; A records — GitHub Pages, IPv4
+improvy.app.	1	IN	A	185.199.108.153
+improvy.app.	1	IN	A	185.199.109.153
+improvy.app.	1	IN	A	185.199.110.153
+improvy.app.	1	IN	A	185.199.111.153
+
+;; AAAA records — the same, IPv6
+improvy.app.	1	IN	AAAA	2606:50c0:8000::153
+improvy.app.	1	IN	AAAA	2606:50c0:8001::153
+improvy.app.	1	IN	AAAA	2606:50c0:8002::153
+improvy.app.	1	IN	AAAA	2606:50c0:8003::153
+
+;; www → the Pages host. GitHub redirects it to the apex.
+www.improvy.app.	1	IN	CNAME	lorenzballe.github.io.
