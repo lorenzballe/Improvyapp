@@ -5,11 +5,9 @@
  * here is the account in the app, and a licence bought here is found the
  * moment that account signs in on a phone.
  *
- * A browser needs the project's **Web** app registration, which is its own
- * thing: the Android and iOS registrations carry keys restricted to those
- * platforms, and a browser handed one of them is refused. Firebase console →
- * ⚙️ Project settings → Your apps → Add app → Web. Two values come out of it
- * and go below; STRIPE_SETUP.md has the walkthrough.
+ * The apiKey and appId below are the project's **Web** registration, which
+ * is its own thing: the Android and iOS registrations carry keys restricted
+ * to those platforms, and a browser handed one of them is refused.
  *
  * They can also arrive from the build instead of from this file — set
  * VITE_FIREBASE_API_KEY and VITE_FIREBASE_APP_ID and they win. Either way
@@ -20,8 +18,8 @@
 const env = import.meta.env as Record<string, string | undefined>;
 
 export const firebaseConfig = {
-  apiKey: env.VITE_FIREBASE_API_KEY || "REPLACE_ME_WEB_API_KEY",
-  appId: env.VITE_FIREBASE_APP_ID || "REPLACE_ME_WEB_APP_ID",
+  apiKey: env.VITE_FIREBASE_API_KEY || "AIzaSyB3iTsYccxr0YzgY6kL-fKZOheKPnjf3Co",
+  appId: env.VITE_FIREBASE_APP_ID || "1:376089080639:web:a383ab70d5ebe5c32c198a",
   authDomain: "improvy-f470f.firebaseapp.com",
   projectId: "improvy-f470f",
   messagingSenderId: "376089080639",
@@ -29,11 +27,12 @@ export const firebaseConfig = {
 };
 
 /**
- * Whether the two values above are real yet.
+ * Whether the values above are real. They are — this stays so that swapping
+ * the project, or a build with the env vars pointing at nothing, fails in
+ * words rather than in a stack trace.
  *
- * The page does not hide behind this. Every button is live and the flow is
- * the finished one; if the registration is still missing, Firebase says so
- * on the attempt and describeAuthError turns that into a sentence. A page
- * that refuses to try is harder to finish than one that tries and reports.
+ * The page does not hide behind it either way: every button is live, and a
+ * registration Firebase does not recognise is reported on the attempt, in a
+ * sentence, by describeAuthError.
  */
 export const firebaseReady = !firebaseConfig.apiKey.startsWith("REPLACE_ME");
