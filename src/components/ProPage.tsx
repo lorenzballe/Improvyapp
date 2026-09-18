@@ -16,7 +16,6 @@ import {
   proStatus,
   confirmCheckout,
   createCheckoutSession,
-  debugGrantPro,
   describeAuthError,
   describeCheckoutError,
   type User,
@@ -67,9 +66,7 @@ export default function ProPage({ onBack, onOpenTerms, onOpenPrivacy }: ProPageP
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
       >
-        {route.kind === "preview" ? (
-          <SuccessView user={user} sessionId={null} onBack={onBack} preview />
-        ) : route.kind === "success" ? (
+        {route.kind === "success" ? (
           <SuccessView user={user} sessionId={route.sessionId} onBack={onBack} />
         ) : (
           <BuyView
@@ -86,16 +83,10 @@ export default function ProPage({ onBack, onOpenTerms, onOpenPrivacy }: ProPageP
 
 // ── The hash, read ──────────────────────────────────────────────────────────
 
-type ProRoute =
-  | { kind: "buy" }
-  | { kind: "cancel" }
-  | { kind: "success"; sessionId: string | null }
-  /** The success screen, drawn without a purchase behind it. See PreviewNote. */
-  | { kind: "preview" };
+type ProRoute = { kind: "buy" } | { kind: "cancel" } | { kind: "success"; sessionId: string | null };
 
 function readProRoute(): ProRoute {
   const hash = window.location.hash.replace(/^#\/?/, "");
-  if (hash.startsWith("pro/preview")) return { kind: "preview" };
   if (hash.startsWith("pro/success")) {
     // Stripe puts the id in the query string, before the fragment. Older
     // links carried it inside the fragment instead; both are read, because a
@@ -247,8 +238,6 @@ function BuyView({
 
                 {payError && <p className="text-xs text-rose-400 font-medium">{payError}</p>}
 
-                <DebugPanel signedIn={signedIn} onGranted={() => setStatus("pro")} />
-
                 <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] text-zinc-500">
                   <span className="inline-flex items-center gap-1.5"><Lock className="w-3 h-3" /> Cards, Apple Pay, Google Pay</span>
                   <span className="inline-flex items-center gap-1.5"><ShieldCheck className="w-3 h-3" /> Handled by Stripe — your card never reaches us</span>
@@ -318,34 +307,17 @@ function BuyView({
 
 // ── After Stripe ────────────────────────────────────────────────────────────
 
-function SuccessView({
-  user,
-  sessionId,
-  onBack,
-  preview = false,
-}: {
-  user: User | null | undefined;
-  sessionId: string | null;
-  onBack: () => void;
-  /**
-   * Draw the screen a buyer lands on, with nothing bought.
-   *
-   * It asks the server nothing and is granted nothing — a page that could
-   * hand out a licence on a click would hand it to everyone who found the
-   * click. This is the same pixels, for looking at.
-   */
-  preview?: boolean;
-}) {
+function SuccessView({ user, sessionId, onBack }: { user: User | null | undefined; sessionId: string | null; onBack: () => void }) {
   // Two ways this page can end well, and it tries both. First it hands the
   // session id to the server, which asks Stripe directly — that works even if
   // the webhook is not wired up yet, which on day one it may not be. Then it
   // falls back to asking whether the licence has landed, a few times over
   // half a minute, before saying anything discouraging.
-  const [landed, setLanded] = useState<"waiting" | "yes" | "slow">(preview ? "yes" : "waiting");
+  const [landed, setLanded] = useState<"waiting" | "yes" | "slow">("waiting");
   const tries = useRef(0);
 
   useEffect(() => {
-    if (preview || !user) return;
+    if (!user) return;
     let alive = true;
     let timer: number | undefined;
     const ask = async () => {
@@ -383,13 +355,12 @@ function SuccessView({
       alive = false;
       if (timer) window.clearTimeout(timer);
     };
-  }, [user, sessionId, preview]);
+  }, [user, sessionId]);
 
-  const signedOut = !preview && user === null;
+  const signedOut = user === null;
 
   return (
     <div className="max-w-2xl mx-auto text-center space-y-8 py-6">
-      {preview && <PreviewNote />}
       <div
         className={cn(
           "inline-flex items-center justify-center w-20 h-20 rounded-full border mb-2 transition-colors",
@@ -465,25 +436,6 @@ function StepCard({ n, title, children, done = false, active = false, dim = fals
         <h3 className="text-base sm:text-lg font-black text-white font-display tracking-tight">{title}</h3>
       </div>
       <div className="pl-0 sm:pl-13 space-y-3">{children}</div>
-    </div>
-  );
-}
-
-/**
- * Says, on the page itself, that nothing was bought.
- *
- * A screen that reads "Pro is on your account" is exactly the screen that
- * must never be mistaken for the real thing — by whoever is looking at it
- * now, and by whoever finds the link later.
- */
-function PreviewNote() {
-  return (
-    <div className="rounded-2xl border border-[#e5a93c]/30 bg-[#e5a93c]/[0.07] px-5 py-4 text-left">
-      <p className="text-xs font-extrabold uppercase tracking-[0.2em] text-[#e5a93c]">Preview</p>
-      <p className="mt-2 text-xs text-zinc-300 leading-relaxed">
-        This is the screen a buyer lands on after paying, drawn with nothing behind it. No payment was
-        made and no licence was granted — the account you are signed in with is unchanged.
-      </p>
     </div>
   );
 }
@@ -645,85 +597,6 @@ function BrandButton({ label, onClick, disabled, icon }: { label: string; onClic
       )}
       {label}
     </button>
-  );
-}
-
-/**
- * Two ways to walk the flow without a card, for whoever is building this.
- *
- * Shown only when the address carries `debug` — #pro?debug. That is tidiness,
- * not safety: the grant is refused by the server for anyone it is not
- * configured for, so pressing it does nothing for a stranger.
- *
- *  · Preview — draws the post-purchase screen with nothing behind it.
- *  · Grant   — actually writes the licence on this account, so the app
- *              unlocks on a phone too. Marked `source: "debug"`, and the
- *              same button takes it back.
- */
-function DebugPanel({ signedIn, onGranted }: { signedIn: boolean; onGranted: () => void }) {
-  const [busy, setBusy] = useState(false);
-  const [note, setNote] = useState<string | null>(null);
-  if (!window.location.hash.includes("debug")) return null;
-
-  const run = async (grant: boolean) => {
-    if (busy) return;
-    setBusy(true);
-    setNote(null);
-    try {
-      await debugGrantPro(grant);
-      if (grant) {
-        onGranted();
-        window.location.hash = "pro/success";
-      } else {
-        setNote("Pro taken back. Reload to see the page as a buyer would.");
-      }
-    } catch (e: unknown) {
-      const code = String((e as { code?: string })?.code ?? "");
-      setNote(
-        code.endsWith("permission-denied")
-          ? "Not for this account. Sign in with the address the server is configured for."
-          : code.endsWith("unauthenticated")
-            ? "Sign in first."
-            : "That did not work. The console has the reason."
-      );
-      console.error("debug grant", code, e);
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  return (
-    <div className="rounded-xl border border-dashed border-white/15 p-3 space-y-2">
-      <p className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-zinc-500">Debug</p>
-      <div className="flex flex-wrap gap-2">
-        <button
-          type="button"
-          onClick={() => {
-            window.location.hash = "pro/preview";
-          }}
-          className="flex-1 min-w-[9rem] py-2.5 rounded-lg border border-white/15 text-[11px] font-bold uppercase tracking-wider text-zinc-400 hover:text-white hover:border-white/35 cursor-pointer transition-colors"
-        >
-          Preview the screen
-        </button>
-        <button
-          type="button"
-          disabled={!signedIn || busy}
-          onClick={() => run(true)}
-          className="flex-1 min-w-[9rem] py-2.5 rounded-lg border border-[#e5a93c]/40 bg-[#e5a93c]/10 text-[11px] font-bold uppercase tracking-wider text-[#e5a93c] hover:bg-[#e5a93c]/20 disabled:opacity-40 cursor-pointer transition-colors"
-        >
-          {busy ? "…" : "Grant Pro, no payment"}
-        </button>
-      </div>
-      <button
-        type="button"
-        disabled={!signedIn || busy}
-        onClick={() => run(false)}
-        className="w-full py-2 text-[10px] font-bold uppercase tracking-wider text-zinc-500 hover:text-white disabled:opacity-40 cursor-pointer transition-colors"
-      >
-        Take it back
-      </button>
-      {note && <p className="text-[11px] text-zinc-400 leading-relaxed">{note}</p>}
-    </div>
   );
 }
 
