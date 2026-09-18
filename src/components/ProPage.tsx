@@ -16,6 +16,7 @@ import {
   proStatus,
   confirmCheckout,
   createCheckoutSession,
+  debugGrantPro,
   describeAuthError,
   describeCheckoutError,
   type User,
@@ -246,7 +247,7 @@ function BuyView({
 
                 {payError && <p className="text-xs text-rose-400 font-medium">{payError}</p>}
 
-                <PreviewLink />
+                <DebugPanel signedIn={signedIn} onGranted={() => setStatus("pro")} />
 
                 <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] text-zinc-500">
                   <span className="inline-flex items-center gap-1.5"><Lock className="w-3 h-3" /> Cards, Apple Pay, Google Pay</span>
@@ -648,24 +649,81 @@ function BrandButton({ label, onClick, disabled, icon }: { label: string; onClic
 }
 
 /**
- * A way to look at the screen that comes after paying, without paying.
+ * Two ways to walk the flow without a card, for whoever is building this.
  *
- * Shown only when the address carries `debug` — #pro?debug — so it is there
- * for whoever is building the page and invisible to everybody else. It
- * grants nothing; it changes the address, and the page draws its other half.
+ * Shown only when the address carries `debug` — #pro?debug. That is tidiness,
+ * not safety: the grant is refused by the server for anyone it is not
+ * configured for, so pressing it does nothing for a stranger.
+ *
+ *  · Preview — draws the post-purchase screen with nothing behind it.
+ *  · Grant   — actually writes the licence on this account, so the app
+ *              unlocks on a phone too. Marked `source: "debug"`, and the
+ *              same button takes it back.
  */
-function PreviewLink() {
+function DebugPanel({ signedIn, onGranted }: { signedIn: boolean; onGranted: () => void }) {
+  const [busy, setBusy] = useState(false);
+  const [note, setNote] = useState<string | null>(null);
   if (!window.location.hash.includes("debug")) return null;
+
+  const run = async (grant: boolean) => {
+    if (busy) return;
+    setBusy(true);
+    setNote(null);
+    try {
+      await debugGrantPro(grant);
+      if (grant) {
+        onGranted();
+        window.location.hash = "pro/success";
+      } else {
+        setNote("Pro taken back. Reload to see the page as a buyer would.");
+      }
+    } catch (e: unknown) {
+      const code = String((e as { code?: string })?.code ?? "");
+      setNote(
+        code.endsWith("permission-denied")
+          ? "Not for this account. Sign in with the address the server is configured for."
+          : code.endsWith("unauthenticated")
+            ? "Sign in first."
+            : "That did not work. The console has the reason."
+      );
+      console.error("debug grant", code, e);
+    } finally {
+      setBusy(false);
+    }
+  };
+
   return (
-    <button
-      type="button"
-      onClick={() => {
-        window.location.hash = "pro/preview";
-      }}
-      className="w-full py-2.5 rounded-xl border border-dashed border-white/20 text-[11px] font-bold uppercase tracking-wider text-zinc-400 hover:text-white hover:border-white/40 cursor-pointer transition-colors"
-    >
-      Preview the post-purchase screen
-    </button>
+    <div className="rounded-xl border border-dashed border-white/15 p-3 space-y-2">
+      <p className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-zinc-500">Debug</p>
+      <div className="flex flex-wrap gap-2">
+        <button
+          type="button"
+          onClick={() => {
+            window.location.hash = "pro/preview";
+          }}
+          className="flex-1 min-w-[9rem] py-2.5 rounded-lg border border-white/15 text-[11px] font-bold uppercase tracking-wider text-zinc-400 hover:text-white hover:border-white/35 cursor-pointer transition-colors"
+        >
+          Preview the screen
+        </button>
+        <button
+          type="button"
+          disabled={!signedIn || busy}
+          onClick={() => run(true)}
+          className="flex-1 min-w-[9rem] py-2.5 rounded-lg border border-[#e5a93c]/40 bg-[#e5a93c]/10 text-[11px] font-bold uppercase tracking-wider text-[#e5a93c] hover:bg-[#e5a93c]/20 disabled:opacity-40 cursor-pointer transition-colors"
+        >
+          {busy ? "…" : "Grant Pro, no payment"}
+        </button>
+      </div>
+      <button
+        type="button"
+        disabled={!signedIn || busy}
+        onClick={() => run(false)}
+        className="w-full py-2 text-[10px] font-bold uppercase tracking-wider text-zinc-500 hover:text-white disabled:opacity-40 cursor-pointer transition-colors"
+      >
+        Take it back
+      </button>
+      {note && <p className="text-[11px] text-zinc-400 leading-relaxed">{note}</p>}
+    </div>
   );
 }
 

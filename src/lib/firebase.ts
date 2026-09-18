@@ -151,6 +151,18 @@ export async function confirmCheckout(sessionId: string): Promise<{ pro: boolean
   return (await call({ sessionId })).data;
 }
 
+/**
+ * Grants, or takes back, Pro on the signed-in account without a payment.
+ *
+ * The server answers only for the addresses it is configured to answer for,
+ * and for anybody else it refuses — so the button that calls this is hidden
+ * for tidiness, not for safety.
+ */
+export async function debugGrantPro(grant: boolean): Promise<{ pro: boolean }> {
+  const call = httpsCallable<{ grant: boolean }, { pro: boolean }>(functions(), "debugGrantPro");
+  return (await call({ grant })).data;
+}
+
 /** Opens a Stripe Checkout for the signed-in account. Consent is required. */
 export async function createCheckoutSession(): Promise<CheckoutAnswer> {
   const call = httpsCallable<{ consent: true }, CheckoutAnswer>(functions(), "createCheckoutSession");
