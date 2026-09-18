@@ -87,8 +87,12 @@ type ProRoute = { kind: "buy" } | { kind: "cancel" } | { kind: "success"; sessio
 function readProRoute(): ProRoute {
   const hash = window.location.hash.replace(/^#\/?/, "");
   if (hash.startsWith("pro/success")) {
-    const q = hash.split("?")[1] ?? "";
-    return { kind: "success", sessionId: new URLSearchParams(q).get("session_id") };
+    // Stripe puts the id in the query string, before the fragment. Older
+    // links carried it inside the fragment instead; both are read, because a
+    // success URL somebody bookmarked has to keep working.
+    const inHash = new URLSearchParams(hash.split("?")[1] ?? "").get("session_id");
+    const inQuery = new URLSearchParams(window.location.search).get("session_id");
+    return { kind: "success", sessionId: inHash ?? inQuery };
   }
   if (hash.startsWith("pro/cancel")) return { kind: "cancel" };
   return { kind: "buy" };
