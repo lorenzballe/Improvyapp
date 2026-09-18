@@ -783,98 +783,6 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
           {/* Cosmic radial glow on the root CTA sector */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-gradient-to-tr from-purple-600/5 via-rose-500/5 to-amber-500/5 rounded-full blur-[140px] pointer-events-none select-none" />
 
-          {/* Real-time Interactive Glowing Keys Logo in background layer - IDENTICAL IN SIZE AND BEHAVIOR TO MAIN SCREEN */}
-          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none select-none flex items-center justify-center -z-10 overflow-visible">
-            <div ref={logoRef} className="relative w-full max-w-6xl aspect-square overflow-hidden flex items-center justify-center">
-              {/* LAYER 1: BASE DIM KEYS FOR DEPTH (0 opacity for absolute black when not hovering) */}
-              <div className="absolute inset-0 select-none opacity-0 pointer-events-none">
-                <svg
-                  viewBox="0 0 512 512"
-                  className="w-full h-full max-h-[1100px] object-contain absolute inset-0 select-none pointer-events-none"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <defs>
-                    <linearGradient id="bg-key-1-grad-dim" x1="256" y1="104" x2="256" y2="408" gradientUnits="userSpaceOnUse">
-                      <stop offset="0%" stopColor="#7e3ff2" />
-                      <stop offset="50%" stopColor="#26bcff" />
-                      <stop offset="100%" stopColor="#13f5ab" />
-                    </linearGradient>
-                    <linearGradient id="bg-key-2-grad-dim" x1="256" y1="104" x2="256" y2="408" gradientUnits="userSpaceOnUse">
-                      <stop offset="0%" stopColor="#923ff2" />
-                      <stop offset="40%" stopColor="#668bf6" />
-                      <stop offset="100%" stopColor="#85f33d" />
-                    </linearGradient>
-                    <linearGradient id="bg-key-3-grad-dim" x1="256" y1="104" x2="256" y2="408" gradientUnits="userSpaceOnUse">
-                      <stop offset="0%" stopColor="#d633af" />
-                      <stop offset="45%" stopColor="#f5527a" />
-                      <stop offset="100%" stopColor="#ecf52a" />
-                    </linearGradient>
-                    <linearGradient id="bg-key-4-grad-dim" x1="256" y1="104" x2="256" y2="408" gradientUnits="userSpaceOnUse">
-                      <stop offset="0%" stopColor="#f52d50" />
-                      <stop offset="45%" stopColor="#fa7f23" />
-                      <stop offset="100%" stopColor="#fbcb18" />
-                    </linearGradient>
-                  </defs>
-                  
-                  <path d="M 110,104 L 130,104 A 12,12 0 0 1 142,116 L 142,276 C 142,284 156,284 156,292 L 156,392 A 16,16 0 0 1 140,408 L 93,408 A 16,16 0 0 1 77,392 L 77,120 A 16,16 0 0 1 93,104 Z" fill="url(#bg-key-1-grad-dim)" />
-                  <path d="M 196,104 L 223,104 A 12,12 0 0 1 235,116 L 235,276 C 235,284 249,284 249,292 L 249,392 A 16,16 0 0 1 233,408 L 186,408 A 16,16 0 0 1 170,392 L 170,292 C 170,284 184,284 184,276 L 184,116 A 12,12 0 0 1 196,104 Z" fill="url(#bg-key-2-grad-dim)" />
-                  <path d="M 289,104 L 316,104 A 12,12 0 0 1 328,116 L 328,276 C 328,284 342,284 342,292 L 342,392 A 16,16 0 0 1 326,408 L 279,408 A 16,16 0 0 1 263,392 L 263,292 C 263,284 277,284 277,276 L 277,116 A 12,12 0 0 1 289,104 Z" fill="url(#bg-key-3-grad-dim)" />
-                  <path d="M 382,104 L 419,104 A 16,16 0 0 1 435,120 L 435,392 A 16,16 0 0 1 419,408 L 372,408 A 16,16 0 0 1 356,392 L 356,292 C 356,284 370,284 370,276 L 370,116 A 12,12 0 0 1 382,104 Z" fill="url(#bg-key-4-grad-dim)" />
-                </svg>
-              </div>
-
-              {/* LAYER 2: INTERACTIVE ILLUMINATED MULTI-COLOR KEYS (Responsive to hover & coordinates) */}
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  pointerEvents: "none",
-                  opacity: isHoveringLogo ? 1.0 : 0,
-                  filter: isHoveringLogo ? "saturate(1.45)" : "none",
-                  maskImage: `radial-gradient(ellipse 35% 35% at ${mousePct.x}% ${mousePct.y}%, black 0%, rgba(0, 0, 0, 0.8) 25%, rgba(0, 0, 0, 0.45) 55%, rgba(0, 0, 0, 0.12) 80%, transparent 100%)`,
-                  WebkitMaskImage: `radial-gradient(ellipse 35% 35% at ${mousePct.x}% ${mousePct.y}%, black 0%, rgba(0, 0, 0, 0.8) 25%, rgba(0, 0, 0, 0.45) 55%, rgba(0, 0, 0, 0.12) 80%, transparent 100%)`,
-                  transition: "opacity 0.4s ease-out, filter 0.3s ease-out"
-                }}
-                className="absolute inset-0 select-none pointer-events-none"
-              >
-                <svg
-                  viewBox="0 0 512 512"
-                  className="w-full h-full max-h-[1100px] object-contain absolute inset-0 select-none pointer-events-none"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <defs>
-                    <linearGradient id="bg-key-1-grad-why" x1="256" y1="104" x2="256" y2="408" gradientUnits="userSpaceOnUse">
-                      <stop offset="0%" stopColor="#7e3ff2" />
-                      <stop offset="50%" stopColor="#26bcff" />
-                      <stop offset="100%" stopColor="#13f5ab" />
-                    </linearGradient>
-                    <linearGradient id="bg-key-2-grad-why" x1="256" y1="104" x2="256" y2="408" gradientUnits="userSpaceOnUse">
-                      <stop offset="0%" stopColor="#923ff2" />
-                      <stop offset="40%" stopColor="#668bf6" />
-                      <stop offset="100%" stopColor="#85f33d" />
-                    </linearGradient>
-                    <linearGradient id="bg-key-3-grad-why" x1="256" y1="104" x2="256" y2="408" gradientUnits="userSpaceOnUse">
-                      <stop offset="0%" stopColor="#d633af" />
-                      <stop offset="45%" stopColor="#f5527a" />
-                      <stop offset="100%" stopColor="#ecf52a" />
-                    </linearGradient>
-                    <linearGradient id="bg-key-4-grad-why" x1="256" y1="104" x2="256" y2="408" gradientUnits="userSpaceOnUse">
-                      <stop offset="0%" stopColor="#f52d50" />
-                      <stop offset="45%" stopColor="#fa7f23" />
-                      <stop offset="100%" stopColor="#fbcb18" />
-                    </linearGradient>
-                  </defs>
-
-                  <path d="M 110,104 L 130,104 A 12,12 0 0 1 142,116 L 142,276 C 142,284 156,284 156,292 L 156,392 A 16,16 0 0 1 140,408 L 93,408 A 16,16 0 0 1 77,392 L 77,120 A 16,16 0 0 1 93,104 Z" fill="url(#bg-key-1-grad-why)" />
-                  <path d="M 196,104 L 223,104 A 12,12 0 0 1 235,116 L 235,276 C 235,284 249,284 249,292 L 249,392 A 16,16 0 0 1 233,408 L 186,408 A 16,16 0 0 1 170,392 L 170,292 C 170,284 184,284 184,276 L 184,116 A 12,12 0 0 1 196,104 Z" fill="url(#bg-key-2-grad-why)" />
-                  <path d="M 289,104 L 316,104 A 12,12 0 0 1 328,116 L 328,276 C 328,284 342,284 342,292 L 342,392 A 16,16 0 0 1 326,408 L 279,408 A 16,16 0 0 1 263,392 L 263,292 C 263,284 277,284 277,276 L 277,116 A 12,12 0 0 1 289,104 Z" fill="url(#bg-key-3-grad-why)" />
-                  <path d="M 382,104 L 419,104 A 16,16 0 0 1 435,120 L 435,392 A 16,16 0 0 1 419,408 L 372,408 A 16,16 0 0 1 356,392 L 356,292 C 356,284 370,284 370,276 L 370,116 A 12,12 0 0 1 382,104 Z" fill="url(#bg-key-4-grad-why)" />
-                </svg>
-              </div>
-            </div>
-          </div>
 
           <div className="relative text-center max-w-3xl mx-auto w-full z-10">
 
@@ -973,7 +881,103 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
       </div>
 
       {/* Closing FAQ — the last doubts, after the method has been explained */}
-      <FaqSection />
+      <div className="relative overflow-visible">
+        {/* The keys, behind the very bottom of the page. They used to sit
+            behind the closing call to action, which was the bottom until the
+            questions were added after it. */}
+        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none select-none flex items-center justify-center -z-10 overflow-visible">
+              <div ref={logoRef} className="relative w-full max-w-6xl aspect-square overflow-hidden flex items-center justify-center">
+                {/* LAYER 1: BASE DIM KEYS FOR DEPTH (0 opacity for absolute black when not hovering) */}
+                <div className="absolute inset-0 select-none opacity-0 pointer-events-none">
+                  <svg
+                    viewBox="0 0 512 512"
+                    className="w-full h-full max-h-[1100px] object-contain absolute inset-0 select-none pointer-events-none"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <defs>
+                      <linearGradient id="bg-key-1-grad-dim" x1="256" y1="104" x2="256" y2="408" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stopColor="#7e3ff2" />
+                        <stop offset="50%" stopColor="#26bcff" />
+                        <stop offset="100%" stopColor="#13f5ab" />
+                      </linearGradient>
+                      <linearGradient id="bg-key-2-grad-dim" x1="256" y1="104" x2="256" y2="408" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stopColor="#923ff2" />
+                        <stop offset="40%" stopColor="#668bf6" />
+                        <stop offset="100%" stopColor="#85f33d" />
+                      </linearGradient>
+                      <linearGradient id="bg-key-3-grad-dim" x1="256" y1="104" x2="256" y2="408" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stopColor="#d633af" />
+                        <stop offset="45%" stopColor="#f5527a" />
+                        <stop offset="100%" stopColor="#ecf52a" />
+                      </linearGradient>
+                      <linearGradient id="bg-key-4-grad-dim" x1="256" y1="104" x2="256" y2="408" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stopColor="#f52d50" />
+                        <stop offset="45%" stopColor="#fa7f23" />
+                        <stop offset="100%" stopColor="#fbcb18" />
+                      </linearGradient>
+                    </defs>
+                  
+                    <path d="M 110,104 L 130,104 A 12,12 0 0 1 142,116 L 142,276 C 142,284 156,284 156,292 L 156,392 A 16,16 0 0 1 140,408 L 93,408 A 16,16 0 0 1 77,392 L 77,120 A 16,16 0 0 1 93,104 Z" fill="url(#bg-key-1-grad-dim)" />
+                    <path d="M 196,104 L 223,104 A 12,12 0 0 1 235,116 L 235,276 C 235,284 249,284 249,292 L 249,392 A 16,16 0 0 1 233,408 L 186,408 A 16,16 0 0 1 170,392 L 170,292 C 170,284 184,284 184,276 L 184,116 A 12,12 0 0 1 196,104 Z" fill="url(#bg-key-2-grad-dim)" />
+                    <path d="M 289,104 L 316,104 A 12,12 0 0 1 328,116 L 328,276 C 328,284 342,284 342,292 L 342,392 A 16,16 0 0 1 326,408 L 279,408 A 16,16 0 0 1 263,392 L 263,292 C 263,284 277,284 277,276 L 277,116 A 12,12 0 0 1 289,104 Z" fill="url(#bg-key-3-grad-dim)" />
+                    <path d="M 382,104 L 419,104 A 16,16 0 0 1 435,120 L 435,392 A 16,16 0 0 1 419,408 L 372,408 A 16,16 0 0 1 356,392 L 356,292 C 356,284 370,284 370,276 L 370,116 A 12,12 0 0 1 382,104 Z" fill="url(#bg-key-4-grad-dim)" />
+                  </svg>
+                </div>
+
+                {/* LAYER 2: INTERACTIVE ILLUMINATED MULTI-COLOR KEYS (Responsive to hover & coordinates) */}
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    pointerEvents: "none",
+                    opacity: isHoveringLogo ? 1.0 : 0,
+                    filter: isHoveringLogo ? "saturate(1.45)" : "none",
+                    maskImage: `radial-gradient(ellipse 35% 35% at ${mousePct.x}% ${mousePct.y}%, black 0%, rgba(0, 0, 0, 0.8) 25%, rgba(0, 0, 0, 0.45) 55%, rgba(0, 0, 0, 0.12) 80%, transparent 100%)`,
+                    WebkitMaskImage: `radial-gradient(ellipse 35% 35% at ${mousePct.x}% ${mousePct.y}%, black 0%, rgba(0, 0, 0, 0.8) 25%, rgba(0, 0, 0, 0.45) 55%, rgba(0, 0, 0, 0.12) 80%, transparent 100%)`,
+                    transition: "opacity 0.4s ease-out, filter 0.3s ease-out"
+                  }}
+                  className="absolute inset-0 select-none pointer-events-none"
+                >
+                  <svg
+                    viewBox="0 0 512 512"
+                    className="w-full h-full max-h-[1100px] object-contain absolute inset-0 select-none pointer-events-none"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <defs>
+                      <linearGradient id="bg-key-1-grad-why" x1="256" y1="104" x2="256" y2="408" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stopColor="#7e3ff2" />
+                        <stop offset="50%" stopColor="#26bcff" />
+                        <stop offset="100%" stopColor="#13f5ab" />
+                      </linearGradient>
+                      <linearGradient id="bg-key-2-grad-why" x1="256" y1="104" x2="256" y2="408" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stopColor="#923ff2" />
+                        <stop offset="40%" stopColor="#668bf6" />
+                        <stop offset="100%" stopColor="#85f33d" />
+                      </linearGradient>
+                      <linearGradient id="bg-key-3-grad-why" x1="256" y1="104" x2="256" y2="408" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stopColor="#d633af" />
+                        <stop offset="45%" stopColor="#f5527a" />
+                        <stop offset="100%" stopColor="#ecf52a" />
+                      </linearGradient>
+                      <linearGradient id="bg-key-4-grad-why" x1="256" y1="104" x2="256" y2="408" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stopColor="#f52d50" />
+                        <stop offset="45%" stopColor="#fa7f23" />
+                        <stop offset="100%" stopColor="#fbcb18" />
+                      </linearGradient>
+                    </defs>
+
+                    <path d="M 110,104 L 130,104 A 12,12 0 0 1 142,116 L 142,276 C 142,284 156,284 156,292 L 156,392 A 16,16 0 0 1 140,408 L 93,408 A 16,16 0 0 1 77,392 L 77,120 A 16,16 0 0 1 93,104 Z" fill="url(#bg-key-1-grad-why)" />
+                    <path d="M 196,104 L 223,104 A 12,12 0 0 1 235,116 L 235,276 C 235,284 249,284 249,292 L 249,392 A 16,16 0 0 1 233,408 L 186,408 A 16,16 0 0 1 170,392 L 170,292 C 170,284 184,284 184,276 L 184,116 A 12,12 0 0 1 196,104 Z" fill="url(#bg-key-2-grad-why)" />
+                    <path d="M 289,104 L 316,104 A 12,12 0 0 1 328,116 L 328,276 C 328,284 342,284 342,292 L 342,392 A 16,16 0 0 1 326,408 L 279,408 A 16,16 0 0 1 263,392 L 263,292 C 263,284 277,284 277,276 L 277,116 A 12,12 0 0 1 289,104 Z" fill="url(#bg-key-3-grad-why)" />
+                    <path d="M 382,104 L 419,104 A 16,16 0 0 1 435,120 L 435,392 A 16,16 0 0 1 419,408 L 372,408 A 16,16 0 0 1 356,392 L 356,292 C 356,284 370,284 370,276 L 370,116 A 12,12 0 0 1 382,104 Z" fill="url(#bg-key-4-grad-why)" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+        <FaqSection />
+      </div>
 
     </div>
   );
