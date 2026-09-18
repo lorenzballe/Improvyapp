@@ -33,8 +33,8 @@ interface ProPageProps {
  * (because a licence has to belong to someone the app can recognise), the
  * payment (Stripe, in a page of its own), and the app (which finds the
  * licence the moment that account signs in). The page reads its own state
- * off the hash — #pro/success?session_id=… and #pro/cancel are where Stripe
- * sends people back — so it needs no router.
+ * off the hash — #pro/success and #pro/cancel are where Stripe sends people
+ * back, with the session id in the query — so it needs no router.
  *
  * The site never touches money and never grants anything. The Cloud Function
  * checks who is asking and hands back a Stripe URL; the webhook writes the
@@ -249,7 +249,7 @@ function BuyView({
           </StepCard>
 
           {/* Step 3 */}
-          <StepCard n="3" title="Play" active={false} dim={status !== "pro"}>
+          <StepCard n="3" title="Start training" active={false} dim={status !== "pro"}>
             <p className="text-xs text-zinc-400 leading-relaxed">
               Install Improvy, open Settings, and sign in with this same account. Pro is on. Nothing to restore, nothing to type.
             </p>
