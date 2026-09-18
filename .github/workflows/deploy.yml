@@ -23,8 +23,8 @@ jobs:
         with:
           node-version: 20
       - run: npm ci
-      # Relative base so assets resolve whether served at the repo subpath
-      # (username.github.io/repo/) or a root domain.
+      # Relative base: the site is served from the root of improvy.app, and a
+      # relative base also survives a preview served from a subpath.
       - run: npx vite build --base=./
       - uses: actions/configure-pages@v5
         with:

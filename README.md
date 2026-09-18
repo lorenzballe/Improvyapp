@@ -2,14 +2,14 @@
 
 What the app is, the method behind it, and the place to buy Pro.
 
-Live at <https://lorenzballe.github.io/Improvyapp/>. A static Vite + React
+Live at <https://improvy.app>. A static Vite + React
 site; `.github/workflows/deploy.yml` builds it and publishes it to GitHub
 Pages on every push to `main`.
 
 ```
 npm install
 npm run dev      # http://localhost:5173
-npm run build    # dist/, with a relative base so it works under /Improvyapp/
+npm run build    # dist/, with a relative base so it works at a root domain
 npm run lint     # tsc
 ```
 
