@@ -4,6 +4,7 @@ import { ArrowLeft, Check, ShieldCheck, Lock, Mail, RefreshCw, Sparkle, LogOut, 
 import { cn } from "../lib/utils";
 import { PRO_PRICE_WEB, PRO_PRICE_STORE } from "../lib/pricing";
 import { StoreBadges } from "./StoreBadges";
+import { identifyVisitor, resetVisitor, track } from "../lib/analytics";
 import {
   watchUser,
   finishRedirectSignIn,
@@ -48,7 +49,13 @@ export default function ProPage({ onBack, onOpenTerms, onOpenPrivacy }: ProPageP
   useEffect(() => {
     // A redirect sign-in (mobile Safari) lands back here with the answer.
     finishRedirectSignIn();
-    return watchUser((u) => setUser(u));
+    return watchUser((u) => {
+      setUser(u);
+      // The same id the app identifies with, so somebody who buys here and
+      // plays there is one person in the funnel rather than two.
+      if (u) identifyVisitor(u.uid);
+      else resetVisitor();
+    });
   }, []);
 
   return (
@@ -137,6 +144,7 @@ function BuyView({
     if (!user || !consent || paying) return;
     setPaying(true);
     setPayError(null);
+    track("checkout_opened");
     try {
       const answer = await createCheckoutSession();
       if (answer.alreadyPro) {
@@ -327,6 +335,7 @@ function SuccessView({ user, sessionId, onBack }: { user: User | null | undefine
           if (!alive) return;
           if (c.pro) {
             setLanded("yes");
+            track("purchase_confirmed", { by: "return" });
             return;
           }
         }
@@ -338,6 +347,7 @@ function SuccessView({ user, sessionId, onBack }: { user: User | null | undefine
         if (!alive) return;
         if (s.pro) {
           setLanded("yes");
+          track("purchase_confirmed", { by: "webhook" });
           return;
         }
       } catch {
@@ -474,12 +484,13 @@ function SignInForm() {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<{ text: string; ok: boolean } | null>(null);
 
-  const run = async (go: () => Promise<void>) => {
+  const run = async (go: () => Promise<void>, method: string) => {
     if (busy) return;
     setBusy(true);
     setMessage(null);
     try {
       await go();
+      track("signed_in", { method });
     } catch (e) {
       const text = describeAuthError(e);
       if (text) setMessage({ text, ok: false });
@@ -496,13 +507,13 @@ function SignInForm() {
     await run(async () => {
       await resetPassword(email);
       setMessage({ text: `Reset email sent to ${email.trim()}.`, ok: true });
-    });
+    }, "password_reset");
   };
 
   return (
     <div className="space-y-3">
-      <BrandButton label="Continue with Apple" onClick={() => run(signInWithApple)} disabled={busy} icon="apple" />
-      <BrandButton label="Continue with Google" onClick={() => run(signInWithGoogle)} disabled={busy} icon="google" />
+      <BrandButton label="Continue with Apple" onClick={() => run(signInWithApple, "apple")} disabled={busy} icon="apple" />
+      <BrandButton label="Continue with Google" onClick={() => run(signInWithGoogle, "google")} disabled={busy} icon="google" />
       <p className="text-[11px] text-zinc-500 text-center leading-relaxed">
         Either one makes the account if you do not have it yet.
       </p>
@@ -526,7 +537,10 @@ function SignInForm() {
             className="overflow-hidden space-y-3"
             onSubmit={(e) => {
               e.preventDefault();
-              run(() => (creating ? createWithEmail(email, password) : signInWithEmail(email, password)));
+              run(
+                () => (creating ? createWithEmail(email, password) : signInWithEmail(email, password)),
+                creating ? "email_new" : "email",
+              );
             }}
           >
             <input

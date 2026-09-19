@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, lazy, Suspense } from "react";
+import { trackView } from "./lib/analytics";
 import { motion } from "motion/react";
 import { BackgroundGradientAnimation } from "./components/BackgroundGradientAnimation";
 import { ButtonColorful } from "./components/ButtonColorful";
@@ -119,6 +120,13 @@ export default function App() {
     if (!already && window.location.hash !== hash) {
       window.history.replaceState(null, "", window.location.pathname + window.location.search + hash);
     }
+  }, [currentPage]);
+
+  // One event per screen somebody actually looks at. The site is a single
+  // document with a hash router, so without this PostHog would see one visit
+  // and never learn that anybody reached the Pro page.
+  useEffect(() => {
+    trackView(currentPage);
   }, [currentPage]);
 
   // Someone pasting or editing #privacy / #terms in the address bar.
