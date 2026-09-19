@@ -92,9 +92,11 @@ function Text_03({
  * footer. A hash keeps them linkable on GitHub Pages without a router or a
  * 404 fallback. Everything else stays plain in-page state.
  */
-function pageFromHash(): "privacy" | "terms" | "pro" | null {
+function pageFromHash(): "privacy" | "terms" | "pro" | "about" | null {
   const hash = window.location.hash.replace(/^#\/?/, "");
-  if (hash === "privacy" || hash === "terms") return hash;
+  // #about is addressed because the stores ask for a support URL, and a
+  // support URL that lands on a marketing page is not support information.
+  if (hash === "privacy" || hash === "terms" || hash === "about") return hash;
   // #pro, and the two addresses Stripe sends people back to:
   // #pro/success?session_id=… and #pro/cancel. ProPage reads the rest.
   if (hash === "pro" || hash.startsWith("pro/")) return "pro";
@@ -113,7 +115,11 @@ export default function App() {
   // shared. replaceState rather than push: the in-page Back buttons already
   // handle navigation, and we don't want to grow the history stack.
   useEffect(() => {
-    const addressed = currentPage === "privacy" || currentPage === "terms" || currentPage === "pro";
+    const addressed =
+      currentPage === "privacy" ||
+      currentPage === "terms" ||
+      currentPage === "pro" ||
+      currentPage === "about";
     const hash = addressed ? `#${currentPage}` : "";
     // #pro/success?… and #pro/cancel are still "pro": leave them be.
     const already = currentPage === "pro" && window.location.hash.startsWith("#pro");
