@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- The site is a single page whose sections (#pro, #about, #privacy, #terms)
+     are hash fragments, and a fragment is not a URL to a crawler. So there is
+     exactly one entry — the canonical address every redirect lands on. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://improvy.app/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>

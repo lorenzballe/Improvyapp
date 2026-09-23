@@ -1,0 +1,6 @@
+# improvy.app — one page, hash-routed. Everything is crawlable; the sitemap
+# names the only URL that exists, so Google does not go looking for more.
+User-agent: *
+Allow: /
+
+Sitemap: https://improvy.app/sitemap.xml
