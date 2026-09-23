@@ -8,17 +8,21 @@ import { TypeWriter } from "./components/TypeWriter";
 import { TestimonialsColumn, testimonialsList } from "./components/TestimonialsColumn";
 import { Sparkle, ArrowUp, Check, X } from "lucide-react";
 import { WhyImprovySection } from "./components/WhyImprovySection";
-import { WhyImprovyPage } from "./components/WhyImprovyPage";
-import TermsOfServicePage from "./components/TermsOfServicePage";
-import PrivacyPolicyPage from "./components/PrivacyPolicyPage";
-import AboutPage from "./components/AboutPage";
-import FeedbackPage from "./components/FeedbackPage";
 import { cn } from "./lib/utils";
 import { PRO_PRICE_WEB, PRO_PRICE_NOTE, PRO_PRICE_STORE_NOTE } from "./lib/pricing";
 // Only the Pro page needs Firebase and the checkout client, and they are
 // most of the JavaScript on the site. Nobody reading the home page pays for
 // them.
+// Every page but home is its own chunk: someone landing on the site should
+// download the page they are looking at, not the terms of service.
 const ProPage = lazy(() => import("./components/ProPage"));
+const WhyImprovyPage = lazy(() =>
+  import("./components/WhyImprovyPage").then((m) => ({ default: m.WhyImprovyPage }))
+);
+const TermsOfServicePage = lazy(() => import("./components/TermsOfServicePage"));
+const PrivacyPolicyPage = lazy(() => import("./components/PrivacyPolicyPage"));
+const AboutPage = lazy(() => import("./components/AboutPage"));
+const FeedbackPage = lazy(() => import("./components/FeedbackPage"));
 import { StoreBadges } from "./components/StoreBadges";
 import heroHomeScreenImg from "./assets/images/method_home_progress.webp";
 
@@ -296,6 +300,7 @@ export default function App() {
         </header>
 
         {/* PAGES COMPONENT */}
+        <Suspense fallback={<div className="min-h-[60vh]" aria-busy="true" />}>
         {currentPage === "why" ? (
           <WhyImprovyPage onBack={() => {
             setCurrentPage("home");
@@ -361,11 +366,17 @@ export default function App() {
               >
                 Train your <Text_03 text="Mind" />{" "}
                 to{" "}
-                <TypeWriter 
-                  className="italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#e5a93c] via-rose-500 to-purple-500 font-serif"
-                  strings={["improvise", "visualize", "compose", "transpose"]}
-                  holdDelay={10000}
-                />
+                {/* The typed word changes every few seconds, so a crawler or a
+                    screen reader catches whichever it lands on. They get the
+                    whole sentence instead; the animation is for eyes only. */}
+                <span className="sr-only">improvise, visualize, compose and transpose in every key</span>
+                <span aria-hidden="true">
+                  <TypeWriter 
+                    className="italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#e5a93c] via-rose-500 to-purple-500 font-serif"
+                    strings={["improvise", "visualize", "compose", "transpose"]}
+                    holdDelay={10000}
+                  />
+                </span>
               </motion.h1>
 
               {/* Subheading text in clean neural tone */}
@@ -863,6 +874,7 @@ export default function App() {
         </div>
           </>
         )}
+        </Suspense>
 
         {/* EDITORIAL PREMIUM FOOTER */}
         <motion.footer 

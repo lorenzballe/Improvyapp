@@ -40,11 +40,11 @@ const FAQS: Faq[] = [
   },
   {
     q: "Why one payment instead of a subscription?",
-    a: "Because this is a skill you build once and keep. Pro is a single in-app purchase through Apple or Google — no renewals, no expiry, and it restores free on any device you own.",
+    a: "Because this is a skill you build once and keep. Pro is a single payment — in the app through Apple or Google, or here on the site — with no renewals and no expiry, and it follows you to every device you sign in on.",
   },
   {
     q: "Do I need an account?",
-    a: "No. Improvy has no sign-up and no login: your progress lives on your device, and the only data collected is anonymous usage that helps fix bugs — which you can switch off in Settings.",
+    a: "Not to practise. Your progress lives on your device and the app works without ever signing in. An account is optional — it carries Pro across your phones — and it is needed only to buy Pro on this site, so the purchase has somewhere to go.",
   },
 ];
 

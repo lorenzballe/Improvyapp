@@ -1,4 +1,4 @@
-import posthog from "posthog-js";
+import type { PostHog } from "posthog-js";
 
 /**
  * What happens on this site, in the same place as what happens in the app.
@@ -20,50 +20,82 @@ const HOST = "https://eu.i.posthog.com";
 
 let started = false;
 
+/**
+ * The SDK is ~180 KB, and nothing on screen needs it: it used to sit in the
+ * first bundle, ahead of the hero, on the one metric Google ranks a landing
+ * page by. Now it loads after the page is up, and every call made before it
+ * arrives waits in this queue instead of being lost.
+ */
+let client: PostHog | null = null;
+const pending: Array<(ph: PostHog) => void> = [];
+
+function withClient(fn: (ph: PostHog) => void) {
+  if (client) {
+    try {
+      fn(client);
+    } catch {
+      /* ignore */
+    }
+  } else {
+    pending.push(fn);
+  }
+}
+
 export function startAnalytics() {
   if (started || typeof window === "undefined") return;
   started = true;
-  try {
-    posthog.init(KEY, {
-      api_host: HOST,
-      // Europe, like the app's. Data does not leave the EU.
-      ui_host: "https://eu.posthog.com",
-      persistence: "memory",
-      disable_session_recording: true,
-      // The page is one document with a hash router, so PostHog's own
-      // pageview detection would see a single visit forever. track() below
-      // reports each view instead.
-      capture_pageview: false,
-      capture_pageleave: false,
-      autocapture: false,
-      // No cookie means no cross-site anything; saying so explicitly keeps it
-      // true if a later version of the SDK changes its defaults.
-      cross_subdomain_cookie: false,
-      // IP becomes a coarse city server-side, as in the app. The privacy
-      // policy already says so.
-      ip: true,
-    });
-  } catch {
-    /* analytics must never be the reason a page does not load */
-  }
+  const load = () =>
+    import("posthog-js")
+      .then(({ default: posthog }) => {
+        posthog.init(KEY, {
+          api_host: HOST,
+          // Europe, like the app's. Data does not leave the EU.
+          ui_host: "https://eu.posthog.com",
+          persistence: "memory",
+          disable_session_recording: true,
+          // The page is one document with a hash router, so PostHog's own
+          // pageview detection would see a single visit forever. track()
+          // below reports each view instead.
+          capture_pageview: false,
+          capture_pageleave: false,
+          autocapture: false,
+          // No cookie means no cross-site anything; saying so explicitly
+          // keeps it true if a later version of the SDK changes its defaults.
+          cross_subdomain_cookie: false,
+          // IP becomes a coarse city server-side, as in the app. The privacy
+          // policy already says so.
+          ip: true,
+        });
+        client = posthog;
+        for (const fn of pending.splice(0)) {
+          try {
+            fn(posthog);
+          } catch {
+            /* ignore */
+          }
+        }
+      })
+      .catch(() => {
+        /* analytics must never be the reason a page does not load */
+      });
+  // After the page has painted, when the browser has nothing better to do.
+  const idle = (window as Window & { requestIdleCallback?: (cb: () => void) => void })
+    .requestIdleCallback;
+  if (idle) idle(load);
+  else window.setTimeout(load, 1500);
 }
 
 /** One view of one screen. The hash is the screen. */
 export function trackView(screen: string) {
-  try {
-    posthog.capture("$pageview", { screen, $current_url: window.location.href });
-  } catch {
-    /* ignore */
-  }
+  // The address now, not when the SDK arrives: by then the hash may be
+  // another screen's.
+  const url = window.location.href;
+  withClient((posthog) => posthog.capture("$pageview", { screen, $current_url: url }));
 }
 
 /** Anything worth counting that is not a view. */
 export function track(event: string, properties?: Record<string, unknown>) {
-  try {
-    posthog.capture(event, properties);
-  } catch {
-    /* ignore */
-  }
+  withClient((posthog) => posthog.capture(event, properties));
 }
 
 /**
@@ -73,18 +105,10 @@ export function track(event: string, properties?: Record<string, unknown>) {
  * old one would then belong to nobody.
  */
 export function identifyVisitor(uid: string) {
-  try {
-    posthog.identify(uid, { signed_in_on: "web" });
-  } catch {
-    /* ignore */
-  }
+  withClient((posthog) => posthog.identify(uid, { signed_in_on: "web" }));
 }
 
 /** Back to nobody on sign-out. */
 export function resetVisitor() {
-  try {
-    posthog.reset();
-  } catch {
-    /* ignore */
-  }
+  withClient((posthog) => posthog.reset());
 }

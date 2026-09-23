@@ -11,8 +11,21 @@
       content="Every note is just a number in its key. Improvy trains you to see that number instantly, in all 12 keys, so improvising, transposing and composing stop being mental math. Free to start; Pro is a one-time €19.99 on this site."
     />
 
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="author" content="Lorenzo Ballestrazzi" />
+    <!-- Safari on iPhone shows a native "Open / Get" banner for the app. -->
+    <meta name="apple-itunes-app" content="app-id=6775236759" />
+
     <link rel="icon" type="image/png" href="./favicon.png" />
     <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <link rel="manifest" href="./site.webmanifest" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap"
+    />
 
     <!-- Link previews (WhatsApp, Messages, X, LinkedIn…) -->
     <meta property="og:url" content="https://improvy.app/" />
@@ -24,7 +37,11 @@
       property="og:description"
       content="Train your mind to see every note before you play it. Scale-degree mastery across all 12 keys, for real musical fluency."
     />
+    <meta property="og:locale" content="en_US" />
     <meta property="og:image" content="https://improvy.app/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Improvy — see every note as its scale degree, in all 12 keys" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Improvy — Instant Scale-Degree Mastery" />
     <meta
@@ -32,9 +49,46 @@
       content="Train your mind to see every note before you play it. Scale-degree mastery across all 12 keys."
     />
     <meta name="twitter:image" content="https://improvy.app/og-image.png" />
+    <meta name="twitter:image:alt" content="Improvy — see every note as its scale degree, in all 12 keys" />
   </head>
   <body>
-    <div id="root"></div>
+    <!-- What a crawler, a link preview or a browser without JavaScript reads.
+         React replaces all of it on the first render, and it says nothing the
+         rendered page does not: it is the same page, in plain HTML. -->
+    <div id="root">
+      <main style="max-width:720px;margin:0 auto;padding:48px 16px;color:#e4e4e7;font-family:system-ui,sans-serif;line-height:1.6">
+        <h1>Improvy — train your mind to improvise, visualize, compose and transpose in every key</h1>
+        <p>
+          Every note is just a number in its key. Improvy trains you to see that number
+          instantly — in all 12 keys — so improvising, transposing and composing stop being
+          mental math and start feeling like second nature.
+        </p>
+        <h2>What you train</h2>
+        <ul>
+          <li>Diatonic mode: the seven scale degrees of any major key.</li>
+          <li>Chromatic mode: every degree, with jazz extensions.</li>
+          <li>Note-to-Number: name the degree of any note, in any key.</li>
+          <li>…Of What?: given a note and the degree it plays, find the key.</li>
+          <li>Pocket Mode: hands-free, voice-led practice with the screen locked.</li>
+          <li>Adaptive difficulty, daily challenge and per-key analytics.</li>
+        </ul>
+        <h2>Free to start, one payment for Pro</h2>
+        <p>
+          Start free in the key of C. Improvy Pro unlocks all 12 keys and every mode for a
+          single lifetime payment — no subscription.
+        </p>
+        <p>
+          <a href="https://apps.apple.com/app/id6775236759">Download on the App Store</a> ·
+          <a href="https://play.google.com/store/apps/details?id=com.improvy.app">Get it on Google Play</a> ·
+          <a href="#pro">Get Improvy Pro</a>
+        </p>
+        <p>
+          <a href="#about">About &amp; support</a> ·
+          <a href="#privacy">Privacy policy</a> ·
+          <a href="#terms">Terms of service</a>
+        </p>
+      </main>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

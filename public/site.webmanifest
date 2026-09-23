@@ -1,0 +1,13 @@
+{
+  "name": "Improvy",
+  "short_name": "Improvy",
+  "description": "See every note as its scale degree, instantly, in all 12 keys.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#06030c",
+  "theme_color": "#06030c",
+  "icons": [
+    { "src": "apple-touch-icon.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "favicon.png", "sizes": "64x64", "type": "image/png" }
+  ]
+}
