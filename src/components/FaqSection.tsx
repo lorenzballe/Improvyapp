@@ -32,11 +32,11 @@ const FAQS: Faq[] = [
   },
   {
     q: "I'm a complete beginner. Is it too advanced?",
-    a: "Start free in the key of C with the seven diatonic degrees, at the gentlest difficulty. The chromatic degrees, jazz extensions and faster timers are there when you want them, not before.",
+    a: "Start free with the seven diatonic degrees, in any key, at the gentlest difficulty. The chromatic degrees, jazz extensions and faster timers are there when you want them, not before.",
   },
   {
     q: "What do I get for free?",
-    a: "Diatonic training in the key of C, plus the …Of What? and Pocket modes in full. It's a real practice tool, not a demo — Pro adds the other 11 keys, Chromatic Mode with extensions, Note-to-Number, Custom Mode, adaptive difficulty and deep analytics.",
+    a: "Diatonic Mode in all 12 keys, Chromatic Mode in C, and Note-to-Number, …Of What? and Pocket Mode with the scale degrees — plus the home-screen widgets. It's a real practice tool, not a demo. Pro adds Chromatic Mode in the other 11 keys with the jazz extensions, every chromatic degree in the other modes, Custom Mode, adaptive difficulty and deep analytics for every key.",
   },
   {
     q: "Why one payment instead of a subscription?",

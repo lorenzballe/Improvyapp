@@ -61,7 +61,7 @@ export default function PrivacyPolicyPage({ onBack }: PrivacyPolicyPageProps) {
             </span>
           </h1>
           <div className="space-y-4 text-sm sm:text-base text-zinc-400 font-light leading-relaxed max-w-2xl pt-2">
-            <p className="text-xs uppercase tracking-widest text-zinc-500">Last updated: 13 September 2026</p>
+            <p className="text-xs uppercase tracking-widest text-zinc-500">Last updated: 24 September 2026</p>
             <p>
               Improvy (“App”, “we”, “us”) — the app and this website — is developed and operated by Lorenzo
               Ballestrazzi (“Developer”). This Privacy Policy explains what information we collect, how we use it,
@@ -85,8 +85,10 @@ export default function PrivacyPolicyPage({ onBack }: PrivacyPolicyPageProps) {
             </p>
             <Point title="Anonymous usage events">
               Sessions started and completed, the training mode selected, accuracy and average response time, the
-              key and difficulty chosen, and level-up or streak milestones. On their own these contain nothing that
-              identifies you.
+              key and difficulty chosen, and level-up or streak milestones. For a purchase in the app we also record
+              its outcome — the product, its price and currency, the store's transaction reference, and whether it
+              was a test purchase — and, when the store refuses one, which app store installed Improvy. On their own
+              these contain nothing that identifies you.
             </Point>
             <Point title="Account data (only if you sign in)">
               Signing in with Apple, Google or an email address creates an account with a unique identifier, your
@@ -116,6 +118,12 @@ export default function PrivacyPolicyPage({ onBack }: PrivacyPolicyPageProps) {
               The app has a feedback box in Settings and this site has a feedback page. We receive only what you
               type: the message, the category, and — if you fill it in — a reply address. Leaving it blank keeps the
               message anonymous.
+            </Point>
+            <Point title="Cookies on this website">
+              This website sets no advertising or analytics cookies, and its analytics keep nothing in your browser
+              once the tab is closed — which is why there is no cookie banner. If you sign in to buy Pro, Firebase
+              keeps your sign-in in your browser's storage so that you stay signed in; that storage is strictly
+              necessary for the purchase and is removed when you sign out.
             </Point>
           </Section>
 
@@ -150,7 +158,8 @@ export default function PrivacyPolicyPage({ onBack }: PrivacyPolicyPageProps) {
             </Point>
             <Point title="RevenueCat — purchase management">
               Verifies and manages in-app purchase status from the store receipt. If you sign in, your account
-              identifier is used as the RevenueCat customer identifier so the purchase follows you.{" "}
+              identifier is used as the RevenueCat customer identifier so the purchase follows you, and your email
+              address is attached to it.{" "}
               <Ext href="https://www.revenuecat.com/privacy">RevenueCat Privacy Policy</Ext>.
             </Point>
             <Point title="PostHog — analytics">

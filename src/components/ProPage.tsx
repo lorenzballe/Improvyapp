@@ -283,12 +283,12 @@ function BuyView({
 
               <ul className="relative space-y-3 text-xs text-zinc-100 font-sans font-light border-t border-white/[0.05] pt-5">
                 {[
-                  ["All 12 keys", "unlocked, every mode"],
-                  ["Chromatic Mode", "with the jazz extensions — 9 · 11 · 13, altered"],
-                  ["Note-to-Number, Custom, …Of What? and Pocket", "the whole set"],
+                  ["Chromatic Mode in all 12 keys", "diatonic is already free everywhere"],
+                  ["Jazz extensions", "9 · 11 · 13, altered"],
+                  ["Custom Mode", "train exactly the degrees you choose"],
+                  ["Every degree", "chromatic Note-to-Number, all 15 in …Of What?, all 12 in Pocket"],
                   ["Adaptive Difficulty", "the clock tightens while you are sharp"],
-                  ["Deep analytics", "keyboard heatmaps, response times, weak spots"],
-                  ["Home-screen widgets", "twelve of them"],
+                  ["Deep analytics in every key", "keyboard heatmaps, response times, weak spots"],
                 ].map(([b, rest]) => (
                   <li key={b} className="flex items-start gap-3">
                     <span className="mt-0.5 w-5 h-5 rounded-full bg-[#e5a93c]/12 border border-[#e5a93c]/25 flex items-center justify-center shrink-0">

@@ -542,7 +542,7 @@ export default function App() {
                 </span>
               </h2>
               <p className="text-xs sm:text-sm text-zinc-400 font-light max-w-xl mx-auto leading-relaxed">
-                Start free in the key of C. Go Pro once, for good — {PRO_PRICE_WEB} here, a euro less than in the app stores, no subscription.
+                Start free — diatonic training in every key. Go Pro once, for good — {PRO_PRICE_WEB} here, a euro less than in the app stores, no subscription.
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto items-stretch">
@@ -582,13 +582,13 @@ export default function App() {
                         <div className="w-5 h-5 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
                           <Check className="w-3 h-3 text-emerald-400 stroke-[3]" />
                         </div>
-                        <span>Diatonic training in the key of C</span>
+                        <span>Diatonic Mode in all 12 keys, Chromatic in C</span>
                       </li>
                       <li className="flex items-center gap-3">
                         <div className="w-5 h-5 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
                           <Check className="w-3 h-3 text-emerald-400 stroke-[3]" />
                         </div>
-                        <span><span className="font-semibold text-white">…Of What?</span> & <span className="font-semibold text-white">Pocket Mode</span> included free</span>
+                        <span><span className="font-semibold text-white">Note-to-Number</span>, <span className="font-semibold text-white">…Of What?</span> & <span className="font-semibold text-white">Pocket</span> with the scale degrees</span>
                       </li>
                       <li className="flex items-center gap-3">
                         <div className="w-5 h-5 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
@@ -600,13 +600,13 @@ export default function App() {
                         <div className="w-5 h-5 rounded-full bg-zinc-800/20 border border-white/5 flex items-center justify-center shrink-0">
                           <X className="w-3 h-3 text-zinc-500" />
                         </div>
-                        <span className="line-through">Chromatic Mode & the other 11 keys</span>
+                        <span className="line-through">Chromatic Mode in the other 11 keys</span>
                       </li>
                       <li className="flex items-center gap-3 text-zinc-650 opacity-45">
                         <div className="w-5 h-5 rounded-full bg-zinc-800/20 border border-white/5 flex items-center justify-center shrink-0">
                           <X className="w-3 h-3 text-zinc-500" />
                         </div>
-                        <span className="line-through">Note-to-Number & Custom modes</span>
+                        <span className="line-through">Custom Mode & every chromatic degree</span>
                       </li>
                       <li className="flex items-center gap-3 text-zinc-650 opacity-45">
                         <div className="w-5 h-5 rounded-full bg-zinc-800/20 border border-white/5 flex items-center justify-center shrink-0">
@@ -676,19 +676,19 @@ export default function App() {
                           <div className="w-5 h-5 rounded-full bg-[#e5a93c]/12 border border-[#e5a93c]/25 flex items-center justify-center shrink-0">
                             <Check className="w-3 h-3 text-[#e5a93c] stroke-[3]" />
                           </div>
-                          <span className="font-semibold text-white">Complete unlock of all 12 keys</span>
+                          <span className="font-semibold text-white">Chromatic Mode in all 12 keys</span>
                         </li>
                         <li className="flex items-center gap-3">
                           <div className="w-5 h-5 rounded-full bg-[#e5a93c]/12 border border-[#e5a93c]/25 flex items-center justify-center shrink-0">
                             <Check className="w-3 h-3 text-[#e5a93c] stroke-[3]" />
                           </div>
-                          <span><span className="font-semibold text-white">Chromatic Mode</span> + jazz extensions (9 · 11 · 13, altered)</span>
+                          <span>Jazz extensions — <span className="font-semibold text-white">9 · 11 · 13</span>, altered</span>
                         </li>
                         <li className="flex items-center gap-3">
                           <div className="w-5 h-5 rounded-full bg-[#e5a93c]/12 border border-[#e5a93c]/25 flex items-center justify-center shrink-0">
                             <Check className="w-3 h-3 text-[#e5a93c] stroke-[3]" />
                           </div>
-                          <span>Note-to-Number, Custom, <span className="font-semibold text-white">…Of What?</span> & <span className="font-semibold text-white">Pocket</span> unlocks</span>
+                          <span><span className="font-semibold text-white">Custom Mode</span>, plus every degree in Note-to-Number, …Of What? & Pocket</span>
                         </li>
                         <li className="flex items-center gap-3">
                           <div className="w-5 h-5 rounded-full bg-[#e5a93c]/12 border border-[#e5a93c]/25 flex items-center justify-center shrink-0">

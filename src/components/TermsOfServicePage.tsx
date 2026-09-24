@@ -51,7 +51,7 @@ export default function TermsOfServicePage({ onBack }: TermsOfServicePageProps) 
             </span>
           </h1>
           <div className="space-y-4 text-sm sm:text-base text-zinc-400 font-light leading-relaxed max-w-2xl pt-2">
-            <p className="text-xs uppercase tracking-widest text-zinc-500">Last updated: 13 September 2026</p>
+            <p className="text-xs uppercase tracking-widest text-zinc-500">Last updated: 24 September 2026</p>
             <p>Please read these Terms of Service (“Terms”) carefully before using Improvy or buying Improvy Pro.</p>
           </div>
         </div>
