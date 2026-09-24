@@ -85,6 +85,11 @@ export function startAnalytics() {
   else window.setTimeout(load, 1500);
 }
 
+/** Properties every later event of this visit carries — e.g. the creator ref. */
+export function tagVisit(props: Record<string, string>) {
+  withClient((posthog) => posthog.register(props));
+}
+
 /** One view of one screen. The hash is the screen. */
 export function trackView(screen: string) {
   // The address now, not when the SDK arrives: by then the hash may be

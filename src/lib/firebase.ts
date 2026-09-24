@@ -15,6 +15,7 @@ import {
   type User,
 } from "firebase/auth";
 import { getFunctions, httpsCallable } from "firebase/functions";
+import { getRef } from "./referral";
 import { firebaseConfig, firebaseReady } from "./firebase-config";
 
 /**
@@ -153,8 +154,13 @@ export async function confirmCheckout(sessionId: string): Promise<{ pro: boolean
 
 /** Opens a Stripe Checkout for the signed-in account. Consent is required. */
 export async function createCheckoutSession(): Promise<CheckoutAnswer> {
-  const call = httpsCallable<{ consent: true }, CheckoutAnswer>(functions(), "createCheckoutSession");
-  return (await call({ consent: true })).data;
+  const call = httpsCallable<{ consent: true; ref?: string }, CheckoutAnswer>(
+    functions(),
+    "createCheckoutSession"
+  );
+  // The creator who sent them, so the sale is credited — see lib/referral.ts.
+  const ref = getRef();
+  return (await call(ref ? { consent: true, ref } : { consent: true })).data;
 }
 
 /**

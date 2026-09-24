@@ -1,4 +1,5 @@
 import { cn } from "../lib/utils";
+import { withCampaign } from "../lib/referral";
 
 /**
  * The two store badges. One place, because they appear on the home page and
@@ -18,7 +19,7 @@ export function StoreBadges({ className, compact = false }: { className?: string
   return (
     <div className={cn("flex flex-wrap gap-4", className)}>
       <a
-        href={APP_STORE_URL}
+        href={withCampaign(APP_STORE_URL)}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Download Improvy on the App Store"
@@ -35,7 +36,7 @@ export function StoreBadges({ className, compact = false }: { className?: string
       </a>
 
       <a
-        href={PLAY_STORE_URL}
+        href={withCampaign(PLAY_STORE_URL)}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Get Improvy on Google Play"
