@@ -11,8 +11,8 @@
  * Anything that prints a price imports it from here. It used to be written
  * out by hand in more than one place, and the copies drifted.
  */
-export const PRO_PRICE_WEB = "€19.99";
-export const PRO_PRICE_STORE = "€20.99";
+export const PRO_PRICE_WEB = "€18.99";
+export const PRO_PRICE_STORE = "€19.99";
 
 /** Sits beside the figure on the pricing card. */
 export const PRO_PRICE_NOTE = "one-time · lifetime";

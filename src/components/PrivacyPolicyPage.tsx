@@ -123,7 +123,7 @@ export default function PrivacyPolicyPage({ onBack }: PrivacyPolicyPageProps) {
               This website sets no advertising or analytics cookies, and its analytics keep nothing in your browser
               once the tab is closed — which is why there is no cookie banner. If you arrive through a creator's
               link (improvy.app/?ref=…), that creator's name is kept for the open tab only and attached to your visit
-              and, if you buy, to the payment, so we know whom to thank. If you sign in to buy Pro, Firebase
+              and, if you buy, to the payment together with any discount code you used, so we know whom to thank. If you sign in to buy Pro, Firebase
               keeps your sign-in in your browser's storage so that you stay signed in; that storage is strictly
               necessary for the purchase and is removed when you sign out.
             </Point>

@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { ArrowLeft, Check, ShieldCheck, Lock, Mail, RefreshCw, Sparkle, LogOut, CircleCheck, Hourglass } from "lucide-react";
+import { ArrowLeft, Check, ShieldCheck, Lock, Mail, RefreshCw, Sparkle, LogOut, CircleCheck, Hourglass, Ticket, X } from "lucide-react";
 import { cn } from "../lib/utils";
 import { PRO_PRICE_WEB, PRO_PRICE_STORE } from "../lib/pricing";
 import { StoreBadges } from "./StoreBadges";
 import { identifyVisitor, resetVisitor, track } from "../lib/analytics";
+import { getRef } from "../lib/referral";
 import {
   watchUser,
   finishRedirectSignIn,
@@ -20,6 +21,8 @@ import {
   describeAuthError,
   describeCheckoutError,
   type User,
+  quotePromo,
+  type PromoQuote,
 } from "../lib/firebase";
 
 interface ProPageProps {
@@ -124,6 +127,60 @@ function BuyView({
   const [paying, setPaying] = useState(false);
   const [payError, setPayError] = useState<string | null>(null);
 
+  // A discount code: typed here, or the one belonging to the creator whose
+  // link brought this visitor, filled in by itself. The server says what it
+  // is worth, so the price shown is the price Stripe will charge.
+  const [promo, setPromo] = useState<PromoQuote | null>(null);
+  const [codeInput, setCodeInput] = useState("");
+  const [codeBusy, setCodeBusy] = useState(false);
+  const [codeError, setCodeError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!getRef()) return;
+    let alive = true;
+    quotePromo()
+      .then((q) => {
+        if (!alive || !q.valid) return;
+        setPromo(q);
+        setCodeInput(q.code ?? "");
+        track("promo_applied", { code: q.code, auto: true });
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const applyCode = async () => {
+    const code = codeInput.trim();
+    if (!code || codeBusy) return;
+    setCodeBusy(true);
+    setCodeError(null);
+    try {
+      const q = await quotePromo(code);
+      if (q.valid) {
+        setPromo(q);
+        track("promo_applied", { code: q.code, auto: false });
+      } else {
+        setPromo(null);
+        setCodeError("That code doesn't exist or has expired.");
+        track("promo_rejected", { code });
+      }
+    } catch {
+      setCodeError("Couldn't check the code. Try again in a moment.");
+    } finally {
+      setCodeBusy(false);
+    }
+  };
+
+  const removeCode = () => {
+    setPromo(null);
+    setCodeInput("");
+    setCodeError(null);
+  };
+
+  const price = promo?.valid ? formatEuro(promo.amount) : PRO_PRICE_WEB;
+
   // Signed in: is this account Pro already? Nobody should pay twice.
   useEffect(() => {
     let alive = true;
@@ -146,7 +203,7 @@ function BuyView({
     setPayError(null);
     track("checkout_opened");
     try {
-      const answer = await createCheckoutSession();
+      const answer = await createCheckoutSession(promo?.valid ? promo.code : undefined);
       if (answer.alreadyPro) {
         setStatus("pro");
         return;
@@ -215,7 +272,7 @@ function BuyView({
           </StepCard>
 
           {/* Step 2 */}
-          <StepCard n="2" title={`Pay ${PRO_PRICE_WEB}`} done={status === "pro"} active={step2Open} dim={!signedIn}>
+          <StepCard n="2" title={`Pay ${price}`} done={status === "pro"} active={step2Open} dim={!signedIn}>
             {status === "pro" ? (
               <div className="space-y-4">
                 <p className="text-sm text-white font-medium">This account already has Pro. There is nothing to pay.</p>
@@ -226,6 +283,18 @@ function BuyView({
               <p className="text-xs text-zinc-500">Checking this account…</p>
             ) : (
               <div className="space-y-5">
+                <PromoField
+                  promo={promo}
+                  value={codeInput}
+                  busy={codeBusy}
+                  error={codeError}
+                  onChange={(v) => {
+                    setCodeInput(v);
+                    setCodeError(null);
+                  }}
+                  onApply={applyCode}
+                  onRemove={removeCode}
+                />
                 <label className={cn("flex items-start gap-3 cursor-pointer select-none", !signedIn && "pointer-events-none")}>
                   <span
                     className={cn(
@@ -242,7 +311,7 @@ function BuyView({
                   </span>
                 </label>
 
-                <PayButton disabled={!signedIn || !consent || paying} busy={paying} onClick={pay} />
+                <PayButton price={price} disabled={!signedIn || !consent || paying} busy={paying} onClick={pay} />
 
                 {payError && <p className="text-xs text-rose-400 font-medium">{payError}</p>}
 
@@ -276,7 +345,10 @@ function BuyView({
                   <h2 className="text-2xl font-black font-display tracking-tight text-white mt-1">Improvy Pro</h2>
                 </div>
                 <div className="text-right">
-                  <div className="text-4xl font-black text-white font-sans tracking-tight leading-none">{PRO_PRICE_WEB}</div>
+                  {promo?.valid && (
+                    <div className="text-sm text-zinc-500 line-through font-sans font-semibold leading-none mb-1">{PRO_PRICE_WEB}</div>
+                  )}
+                  <div className="text-4xl font-black text-white font-sans tracking-tight leading-none">{price}</div>
                   <div className="text-[10px] text-zinc-500 uppercase tracking-widest font-bold mt-1">once · forever</div>
                 </div>
               </div>
@@ -614,7 +686,7 @@ function BrandButton({ label, onClick, disabled, icon }: { label: string; onClic
   );
 }
 
-function PayButton({ disabled, busy, onClick }: { disabled: boolean; busy: boolean; onClick: () => void }) {
+function PayButton({ price, disabled, busy, onClick }: { price: string; disabled: boolean; busy: boolean; onClick: () => void }) {
   return (
     <div className="relative group/btn w-full rounded-xl">
       <div className={cn("absolute -inset-[3.5px] rounded-xl bg-gradient-to-r from-rose-500 via-purple-600 via-[#e5a93c] to-amber-500 blur-[10px] transition-all duration-500", disabled ? "opacity-0" : "opacity-40 group-hover/btn:opacity-75")} />
@@ -630,7 +702,7 @@ function PayButton({ disabled, busy, onClick }: { disabled: boolean; busy: boole
         )}
       >
         {busy ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Sparkle className="w-3.5 h-3.5" />}
-        <span>{busy ? "Opening Stripe…" : `Pay ${PRO_PRICE_WEB} with Stripe`}</span>
+        <span>{busy ? "Opening Stripe…" : `Pay ${price} with Stripe`}</span>
       </button>
     </div>
   );
@@ -641,6 +713,75 @@ function Faq({ q, a }: { q: string; a: React.ReactNode }) {
     <div className="space-y-1">
       <p className="text-[11px] font-bold text-white uppercase tracking-wider">{q}</p>
       <p className="text-[11.5px] text-zinc-400 font-light leading-relaxed">{a}</p>
+    </div>
+  );
+}
+
+/** Cents to the site's own price style: 1709 → "€17.09". */
+function formatEuro(cents: number) {
+  return `€${(cents / 100).toFixed(2)}`;
+}
+
+/**
+ * "Have a code?" — the creator codes people hear in videos (MARCO10). The
+ * same codes work in the app. Applied, it becomes a line that says what it
+ * took off, with a way to take it back out.
+ */
+function PromoField({
+  promo,
+  value,
+  busy,
+  error,
+  onChange,
+  onApply,
+  onRemove,
+}: {
+  promo: PromoQuote | null;
+  value: string;
+  busy: boolean;
+  error: string | null;
+  onChange: (v: string) => void;
+  onApply: () => void;
+  onRemove: () => void;
+}) {
+  if (promo?.valid) {
+    const off = promo.percentOff ? `${promo.percentOff}% off` : promo.amountOff ? `${formatEuro(promo.amountOff)} off` : "applied";
+    return (
+      <div className="flex items-center gap-3 rounded-xl border border-[#e5a93c]/40 bg-[#e5a93c]/[0.08] px-4 py-3">
+        <Ticket className="w-4 h-4 text-[#e5a93c] shrink-0" />
+        <div className="flex-1 min-w-0">
+          <div className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#e5a93c]">Code {promo.code}</div>
+          <div className="text-xs text-white font-semibold">{off} — you pay {formatEuro(promo.amount)}</div>
+        </div>
+        <button type="button" onClick={onRemove} aria-label="Remove code" className="p-1.5 rounded-md text-zinc-400 hover:text-white hover:bg-white/5 cursor-pointer">
+          <X className="w-3.5 h-3.5" />
+        </button>
+      </div>
+    );
+  }
+  return (
+    <div className="space-y-1.5">
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => onChange(e.target.value.toUpperCase())}
+          onKeyDown={(e) => e.key === "Enter" && onApply()}
+          placeholder="Have a code?"
+          autoCapitalize="characters"
+          spellCheck={false}
+          className="flex-1 min-w-0 rounded-xl bg-white/[0.03] border border-white/10 px-4 py-3 text-xs text-white placeholder:text-zinc-500 tracking-widest uppercase focus:outline-none focus:border-[#e5a93c]/50"
+        />
+        <button
+          type="button"
+          onClick={onApply}
+          disabled={!value.trim() || busy}
+          className="rounded-xl px-4 py-3 text-[11px] font-black uppercase tracking-widest border border-white/10 text-white bg-white/[0.04] hover:bg-white/[0.08] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+        >
+          {busy ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : "Apply"}
+        </button>
+      </div>
+      {error && <p className="text-[11px] text-rose-400 font-medium">{error}</p>}
     </div>
   );
 }

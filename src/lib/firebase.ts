@@ -152,15 +152,41 @@ export async function confirmCheckout(sessionId: string): Promise<{ pro: boolean
   return (await call({ sessionId })).data;
 }
 
-/** Opens a Stripe Checkout for the signed-in account. Consent is required. */
-export async function createCheckoutSession(): Promise<CheckoutAnswer> {
-  const call = httpsCallable<{ consent: true; ref?: string }, CheckoutAnswer>(
+/** What a discount code does to the price, as the server will charge it. */
+export type PromoQuote = {
+  valid: boolean;
+  code?: string;
+  percentOff?: number | null;
+  amountOff?: number | null;
+  regularAmount?: number;
+  /** In cents. */
+  amount: number;
+  currency: string;
+};
+
+/**
+ * Checks a discount code — or, with none, the code of the creator whose link
+ * brought this visitor — and returns the price it gives. No account needed.
+ */
+export async function quotePromo(code?: string): Promise<PromoQuote> {
+  const call = httpsCallable<{ code?: string; ref?: string }, PromoQuote>(functions(), "quotePromo");
+  const ref = getRef();
+  return (await call({ ...(code ? { code } : {}), ...(ref ? { ref } : {}) })).data;
+}
+
+/**
+ * Opens a Stripe Checkout for the signed-in account. Consent is required;
+ * [code] is a discount already checked with [quotePromo], which the server
+ * checks again before applying.
+ */
+export async function createCheckoutSession(code?: string): Promise<CheckoutAnswer> {
+  const call = httpsCallable<{ consent: true; ref?: string; code?: string }, CheckoutAnswer>(
     functions(),
     "createCheckoutSession"
   );
   // The creator who sent them, so the sale is credited — see lib/referral.ts.
   const ref = getRef();
-  return (await call(ref ? { consent: true, ref } : { consent: true })).data;
+  return (await call({ consent: true, ...(ref ? { ref } : {}), ...(code ? { code } : {}) })).data;
 }
 
 /**
