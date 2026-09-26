@@ -92,6 +92,12 @@
 }
 
 /* Epic, slow orbital coordinates for background liquid blobs */
+/* Each blob on its own compositor layer, so moving it is a matrix change
+   on the GPU rather than a repaint of a page-sized area. */
+.bg-blobs > div {
+  will-change: transform;
+}
+
 .animate-first {
   animation: moveVertical 40s ease infinite;
 }
@@ -313,4 +319,17 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #2e2e3a;
+}
+
+/* Someone who has asked their system for less motion gets a still page:
+   the colour stays, the endless drifting and spinning stop. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }

@@ -18,4 +18,4 @@ export const PRO_PRICE_STORE = "€19.99";
 export const PRO_PRICE_NOTE = "one-time · lifetime";
 
 /** The app's own price, for the comparison line. */
-export const PRO_PRICE_STORE_NOTE = `${PRO_PRICE_STORE} in the App Store and on Google Play`;
+export const PRO_PRICE_STORE_NOTE = `${PRO_PRICE_STORE} in the app stores`;

@@ -78,10 +78,16 @@ export const BackgroundGradientAnimation = ({
     blendingValue,
   ]);
 
-  useEffect(() => {
-    let animationFrameId: number;
+  // The pointer glow eases toward the cursor. It used to redraw on every
+  // frame forever, cursor or no cursor; now a frame is requested only while
+  // there is distance left to cover, and the loop sleeps until the mouse
+  // moves again.
+  const frameRef = useRef<number | null>(null);
+  const kickRef = useRef<() => void>(() => {});
 
+  useEffect(() => {
     const updatePosition = () => {
+      frameRef.current = null;
       // Smooth interpolation coefficient of 11 provides a gorgeous, buttery lag
       curXRef.current += (tgXRef.current - curXRef.current) / 11;
       curYRef.current += (tgYRef.current - curYRef.current) / 11;
@@ -140,13 +146,18 @@ export const BackgroundGradientAnimation = ({
 
         interactiveRef.current.style.setProperty("--pointer-color", `rgb(${r}, ${g}, ${b})`);
       }
-      animationFrameId = requestAnimationFrame(updatePosition);
+      const moving =
+        Math.abs(tgXRef.current - curXRef.current) > 0.5 ||
+        Math.abs(tgYRef.current - curYRef.current) > 0.5;
+      if (moving) frameRef.current = requestAnimationFrame(updatePosition);
     };
 
-    updatePosition();
+    kickRef.current = () => {
+      if (frameRef.current == null) frameRef.current = requestAnimationFrame(updatePosition);
+    };
 
     return () => {
-      cancelAnimationFrame(animationFrameId);
+      if (frameRef.current != null) cancelAnimationFrame(frameRef.current);
     };
   }, []);
 
@@ -158,98 +169,86 @@ export const BackgroundGradientAnimation = ({
 
       clientXRef.current = event.clientX;
       clientYRef.current = event.clientY;
+      kickRef.current();
     }
   };
 
-  const [isSafari, setIsSafari] = useState(false);
-  useEffect(() => {
-    setIsSafari(/^((?!chrome|android).)*safari/i.test(navigator.userAgent));
-  }, []);
+  // A glow that follows a cursor is meaningless on a touch screen, where it
+  // only cost a layer the size of the page.
+  const [hasPointer] = useState(
+    () => typeof window !== "undefined" && window.matchMedia?.("(hover: hover) and (pointer: fine)").matches
+  );
+  const followPointer = interactive && hasPointer;
+
 
   return (
     <div
       ref={containerRef}
-      onMouseMove={interactive ? handleMouseMove : undefined}
+      onMouseMove={followPointer ? handleMouseMove : undefined}
       className={cn(
         "min-h-screen w-full relative overflow-hidden bg-[linear-gradient(to_bottom,var(--gradient-background-start)_0%,var(--gradient-background-end)_55%,#000000_80%)]",
         containerClassName
       )}
     >
-      <svg className="hidden">
-        <defs>
-          <filter id="blurMe">
-            <feGaussianBlur
-              in="SourceGraphic"
-              stdDeviation="12"
-              result="blur"
-            />
-            <feColorMatrix
-              in="blur"
-              mode="matrix"
-              values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -8"
-              result="goo"
-            />
-            <feBlend in="SourceGraphic" in2="goo" />
-          </filter>
-        </defs>
-      </svg>
       
       {/* Content wrapper always placed cleanly relative above the background elements */}
       <div className={cn("relative z-20 w-full h-full", className)}>{children}</div>
       
       <div
         style={{
-          maskImage: "linear-gradient(to bottom, black 0%, black 45%, transparent 68%)",
-          WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 45%, transparent 68%)"
+          maskImage: "linear-gradient(to bottom, black 0%, black 66%, transparent 100%)",
+          WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 66%, transparent 100%)"
         }}
-        className={cn(
-          "absolute inset-0 pointer-events-none z-10 select-none overflow-hidden",
-          isSafari ? "blur-3xl opacity-30" : "[filter:url(#blurMe)_blur(60px)] opacity-40"
-        )}
+        // No filter here. This layer is as tall as the whole page, and a blur
+        // (60px, over an SVG "goo" filter) on it was re-rasterised on every
+        // frame of five endless animations — what made the site crawl on
+        // computers without a strong GPU. The blobs below are soft-edged
+        // gradients instead, so there is nothing left to blur.
+        className="absolute inset-x-0 top-0 h-full max-h-[2800px] pointer-events-none z-10 select-none overflow-hidden opacity-50 bg-blobs"
       >
         <div
           className={cn(
-            "absolute [background:radial-gradient(circle_at_center,_var(--first-color)_0,_var(--first-color)_50%)_no-repeat]",
-            "[mix-blend-mode:var(--blending-value)] w-[var(--size)] h-[var(--size)] top-[calc(50%-var(--size)/2)] left-[calc(50%-var(--size)/2)]",
+            "absolute [background:radial-gradient(closest-side,_var(--first-color)_0%,_var(--first-color)_35%,_transparent_100%)_no-repeat]",
+            "w-[var(--size)] h-[var(--size)] top-[calc(50%-var(--size)/2)] left-[calc(50%-var(--size)/2)]",
             "[transform-origin:center_center]",
             "animate-first"
           )}
         ></div>
         <div
           className={cn(
-            "absolute [background:radial-gradient(circle_at_center,_var(--second-color)_0,_var(--second-color)_50%)_no-repeat]",
-            "[mix-blend-mode:var(--blending-value)] w-[var(--size)] h-[var(--size)] top-[calc(50%-var(--size)/2)] left-[calc(50%-var(--size)/2)]",
+            "absolute [background:radial-gradient(closest-side,_var(--second-color)_0%,_var(--second-color)_35%,_transparent_100%)_no-repeat]",
+            "w-[var(--size)] h-[var(--size)] top-[calc(50%-var(--size)/2)] left-[calc(50%-var(--size)/2)]",
             "animate-second"
           )}
         ></div>
         <div
           className={cn(
-            "absolute [background:radial-gradient(circle_at_center,_var(--third-color)_0,_var(--third-color)_50%)_no-repeat]",
-            "[mix-blend-mode:var(--blending-value)] w-[var(--size)] h-[var(--size)] top-[calc(50%-var(--size)/2)] left-[calc(50%-var(--size)/2)]",
+            "absolute [background:radial-gradient(closest-side,_var(--third-color)_0%,_var(--third-color)_35%,_transparent_100%)_no-repeat]",
+            "w-[var(--size)] h-[var(--size)] top-[calc(50%-var(--size)/2)] left-[calc(50%-var(--size)/2)]",
             "animate-third"
           )}
         ></div>
         <div
           className={cn(
-            "absolute [background:radial-gradient(circle_at_center,_var(--fourth-color)_0,_var(--fourth-color)_50%)_no-repeat]",
-            "[mix-blend-mode:var(--blending-value)] w-[var(--size)] h-[var(--size)] top-[calc(50%-var(--size)/2)] left-[calc(50%-var(--size)/2)]",
+            "absolute [background:radial-gradient(closest-side,_var(--fourth-color)_0%,_var(--fourth-color)_35%,_transparent_100%)_no-repeat]",
+            "w-[var(--size)] h-[var(--size)] top-[calc(50%-var(--size)/2)] left-[calc(50%-var(--size)/2)]",
             "animate-fourth"
           )}
         ></div>
         <div
           className={cn(
-            "absolute [background:radial-gradient(circle_at_center,_var(--fifth-color)_0,_var(--fifth-color)_50%)_no-repeat]",
-            "[mix-blend-mode:var(--blending-value)] w-[var(--size)] h-[var(--size)] top-[calc(50%-var(--size)/2)] left-[calc(50%-var(--size)/2)]",
+            "absolute [background:radial-gradient(closest-side,_var(--fifth-color)_0%,_var(--fifth-color)_35%,_transparent_100%)_no-repeat]",
+            "w-[var(--size)] h-[var(--size)] top-[calc(50%-var(--size)/2)] left-[calc(50%-var(--size)/2)]",
             "animate-fifth"
           )}
         ></div>
 
-        {interactive && (
+        {followPointer && (
           <div
             ref={interactiveRef}
             className={cn(
-              "absolute [background:radial-gradient(circle_at_center,_var(--pointer-color)_0,_var(--pointer-color)_50%)_no-repeat]",
-              "[mix-blend-mode:var(--blending-value)] w-[400px] h-[400px] top-0 left-0 pointer-events-none",
+              "absolute [background:radial-gradient(closest-side,_var(--pointer-color)_0%,_var(--pointer-color)_35%,_transparent_100%)_no-repeat]",
+              "w-[400px] h-[400px] top-0 left-0 pointer-events-none",
               "opacity-60"
             )}
           ></div>

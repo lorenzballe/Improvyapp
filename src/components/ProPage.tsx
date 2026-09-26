@@ -335,8 +335,8 @@ function BuyView({
 
         {/* Right: what you get */}
         <aside className="lg:col-span-5 lg:sticky lg:top-24">
-          <div className="relative overflow-hidden p-[2px] rounded-[28px] rainbow-gold-glow">
-            <div className="absolute -inset-[200%] bg-[conic-gradient(from_0deg,#e5a93c_0deg,#f43f5e_60deg,#a855f7_120deg,#3b82f6_180deg,#10b981_240deg,#e5a93c_300deg)] animate-spin-slow opacity-85" />
+          <div className="group relative overflow-hidden p-[2px] rounded-[28px] rainbow-gold-glow">
+            <div className="absolute -inset-[200%] bg-[conic-gradient(from_0deg,#e5a93c_0deg,#f43f5e_60deg,#a855f7_120deg,#3b82f6_180deg,#10b981_240deg,#e5a93c_300deg)] group-hover:animate-spin-slow opacity-85" />
             <div className="bg-[#07050d] rounded-[26.5px] p-7 sm:p-8 relative z-10 space-y-6">
               <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#e5a93c]/10 to-transparent rounded-full blur-3xl pointer-events-none" />
               <div className="relative flex items-end justify-between gap-4">

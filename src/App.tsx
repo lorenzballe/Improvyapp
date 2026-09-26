@@ -5,7 +5,7 @@ import { BackgroundGradientAnimation } from "./components/BackgroundGradientAnim
 import { ButtonColorful } from "./components/ButtonColorful";
 import { ShineBorder } from "./components/ShineBorder";
 import { TypeWriter } from "./components/TypeWriter";
-import { TestimonialsColumn, testimonialsList } from "./components/TestimonialsColumn";
+import { FaqSection } from "./components/FaqSection";
 import { Sparkle, ArrowUp, Check, X } from "lucide-react";
 import { WhyImprovySection } from "./components/WhyImprovySection";
 import { cn } from "./lib/utils";
@@ -277,11 +277,11 @@ export default function App() {
             <button onClick={() => {
               if (currentPage !== "home") {
                 setCurrentPage("home");
-                setTimeout(() => scrollToSection("testimonials"), 100);
+                setTimeout(() => scrollToSection("faq"), 100);
               } else {
-                scrollToSection("testimonials");
+                scrollToSection("faq");
               }
-            }} className="hover:text-white text-[8.5px] sm:text-[10.5px] font-sans font-extrabold uppercase tracking-[0.10em] sm:tracking-[0.18em] text-zinc-400 transition-colors duration-200 cursor-pointer focus:outline-none">Reviews</button>
+            }} className="hover:text-white text-[8.5px] sm:text-[10.5px] font-sans font-extrabold uppercase tracking-[0.10em] sm:tracking-[0.18em] text-zinc-400 transition-colors duration-200 cursor-pointer focus:outline-none">FAQ</button>
             <div className="relative group/btn p-[1.5px] rounded-xl bg-gradient-to-r from-rose-500/50 via-purple-500/50 to-[#e5a93c]/60 hover:from-rose-500 hover:via-purple-500 hover:to-[#e5a93c] bg-[length:200%_auto] animate-rainbow-shift transition-all duration-500">
               <div className="absolute -inset-[3px] rounded-xl bg-gradient-to-r from-rose-500 via-purple-500 to-[#e5a93c] opacity-0 group-hover/btn:opacity-60 blur-[8px] transition-all duration-500 bg-[length:200%_auto] group-hover/btn:animate-rainbow-shift" />
               
@@ -547,7 +547,7 @@ export default function App() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto items-stretch">
               {/* RETTANGOLO 1: Improvy Standard (Base) */}
-              <div className="group relative overflow-hidden bg-[#07040f]/60 border border-white/[0.05] p-8 sm:p-10 rounded-[28px] backdrop-blur-3xl flex flex-col justify-between text-left hover:border-white/15 transition-all duration-500 hover:-translate-y-1.5 shadow-2xl">
+              <div className="group relative overflow-hidden bg-[#07040f]/90 border border-white/[0.05] p-8 sm:p-10 rounded-[28px] flex flex-col justify-between text-left hover:border-white/15 transition-all duration-500 hover:-translate-y-1.5 shadow-2xl">
                 {/* Subtle shine sweep */}
                 <span className="absolute inset-0 w-[200%] h-full bg-gradient-to-r from-transparent via-white/[0.03] to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out pointer-events-none" />
                 <div className="absolute top-0 left-0 w-64 h-64 bg-[#e5a93c]/2 rounded-full blur-3xl pointer-events-none" />
@@ -564,7 +564,7 @@ export default function App() {
                   </div>
 
                   <p className="text-xs text-zinc-450 font-sans font-light leading-relaxed">
-                    Perfect for your first steps. Master scale-degree relationships in the key of C, plus the free …Of What? and Pocket modes.
+                    A real practice tool, free for good: the seven scale degrees in every key, plus Note-to-Number, …Of What? and Pocket Mode.
                   </p>
 
                   <div className="py-5 border-t border-b border-white/[0.05]">
@@ -572,7 +572,7 @@ export default function App() {
                       <span className="text-5xl font-black text-white font-sans tracking-tight">€0</span>
                       <span className="text-xs text-zinc-500 font-sans font-medium">/ lifetime</span>
                     </div>
-                    <span className="text-[9px] text-[#e5a93c] block mt-1.5 uppercase tracking-widest font-extrabold">RECOMMENDED TO START</span>
+                    <span className="text-[9px] text-[#e5a93c] block mt-1.5 uppercase tracking-widest font-extrabold">NO ACCOUNT · NO CARD</span>
                   </div>
 
                   <div className="space-y-4">
@@ -633,13 +633,13 @@ export default function App() {
               <div className="relative overflow-hidden p-[2px] rounded-[28px] flex flex-col justify-between text-left group hover:-translate-y-1.5 transition-all duration-500 rainbow-gold-glow">
                 
                 {/* Stunning rotating conic gradient (creates the active rainbow-gold glowing halo border effect requested by the user) */}
-                <div className="absolute -inset-[200%] bg-[conic-gradient(from_0deg,#e5a93c_0deg,#f43f5e_60deg,#a855f7_120deg,#3b82f6_180deg,#10b981_240deg,#e5a93c_300deg)] animate-spin-slow opacity-85 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute -inset-[200%] bg-[conic-gradient(from_0deg,#e5a93c_0deg,#f43f5e_60deg,#a855f7_120deg,#3b82f6_180deg,#10b981_240deg,#e5a93c_300deg)] group-hover:animate-spin-slow opacity-85 group-hover:opacity-100 transition-opacity duration-500" />
                 
                 {/* Luxury gradient shine sweep overlay */}
                 <span className="absolute inset-0 w-[200%] h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-[1200ms] ease-out pointer-events-none z-10" />
                 
                 {/* Inner Obsidian Black Card */}
-                <div className="bg-[#07050d] rounded-[26.5px] p-8 sm:p-10 flex flex-col justify-between h-full relative overflow-hidden backdrop-blur-3xl z-10">
+                <div className="bg-[#07050d] rounded-[26.5px] p-8 sm:p-10 flex flex-col justify-between h-full relative overflow-hidden z-10">
                   {/* Subtle solar flare gold background radial bleed to tone down the purple/cold neon */}
                   <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-br from-[#e5a93c]/10 to-transparent rounded-full blur-3xl pointer-events-none" />
                   <div className="absolute -bottom-10 -left-10 w-64 h-64 bg-gradient-to-tr from-purple-500/5 to-transparent rounded-full blur-2xl pointer-events-none" />
@@ -649,7 +649,7 @@ export default function App() {
                        <div>
                          {/* Symmetrical Elite Golden Label */}
                          <span className="text-[9px] font-sans font-extrabold uppercase tracking-[0.22em] text-[#e5a93c]">LIFETIME PRO UNLOCK</span>
-                         <h4 className="text-3xl font-black font-display tracking-tight text-white mt-1">Improvy Pro</h4>
+                         <h4 className="text-3xl font-black font-display tracking-tight text-white mt-1 whitespace-nowrap">Improvy Pro</h4>
                        </div>
                        <span className="text-[9px] font-black text-white bg-gradient-to-r from-amber-600 via-[#e5a93c] to-amber-500 border border-amber-400/20 px-3 py-1.5 rounded-full uppercase font-sans tracking-widest shadow-lg shadow-amber-950/20 animate-pulse">
                          Recommended
@@ -657,7 +657,7 @@ export default function App() {
                      </div>
 
                     <p className="text-xs text-zinc-350 font-sans font-light leading-relaxed">
-                      Unlock the entire chromatic keyboard, cognitive stimulation modes, and intelligent self-assessment algorithms.
+                      Every degree in every key: Chromatic Mode with the jazz extensions, Custom Mode, adaptive difficulty and deep analytics.
                     </p>
 
                     {/* Elite Gold pricing block with exactly the same font-size layout as Section 1 */}
@@ -706,7 +706,7 @@ export default function App() {
                           <div className="w-5 h-5 rounded-full bg-[#e5a93c]/12 border border-[#e5a93c]/25 flex items-center justify-center shrink-0">
                             <Check className="w-3 h-3 text-[#e5a93c] stroke-[3]" />
                           </div>
-                          <span className="text-[#e5a93c] font-medium">No future subscriptions - Lifetime access</span>
+                          <span className="text-[#e5a93c] font-medium">One payment — no subscription, ever</span>
                         </li>
                       </ul>
                     </div>
@@ -736,141 +736,18 @@ export default function App() {
 
           </motion.section>
 
-          {/* SECTION 2.5: UNLIMITED SCROLLING TESTIMONIALS */}
-          <motion.section 
-            id="testimonials"
-            custom={8}
-            initial="hidden"
-            animate="visible"
-            variants={revealVariants}
-            className="pt-20 pb-0 sm:pt-24 sm:pb-0 relative z-30 max-w-7xl mx-auto px-6 md:px-12 bg-transparent overflow-hidden"
-          >
-            <div className="text-center mb-12 space-y-4">
-              <h2 className="text-3xl sm:text-5xl font-black text-white font-display tracking-tight leading-none uppercase">
-                WHAT PEOPLE SAY ABOUT <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 via-purple-500 to-indigo-500">IMPROVY</span>
-              </h2>
-              <p className="text-xs sm:text-sm text-zinc-400 font-light max-w-xl mx-auto leading-relaxed">
-                Musicians, educators, and creatives who built their harmonic awareness and improvisation skills on our 12-key relational system.
-              </p>
-            </div>
-
-            {/* Testimonials Vertical Columns Layout */}
-            <div 
-              className="relative overflow-hidden mt-10 transition-all duration-300 w-full"
-              style={{ height: keysHeight ? `${keysHeight}px` : "600px" }}
-            >
-              {/* Real-time Interactive Glowing Keys Logo in background layer - mathematically mapped to keysHeight boundaries */}
-              <div 
-                className="absolute inset-x-0 pointer-events-none select-none flex items-center justify-center -z-10"
-                style={{ 
-                  height: logoHeight ? `${logoHeight}px` : "100%",
-                  top: logoHeight ? `-${(104 / 512) * logoHeight}px` : "0px",
-                }}
-              >
-                <div ref={logoRef} className="relative w-full max-w-6xl aspect-square overflow-hidden flex items-center justify-center">
-                  {/* LAYER 2: INTERACTIVE ILLUMINATED MULTI-COLOR KEYS */}
-                  <div
-                    style={{
-                      position: "absolute",
-                      inset: 0,
-                      pointerEvents: "none",
-                      opacity: isHoveringLogo ? 1.0 : 0,
-                      filter: isHoveringLogo ? "saturate(1.45)" : "none",
-                      maskImage: `radial-gradient(ellipse 35% 35% at ${mousePct.x}% ${mousePct.y}%, black 0%, rgba(0, 0, 0, 0.8) 25%, rgba(0, 0, 0, 0.45) 55%, rgba(0, 0, 0, 0.12) 80%, transparent 100%)`,
-                      WebkitMaskImage: `radial-gradient(ellipse 35% 35% at ${mousePct.x}% ${mousePct.y}%, black 0%, rgba(0, 0, 0, 0.8) 25%, rgba(0, 0, 0, 0.45) 55%, rgba(0, 0, 0, 0.12) 80%, transparent 100%)`,
-                      transition: "opacity 0.4s ease-out, filter 0.3s ease-out"
-                    }}
-                    className="absolute inset-0 select-none pointer-events-none"
-                  >
-                    <svg
-                      viewBox="0 0 512 512"
-                      className="w-full h-full max-h-[1100px] object-contain absolute inset-0 select-none pointer-events-none"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <defs>
-                        <linearGradient id="bg-key-1-grad" x1="256" y1="104" x2="256" y2="408" gradientUnits="userSpaceOnUse">
-                          <stop offset="0%" stopColor="#7e3ff2" />
-                          <stop offset="50%" stopColor="#26bcff" />
-                          <stop offset="100%" stopColor="#13f5ab" />
-                        </linearGradient>
-                        <linearGradient id="bg-key-2-grad" x1="256" y1="104" x2="256" y2="408" gradientUnits="userSpaceOnUse">
-                          <stop offset="0%" stopColor="#923ff2" />
-                          <stop offset="40%" stopColor="#668bf6" />
-                          <stop offset="100%" stopColor="#85f33d" />
-                        </linearGradient>
-                        <linearGradient id="bg-key-3-grad" x1="256" y1="104" x2="256" y2="408" gradientUnits="userSpaceOnUse">
-                          <stop offset="0%" stopColor="#d633af" />
-                          <stop offset="45%" stopColor="#f5527a" />
-                          <stop offset="100%" stopColor="#ecf52a" />
-                        </linearGradient>
-                        <linearGradient id="bg-key-4-grad" x1="256" y1="104" x2="256" y2="408" gradientUnits="userSpaceOnUse">
-                          <stop offset="0%" stopColor="#f52d50" />
-                          <stop offset="45%" stopColor="#fa7f23" />
-                          <stop offset="100%" stopColor="#fbcb18" />
-                        </linearGradient>
-                      </defs>
-
-                      {/* KEY 1 */}
-                      <path
-                        d="M 110,104 L 130,104 A 12,12 0 0 1 142,116 L 142,276 C 142,284 156,284 156,292 L 156,392 A 16,16 0 0 1 140,408 L 93,408 A 16,16 0 0 1 77,392 L 77,120 A 16,16 0 0 1 93,104 Z"
-                        fill="url(#bg-key-1-grad)"
-                      />
-
-                      {/* KEY 2 */}
-                      <path
-                        d="M 196,104 L 223,104 A 12,12 0 0 1 235,116 L 235,276 C 235,284 249,284 249,292 L 249,392 A 16,16 0 0 1 233,408 L 186,408 A 16,16 0 0 1 170,392 L 170,292 C 170,284 184,284 184,276 L 184,116 A 12,12 0 0 1 196,104 Z"
-                        fill="url(#bg-key-2-grad)"
-                      />
-
-                      {/* KEY 3 */}
-                      <path
-                        d="M 289,104 L 316,104 A 12,12 0 0 1 328,116 L 328,276 C 328,284 342,284 342,292 L 342,392 A 16,16 0 0 1 326,408 L 279,408 A 16,16 0 0 1 263,392 L 263,292 C 263,284 277,284 277,276 L 277,116 A 12,12 0 0 1 289,104 Z"
-                        fill="url(#bg-key-3-grad)"
-                      />
-
-                      {/* KEY 4 */}
-                      <path
-                        d="M 382,104 L 419,104 A 16,16 0 0 1 435,120 L 435,392 A 16,16 0 0 1 419,408 L 372,408 A 16,16 0 0 1 356,392 L 356,292 C 356,284 370,284 370,276 L 370,116 A 12,12 0 0 1 382,104 Z"
-                        fill="url(#bg-key-4-grad)"
-                      />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-
-              {/* Fade out top and bottom */}
-              <div 
-                className="absolute top-0 inset-x-0 h-24 md:h-32 bg-gradient-to-b from-black to-transparent z-40 pointer-events-none select-none" 
-              />
-              <div 
-                className="absolute bottom-0 inset-x-0 h-24 md:h-32 bg-gradient-to-t from-black to-transparent z-40 pointer-events-none select-none" 
-              />
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 h-full items-start">
-                {/* Column 1 */}
-                <TestimonialsColumn 
-                  testimonials={testimonialsList.slice(0, 2)} 
-                  duration={16} 
-                  className="flex flex-col gap-6"
-                />
-
-                {/* Column 2 - Hidden on Mobile but visible on desktop */}
-                <TestimonialsColumn 
-                  testimonials={testimonialsList.slice(2, 4)} 
-                  duration={22} 
-                  className="hidden md:flex flex-col gap-6"
-                />
-
-                {/* Column 3 - Hidden on tablet, visible on desktop */}
-                <TestimonialsColumn 
-                  testimonials={testimonialsList.slice(4, 6)} 
-                  duration={18} 
-                  className="hidden lg:flex flex-col gap-6"
-                />
-              </div>
-            </div>
-          </motion.section>
+          {/* Real questions, answered — in place of the testimonials that
+              used to scroll here. Those were invented people with stock
+              photos, which EU law forbids and no buyer believes; this is
+              also the FAQ the page's structured data describes, so it now
+              exists where Google looks for it. */}
+          <FaqSection
+            onContact={() => {
+              setAboutPageScrollTo("get-in-touch");
+              setAboutScrollTrigger((prev) => prev + 1);
+              setCurrentPage("about");
+            }}
+          />
         </div>
           </>
         )}
@@ -997,9 +874,9 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Column 4: Harmonics & Legal */}
+              {/* Column 4: Support & Legal */}
               <div className="flex flex-col gap-3.5">
-                <h4 className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-indigo-400">Harmonics & Legal</h4>
+                <h4 className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-indigo-400">Support & Legal</h4>
                 <div className="flex flex-col gap-2 text-xs font-medium text-zinc-400">
                   <button 
                     onClick={() => {

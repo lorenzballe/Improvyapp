@@ -362,16 +362,16 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                 <Sliders className="w-5 h-5" />
               </div>
               <h3 className="text-xl sm:text-2xl font-black text-white font-display uppercase tracking-tight">
-                The World's First Formalized Method
+                A Method Built for One Skill
               </h3>
               <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed font-light">
-                We were <strong className="text-[#e5a93c]">the first in the world</strong> to grasp, isolate, and scientifically formalize this precise cognitive processing challenge. 
+                Improvy isolates <strong className="text-[#e5a93c]">one precise skill</strong> — finding any scale degree in any key without counting — and trains only that, until it is automatic. 
               </p>
               <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed font-light">
-                We aren't offering a casual game or tedious traditional sight-reading lessons. We have decoded a practical, dynamic, and incredibly fast training system that calibrates your mind from any musical angle—delivering modern drill tools focused purely on active results.
+                It is not a game and not a sight-reading course: short, randomised drills with a clock, in every key, that measure how fast you answer and adapt to it.
               </p>
               <p className="text-[11.5px] text-white font-light">
-                Train anywhere, anytime, taking advantage of flexible, interactive mechanics for absolute creative control.
+                No instrument needed — a few minutes on your phone, anywhere, is enough.
               </p>
             </div>
 
@@ -812,7 +812,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                   },
                   {
                     icon: <Check className="w-3.5 h-3.5 text-emerald-400" />,
-                    title: "Proven Results"
+                    title: "Free to Start"
                   },
                   {
                     icon: <Check className="w-3.5 h-3.5 text-emerald-400" />,

@@ -62,10 +62,10 @@ export default function AboutPage({ onBack, scrollToSection, scrollTrigger }: Ab
           </h1>
           <div className="space-y-4 text-sm sm:text-base text-zinc-400 font-light leading-relaxed max-w-2xl pt-2">
             <p>
-              Improvy is a music-learning company dedicated to musical fluency through instant scale-degree mastery — knowing exactly where every note lives, in every key.
+              Improvy is an independent music-training app built around one skill: knowing instantly where every note lives, as a scale degree, in every key.
             </p>
             <p>
-              We design innovative tools that turn functional music theory into instant mental reflexes, so you can find any note or degree on your instrument the moment you think of it — no slow calculation, no guessing.
+              It turns the theory you already know into reflexes, so you can find any note or degree on your instrument the moment you think of it — no slow calculation, no guessing.
             </p>
           </div>
         </div>
@@ -84,26 +84,26 @@ export default function AboutPage({ onBack, scrollToSection, scrollTrigger }: Ab
               
               {/* Point 1 */}
               <div className="space-y-1 border-l border-white/5 pl-4 py-1">
-                <h3 className="text-sm font-bold text-white uppercase tracking-wider">Feeling-first</h3>
-                <p className="text-zinc-400">Start from playing, then put numbers to what you play.</p>
+                <h3 className="text-sm font-bold text-white uppercase tracking-wider">Degrees, not letters</h3>
+                <p className="text-zinc-400">Every note is trained as its number in the key — the way musicians actually think.</p>
               </div>
 
               {/* Point 2 */}
               <div className="space-y-1 border-l border-white/5 pl-4 py-1">
-                <h3 className="text-sm font-bold text-white uppercase tracking-wider">Context-driven</h3>
-                <p className="text-zinc-400">Anchor every note to a clear tonal center.</p>
+                <h3 className="text-sm font-bold text-white uppercase tracking-wider">Always in a key</h3>
+                <p className="text-zinc-400">Nothing is asked in the abstract: every question has a tonal centre.</p>
               </div>
 
               {/* Point 3 */}
               <div className="space-y-1 border-l border-white/5 pl-4 py-1">
-                <h3 className="text-sm font-bold text-white uppercase tracking-wider">Learning-paths</h3>
-                <p className="text-zinc-400">Follow a structured, step-by-step curriculum.</p>
+                <h3 className="text-sm font-bold text-white uppercase tracking-wider">Grows with you</h3>
+                <p className="text-zinc-400">Start with seven degrees in one key; keys, chromatic degrees and speed follow as you improve.</p>
               </div>
 
               {/* Point 4 */}
               <div className="space-y-1 border-l border-white/5 pl-4 py-1">
                 <h3 className="text-sm font-bold text-white uppercase tracking-wider">Thoughtful design</h3>
-                <p className="text-zinc-400">An intuitive, beautiful UI to keep you in the flow-state.</p>
+                <p className="text-zinc-400">Short sessions, no clutter, nothing between you and the next question.</p>
               </div>
 
               <div className="pt-4">
