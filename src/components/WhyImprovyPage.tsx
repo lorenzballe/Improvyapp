@@ -405,7 +405,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                   streak="7 Days"
                   timer="0:14"
                   screenshot={methodDiatonicImg}
-                  screenshotAlt="Improvy diatonic training in the key of C: degree 3, the seven note buttons, 22 of 30 correct at 96%"
+                  screenshotAlt="Improvy diatonic training in the key of C: a degree to place, the seven note buttons, a session at 96%"
                 />
               </div>
             </div>
@@ -442,7 +442,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                   streak="12 Days"
                   timer="0:08"
                   screenshot={methodChromaticImg}
-                  screenshotAlt="Improvy chromatic training in the key of C: degree 5 with the twelve-note answer grid, including the enharmonic pairs"
+                  screenshotAlt="Improvy chromatic training in the key of C with the twelve-note answer grid, including the enharmonic pairs"
                 />
               </div>
             </div>
@@ -479,7 +479,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                   streak="21 Days"
                   timer="0:03"
                   screenshot={methodN2NImg}
-                  screenshotAlt="Improvy Note-to-Number training in the key of D: the note G, answered with its scale degree"
+                  screenshotAlt="Improvy Note-to-Number training in the key of D: a note, answered with its scale degree"
                 />
               </div>
             </div>
@@ -516,7 +516,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                   streak="Continuous"
                   timer="FREEPLAY"
                   screenshot={methodPianoImg}
-                  screenshotAlt="Improvy on the piano keyboard in the key of G: degree 1, answered on the keys"
+                  screenshotAlt="Improvy on the piano keyboard in the key of G: the degree answered on the keys"
                 />
               </div>
             </div>
@@ -586,7 +586,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                   streak="Continuous"
                   timer="AUTO"
                   screenshot={methodPocketImg}
-                  screenshotAlt="Improvy Pocket Mode in play: the hands-free audio drill calling degree 4 in the key of C"
+                  screenshotAlt="Improvy Pocket Mode in play: the hands-free audio drill, eight questions in, waiting for your answer"
                 />
               </div>
             </div>
