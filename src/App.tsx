@@ -25,6 +25,7 @@ const AboutPage = lazy(() => import("./components/AboutPage"));
 const FeedbackPage = lazy(() => import("./components/FeedbackPage"));
 import { StoreBadges } from "./components/StoreBadges";
 import heroHomeScreenImg from "./assets/images/method_home_progress.webp";
+import { PhoneFrame } from "./components/PhoneFrame";
 
 const revealVariants = {
   visible: (i: number) => ({
@@ -437,26 +438,11 @@ export default function App() {
                 }}
                 className="flex-shrink-0"
               >
-                <div className="card">
-                  <div className="card-int">
-                    <div className="top"></div>
-                    <div className="speaker"></div>
-                    <div className="camera"></div>
-                    <div className="int"></div>
-                    
-                    <div className="btn1"></div>
-                    <div className="btn2"></div>
-                    <div className="btn3"></div>
-                    <div className="btn4"></div>
- 
-                    <img
-                      src={heroHomeScreenImg}
-                      alt="Improvy training home screen with total progress and all-keys mastery"
-                      className="w-full h-full object-cover"
-                      referrerPolicy="no-referrer"
-                    />
-                  </div>
-                </div>
+                <PhoneFrame
+                  src={heroHomeScreenImg}
+                  alt="Improvy home screen: total progress, today's Daily Challenge and the mastery of every key"
+                  eager
+                />
               </motion.div>
             </motion.div>
 
