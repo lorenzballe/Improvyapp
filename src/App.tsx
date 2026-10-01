@@ -5,7 +5,6 @@ import { BackgroundGradientAnimation } from "./components/BackgroundGradientAnim
 import { ButtonColorful } from "./components/ButtonColorful";
 import { ShineBorder } from "./components/ShineBorder";
 import { TypeWriter } from "./components/TypeWriter";
-import { FaqSection } from "./components/FaqSection";
 import { Sparkle, ArrowUp, Check, X } from "lucide-react";
 import { WhyImprovySection } from "./components/WhyImprovySection";
 import { cn } from "./lib/utils";
@@ -275,9 +274,10 @@ export default function App() {
               currentPage === "why" ? "text-[#e5a93c]" : "text-zinc-400"
             )}>Method</button>
             <button onClick={() => {
-              if (currentPage !== "home") {
-                setCurrentPage("home");
-                setTimeout(() => scrollToSection("faq"), 100);
+              // The questions live at the foot of the Method page.
+              if (currentPage !== "why") {
+                setCurrentPage("why");
+                setTimeout(() => scrollToSection("faq"), 450);
               } else {
                 scrollToSection("faq");
               }
@@ -736,18 +736,6 @@ export default function App() {
 
           </motion.section>
 
-          {/* Real questions, answered — in place of the testimonials that
-              used to scroll here. Those were invented people with stock
-              photos, which EU law forbids and no buyer believes; this is
-              also the FAQ the page's structured data describes, so it now
-              exists where Google looks for it. */}
-          <FaqSection
-            onContact={() => {
-              setAboutPageScrollTo("get-in-touch");
-              setAboutScrollTrigger((prev) => prev + 1);
-              setCurrentPage("about");
-            }}
-          />
         </div>
           </>
         )}
