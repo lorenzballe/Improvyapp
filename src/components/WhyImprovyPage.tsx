@@ -185,7 +185,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
   }, []);
 
   return (
-    <div className="w-full max-w-6xl mx-auto px-4 py-10 md:py-16 text-zinc-300 font-sans relative z-30">
+    <div className="w-full max-w-6xl mx-auto px-4 pt-24 pb-10 md:pt-28 md:pb-16 text-zinc-300 font-sans relative z-30">
       
       {/* Sleek, Minimalist Back Navigation */}
       <div className="mb-12 text-left">

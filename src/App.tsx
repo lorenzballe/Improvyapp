@@ -247,7 +247,7 @@ export default function App() {
       <div className="w-full relative z-20 min-h-screen text-[#d4d4db] font-sans pb-0">
         {/* ULTRA-PREMIUM DYNAMIC SCROLL FLOATING HEADER */}
         <header className={cn(
-          "fixed top-0 inset-x-0 z-50 w-full bg-transparent px-4 sm:px-6 py-4 flex justify-center transition-all duration-500 ease-out transform",
+          "fixed top-0 inset-x-0 z-50 w-full bg-gradient-to-b from-[#07040f] via-[#07040f]/80 to-transparent px-4 sm:px-6 pt-4 pb-7 flex justify-center transition-all duration-500 ease-out transform",
           (isScrolled || currentPage !== "home")
             ? "opacity-100 translate-y-0 pointer-events-auto" 
             : "opacity-0 -translate-y-12 pointer-events-none"
@@ -758,7 +758,7 @@ export default function App() {
             {/* Testimonials Vertical Columns Layout */}
             <div 
               className="relative overflow-hidden mt-10 transition-all duration-300 w-full"
-              style={{ height: keysHeight ? `${keysHeight}px` : "600px" }}
+              style={{ height: keysHeight ? `${Math.max(keysHeight, 560)}px` : "600px" }}
             >
               {/* Real-time Interactive Glowing Keys Logo in background layer - mathematically mapped to keysHeight boundaries */}
               <div 
