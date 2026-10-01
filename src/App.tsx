@@ -5,7 +5,7 @@ import { BackgroundGradientAnimation } from "./components/BackgroundGradientAnim
 import { ButtonColorful } from "./components/ButtonColorful";
 import { ShineBorder } from "./components/ShineBorder";
 import { TypeWriter } from "./components/TypeWriter";
-import { TestimonialsColumn, voicesList } from "./components/TestimonialsColumn";
+import { TestimonialsColumn, testimonialsList } from "./components/TestimonialsColumn";
 import { Sparkle, ArrowUp, Check, X } from "lucide-react";
 import { WhyImprovySection } from "./components/WhyImprovySection";
 import { cn } from "./lib/utils";
@@ -748,10 +748,10 @@ export default function App() {
           >
             <div className="text-center mb-12 space-y-4">
               <h2 className="text-3xl sm:text-5xl font-black text-white font-display tracking-tight leading-none uppercase">
-                MADE FOR EVERY <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 via-purple-500 to-indigo-500">MUSICIAN</span>
+                WHAT PEOPLE SAY ABOUT <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 via-purple-500 to-indigo-500">IMPROVY</span>
               </h2>
               <p className="text-xs sm:text-sm text-zinc-400 font-light max-w-xl mx-auto leading-relaxed">
-                Whatever you play, the same skill sits under it: knowing where every degree lives, in every key, without counting.
+                Musicians, educators, and creatives who built their harmonic awareness and improvisation skills on our 12-key relational system.
               </p>
             </div>
 
@@ -851,21 +851,21 @@ export default function App() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 h-full items-start">
                 {/* Column 1 */}
                 <TestimonialsColumn 
-                  testimonials={voicesList.slice(0, 2)} 
+                  testimonials={testimonialsList.slice(0, 2)} 
                   duration={16} 
                   className="flex flex-col gap-6"
                 />
 
                 {/* Column 2 - Hidden on Mobile but visible on desktop */}
                 <TestimonialsColumn 
-                  testimonials={voicesList.slice(2, 4)} 
+                  testimonials={testimonialsList.slice(2, 4)} 
                   duration={22} 
                   className="hidden md:flex flex-col gap-6"
                 />
 
                 {/* Column 3 - Hidden on tablet, visible on desktop */}
                 <TestimonialsColumn 
-                  testimonials={voicesList.slice(4, 6)} 
+                  testimonials={testimonialsList.slice(4, 6)} 
                   duration={18} 
                   className="hidden lg:flex flex-col gap-6"
                 />
