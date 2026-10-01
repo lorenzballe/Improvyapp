@@ -2,10 +2,10 @@ import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { trackView } from "./lib/analytics";
 import { motion } from "motion/react";
 import { BackgroundGradientAnimation } from "./components/BackgroundGradientAnimation";
-import { TestimonialsColumn, voicesList } from "./components/TestimonialsColumn";
 import { ButtonColorful } from "./components/ButtonColorful";
 import { ShineBorder } from "./components/ShineBorder";
 import { TypeWriter } from "./components/TypeWriter";
+import { TestimonialsColumn, voicesList } from "./components/TestimonialsColumn";
 import { Sparkle, ArrowUp, Check, X } from "lucide-react";
 import { WhyImprovySection } from "./components/WhyImprovySection";
 import { cn } from "./lib/utils";
@@ -247,12 +247,12 @@ export default function App() {
       <div className="w-full relative z-20 min-h-screen text-[#d4d4db] font-sans pb-0">
         {/* ULTRA-PREMIUM DYNAMIC SCROLL FLOATING HEADER */}
         <header className={cn(
-          "fixed top-0 inset-x-0 z-50 w-full bg-gradient-to-b from-[#07040f] via-[#07040f]/80 to-transparent px-4 sm:px-6 pt-4 pb-7 flex justify-center transition-all duration-500 ease-out transform",
+          "fixed top-0 inset-x-0 z-50 w-full bg-transparent px-4 sm:px-6 py-4 flex justify-center transition-all duration-500 ease-out transform",
           (isScrolled || currentPage !== "home")
             ? "opacity-100 translate-y-0 pointer-events-auto" 
             : "opacity-0 -translate-y-12 pointer-events-none"
         )}>
-          <div className="w-auto max-w-[95vw] bg-[#07040f]/95 backdrop-blur-xl border border-white/[0.08] py-1.5 px-2.5 sm:py-2.5 sm:px-6 rounded-full shadow-[0_16px_50px_rgba(7,4,15,0.7)] flex items-center justify-center gap-2 sm:gap-7">
+          <div className="w-auto max-w-[95vw] bg-[#07040f]/85 backdrop-blur-xl border border-white/[0.08] py-1.5 px-2.5 sm:py-2.5 sm:px-6 rounded-full shadow-[0_16px_50px_rgba(7,4,15,0.7)] flex items-center justify-center gap-2 sm:gap-7">
             <button onClick={() => {
               if (currentPage !== "home") {
                 setCurrentPage("home");
@@ -565,7 +565,7 @@ export default function App() {
                   </div>
 
                   <p className="text-xs text-zinc-450 font-sans font-light leading-relaxed">
-                    A real practice tool, free for good: the seven scale degrees in every key, plus Note-to-Number, …Of What? and Pocket Mode.
+                    Perfect for your first steps. Master scale-degree relationships in the key of C, plus the free …Of What? and Pocket modes.
                   </p>
 
                   <div className="py-5 border-t border-b border-white/[0.05]">
@@ -573,7 +573,7 @@ export default function App() {
                       <span className="text-5xl font-black text-white font-sans tracking-tight">€0</span>
                       <span className="text-xs text-zinc-500 font-sans font-medium">/ lifetime</span>
                     </div>
-                    <span className="text-[9px] text-[#e5a93c] block mt-1.5 uppercase tracking-widest font-extrabold">NO ACCOUNT · NO CARD</span>
+                    <span className="text-[9px] text-[#e5a93c] block mt-1.5 uppercase tracking-widest font-extrabold">RECOMMENDED TO START</span>
                   </div>
 
                   <div className="space-y-4">
@@ -640,7 +640,7 @@ export default function App() {
                 <span className="absolute inset-0 w-[200%] h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-[1200ms] ease-out pointer-events-none z-10" />
                 
                 {/* Inner Obsidian Black Card */}
-                <div className="bg-[#07050d] rounded-[26.5px] p-8 sm:p-10 flex flex-col justify-between h-full relative overflow-hidden z-10">
+                <div className="bg-[#07050d] rounded-[26.5px] p-8 sm:p-10 flex flex-col justify-between h-full relative overflow-hidden backdrop-blur-3xl z-10">
                   {/* Subtle solar flare gold background radial bleed to tone down the purple/cold neon */}
                   <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-br from-[#e5a93c]/10 to-transparent rounded-full blur-3xl pointer-events-none" />
                   <div className="absolute -bottom-10 -left-10 w-64 h-64 bg-gradient-to-tr from-purple-500/5 to-transparent rounded-full blur-2xl pointer-events-none" />
@@ -650,7 +650,7 @@ export default function App() {
                        <div>
                          {/* Symmetrical Elite Golden Label */}
                          <span className="text-[9px] font-sans font-extrabold uppercase tracking-[0.22em] text-[#e5a93c]">LIFETIME PRO UNLOCK</span>
-                         <h4 className="text-3xl font-black font-display tracking-tight text-white mt-1 whitespace-nowrap">Improvy Pro</h4>
+                         <h4 className="text-3xl font-black font-display tracking-tight text-white mt-1">Improvy Pro</h4>
                        </div>
                        <span className="text-[9px] font-black text-white bg-gradient-to-r from-amber-600 via-[#e5a93c] to-amber-500 border border-amber-400/20 px-3 py-1.5 rounded-full uppercase font-sans tracking-widest shadow-lg shadow-amber-950/20 animate-pulse">
                          Recommended
@@ -658,7 +658,7 @@ export default function App() {
                      </div>
 
                     <p className="text-xs text-zinc-350 font-sans font-light leading-relaxed">
-                      Every degree in every key: Chromatic Mode with the jazz extensions, Custom Mode, adaptive difficulty and deep analytics.
+                      Unlock the entire chromatic keyboard, cognitive stimulation modes, and intelligent self-assessment algorithms.
                     </p>
 
                     {/* Elite Gold pricing block with exactly the same font-size layout as Section 1 */}
@@ -707,7 +707,7 @@ export default function App() {
                           <div className="w-5 h-5 rounded-full bg-[#e5a93c]/12 border border-[#e5a93c]/25 flex items-center justify-center shrink-0">
                             <Check className="w-3 h-3 text-[#e5a93c] stroke-[3]" />
                           </div>
-                          <span className="text-[#e5a93c] font-medium">One payment — no subscription, ever</span>
+                          <span className="text-[#e5a93c] font-medium">No future subscriptions - Lifetime access</span>
                         </li>
                       </ul>
                     </div>
@@ -872,7 +872,6 @@ export default function App() {
               </div>
             </div>
           </motion.section>
-
         </div>
           </>
         )}
@@ -884,7 +883,7 @@ export default function App() {
           initial="hidden"
           animate="visible"
           variants={revealVariants}
-          className="border-t border-white/5 pt-10 pb-6 md:pt-12 md:pb-8 px-6 md:px-12 relative z-30 bg-[#07040f]/95 backdrop-blur-xl overflow-hidden mt-0 w-full"
+          className="border-t border-white/5 pt-10 pb-6 md:pt-12 md:pb-8 px-6 md:px-12 relative z-30 bg-[#07040f]/95 backdrop-blur-xl overflow-hidden mt-8 w-full"
         >
           {/* Ambient light flares inside the footer */}
           <div className="absolute top-0 right-1/4 w-48 h-48 bg-indigo-500/5 rounded-full blur-3xl pointer-events-none" />
@@ -999,9 +998,9 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Column 4: Support & Legal */}
+              {/* Column 4: Harmonics & Legal */}
               <div className="flex flex-col gap-3.5">
-                <h4 className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-indigo-400">Support & Legal</h4>
+                <h4 className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-indigo-400">Harmonics & Legal</h4>
                 <div className="flex flex-col gap-2 text-xs font-medium text-zinc-400">
                   <button 
                     onClick={() => {

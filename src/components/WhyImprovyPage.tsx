@@ -185,7 +185,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
   }, []);
 
   return (
-    <div className="w-full max-w-6xl mx-auto px-4 pt-24 pb-10 md:pt-28 md:pb-16 text-zinc-300 font-sans relative z-30">
+    <div className="w-full max-w-6xl mx-auto px-4 py-10 md:py-16 text-zinc-300 font-sans relative z-30">
       
       {/* Sleek, Minimalist Back Navigation */}
       <div className="mb-12 text-left">
@@ -333,16 +333,16 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                 <Sliders className="w-5 h-5" />
               </div>
               <h3 className="text-xl sm:text-2xl font-black text-white font-display uppercase tracking-tight">
-                A Method Built for One Skill
+                The World's First Formalized Method
               </h3>
               <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed font-light">
-                Improvy isolates <strong className="text-[#e5a93c]">one precise skill</strong> — finding any scale degree in any key without counting — and trains only that, until it is automatic. 
+                We were <strong className="text-[#e5a93c]">the first in the world</strong> to grasp, isolate, and scientifically formalize this precise cognitive processing challenge. 
               </p>
               <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed font-light">
-                It is not a game and not a sight-reading course: short, randomised drills with a clock, in every key, that measure how fast you answer and adapt to it.
+                We aren't offering a casual game or tedious traditional sight-reading lessons. We have decoded a practical, dynamic, and incredibly fast training system that calibrates your mind from any musical angle—delivering modern drill tools focused purely on active results.
               </p>
               <p className="text-[11.5px] text-white font-light">
-                No instrument needed — a few minutes on your phone, anywhere, is enough.
+                Train anywhere, anytime, taking advantage of flexible, interactive mechanics for absolute creative control.
               </p>
             </div>
 
@@ -674,7 +674,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                   <div className="flex gap-2.5 items-center bg-rose-500/[0.03] border border-rose-500/10 rounded-xl p-3">
                     <X className="w-4 h-4 text-rose-400 shrink-0" />
                     <span className="text-[10px] text-zinc-400 font-sans tracking-wide font-bold">
-                      EVERY NOTE WORKED OUT BY COUNTING
+                      PROCESSING LATENCY: HIGH (~3-5 SECONDS HESITATION)
                     </span>
                   </div>
                 </div>
@@ -738,7 +738,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                   <div className="flex gap-2.5 items-center bg-emerald-500/[0.03] border border-emerald-500/15 rounded-xl p-3 shadow-sm">
                     <Check className="w-4 h-4 text-emerald-400 shrink-0" />
                     <span className="text-[10px] text-zinc-300 font-sans tracking-wide font-bold">
-                      THE NOTE IS THERE BEFORE YOU THINK
+                      ACTIVE VISUALIZATION STABILIZED & 100% SECURE
                     </span>
                   </div>
                 </div>
@@ -750,7 +750,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
         </div>
 
         {/* Bottom CTA block - Deluxe Premium Redesign */}
-        <div className="pt-16 pb-12 border-t border-white/[0.04] relative overflow-visible">
+        <div className="pt-16 pb-24 border-t border-white/[0.04] relative overflow-visible">
           {/* Cosmic radial glow on the root CTA sector */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-gradient-to-tr from-purple-600/5 via-rose-500/5 to-amber-500/5 rounded-full blur-[140px] pointer-events-none select-none" />
 
@@ -783,7 +783,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                   },
                   {
                     icon: <Check className="w-3.5 h-3.5 text-emerald-400" />,
-                    title: "Free to Start"
+                    title: "Proven Results"
                   },
                   {
                     icon: <Check className="w-3.5 h-3.5 text-emerald-400" />,
