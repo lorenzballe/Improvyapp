@@ -247,12 +247,12 @@ export default function App() {
       <div className="w-full relative z-20 min-h-screen text-[#d4d4db] font-sans pb-0">
         {/* ULTRA-PREMIUM DYNAMIC SCROLL FLOATING HEADER */}
         <header className={cn(
-          "fixed top-0 inset-x-0 z-50 w-full bg-transparent px-4 sm:px-6 py-4 flex justify-center transition-all duration-500 ease-out transform",
+          "fixed top-0 inset-x-0 z-50 w-full bg-gradient-to-b from-[#07040f] via-[#07040f]/80 to-transparent px-4 sm:px-6 pt-4 pb-7 flex justify-center transition-all duration-500 ease-out transform",
           (isScrolled || currentPage !== "home")
             ? "opacity-100 translate-y-0 pointer-events-auto" 
             : "opacity-0 -translate-y-12 pointer-events-none"
         )}>
-          <div className="w-auto max-w-[95vw] bg-[#07040f]/85 backdrop-blur-xl border border-white/[0.08] py-1.5 px-2.5 sm:py-2.5 sm:px-6 rounded-full shadow-[0_16px_50px_rgba(7,4,15,0.7)] flex items-center justify-center gap-2 sm:gap-7">
+          <div className="w-auto max-w-[95vw] bg-[#07040f]/95 backdrop-blur-xl border border-white/[0.08] py-1.5 px-2.5 sm:py-2.5 sm:px-6 rounded-full shadow-[0_16px_50px_rgba(7,4,15,0.7)] flex items-center justify-center gap-2 sm:gap-7">
             <button onClick={() => {
               if (currentPage !== "home") {
                 setCurrentPage("home");
@@ -759,7 +759,7 @@ export default function App() {
           initial="hidden"
           animate="visible"
           variants={revealVariants}
-          className="border-t border-white/5 pt-10 pb-6 md:pt-12 md:pb-8 px-6 md:px-12 relative z-30 bg-[#07040f]/95 backdrop-blur-xl overflow-hidden mt-8 w-full"
+          className="border-t border-white/5 pt-10 pb-6 md:pt-12 md:pb-8 px-6 md:px-12 relative z-30 bg-[#07040f]/95 backdrop-blur-xl overflow-hidden mt-0 w-full"
         >
           {/* Ambient light flares inside the footer */}
           <div className="absolute top-0 right-1/4 w-48 h-48 bg-indigo-500/5 rounded-full blur-3xl pointer-events-none" />

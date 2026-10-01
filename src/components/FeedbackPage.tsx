@@ -24,7 +24,7 @@ export default function FeedbackPage({ onBack }: FeedbackPageProps) {
   const categories = [
     { id: "feature" as const, label: "Feature Suggestion", icon: Lightbulb, color: "text-[#e5a93c]" },
     { id: "bug" as const, label: "Bug Report", icon: Bug, color: "text-rose-500" },
-    { id: "curriculum" as const, label: "Curriculum Feedback", icon: Sparkles, color: "text-purple-500" },
+    { id: "curriculum" as const, label: "Training & Content", icon: Sparkles, color: "text-purple-500" },
     { id: "other" as const, label: "General & Hello", icon: MessageSquare, color: "text-emerald-500" },
   ];
 
@@ -58,7 +58,7 @@ export default function FeedbackPage({ onBack }: FeedbackPageProps) {
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto px-6 pt-28 pb-16 md:pt-36 md:pb-24 text-zinc-350 font-sans relative z-30">
+    <div className="w-full max-w-3xl mx-auto px-6 pt-28 pb-8 md:pt-36 md:pb-16 text-zinc-350 font-sans relative z-30">
       
       {/* Back Button */}
       <button
@@ -102,7 +102,7 @@ export default function FeedbackPage({ onBack }: FeedbackPageProps) {
                   </span>
                 </h1>
                 <p className="text-sm text-zinc-400 font-light max-w-xl">
-                  We are constantly refining Improvy. Whether you found a bug, have an idea for a feature, or want to share your learning breakthroughs, we are here to listen!
+                  Found a bug, have an idea, or just want to say how practice is going? Write it here — every message is read, and answered when you leave an address.
                 </p>
               </div>
 
@@ -145,7 +145,7 @@ export default function FeedbackPage({ onBack }: FeedbackPageProps) {
                     <span>2. How is your learning experience with Improvy?</span>
                     <span className="text-zinc-500 font-normal normal-case">Optional</span>
                   </label>
-                  <p className="text-xs text-zinc-500 font-light">Rate your overall experience with our platform so far.</p>
+                  <p className="text-xs text-zinc-500 font-light">How has Improvy been for you so far?</p>
                   <div className="flex items-center gap-2">
                     {[1, 2, 3, 4, 5].map((star) => {
                       const isFilled = star <= (hoveredRating || rating);
@@ -190,7 +190,7 @@ export default function FeedbackPage({ onBack }: FeedbackPageProps) {
                     maxLength={1000}
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Tell us everything. What works? What is confusing? What feature would elevate Improvy for you?"
+                    placeholder="Tell us everything. What works? What is confusing? What would you add?"
                     rows={5}
                     className="w-full bg-zinc-950/50 border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-[#e5a93c] focus:ring-1 focus:ring-[#e5a93c] transition-all resize-none font-light"
                   />
@@ -232,7 +232,7 @@ export default function FeedbackPage({ onBack }: FeedbackPageProps) {
                 {/* Submission button */}
                 <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
                   <p className="text-xs text-zinc-500 font-light">
-                    Your valuable suggestions directly assist the development of our musical curriculum.
+                    Every message is read by the person who builds Improvy.
                   </p>
                   
                   <button
@@ -251,7 +251,7 @@ export default function FeedbackPage({ onBack }: FeedbackPageProps) {
                       </>
                     ) : (
                       <>
-                        <span>Transmit Feedback</span>
+                        <span>Send Feedback</span>
                         <Send className="w-3.5 h-3.5" />
                       </>
                     )}

@@ -42,7 +42,7 @@ function Ext({ href, children }: { href: string; children: React.ReactNode }) {
 
 export default function PrivacyPolicyPage({ onBack }: PrivacyPolicyPageProps) {
   return (
-    <div className="w-full max-w-3xl mx-auto px-6 pt-28 pb-16 md:pt-36 md:pb-24 text-zinc-350 font-sans relative z-30">
+    <div className="w-full max-w-3xl mx-auto px-6 pt-28 pb-8 md:pt-36 md:pb-16 text-zinc-350 font-sans relative z-30">
       <motion.div
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}

@@ -109,9 +109,15 @@ export function FaqSection({ onContact }: { onContact?: () => void }) {
   return (
     <section
       id="faq"
-      className="pt-24 pb-20 sm:pt-28 sm:pb-24 max-w-4xl mx-auto px-6 md:px-12 relative z-30 scroll-mt-6 bg-transparent"
+      className="pt-24 pb-12 sm:pt-28 sm:pb-16 max-w-4xl mx-auto px-6 md:px-12 relative z-30 scroll-mt-6 bg-transparent"
     >
-      <div className="text-center mb-12 space-y-4">
+      {/* A low light behind the heading, so the page does not drop from the
+          lit sections above into flat black. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute left-1/2 top-6 -translate-x-1/2 w-[min(560px,90vw)] h-[300px] rounded-full bg-purple-600/[0.12] blur-[110px]"
+      />
+      <div className="relative text-center mb-12 space-y-4">
         <h2 className="text-3xl sm:text-5xl font-black text-white font-display tracking-tight uppercase leading-none">
           COMMON{" "}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 via-purple-500 to-indigo-500">
