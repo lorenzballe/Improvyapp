@@ -2,7 +2,6 @@ import React from "react";
 import { motion } from "motion/react";
 import { AppLogo } from "./AppLogo";
 import { FaqSection } from "./FaqSection";
-import { PhoneScreen } from "./PhoneScreen";
 import methodDiatonicImg from "../assets/images/method_diatonic_grid.webp";
 import methodHomeImg from "../assets/images/method_home_progress.webp";
 import methodChromaticImg from "../assets/images/method_chromatic.webp";
@@ -128,11 +127,11 @@ function InteractiveIPhoneMockup({
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       style={style}
-      className="relative w-full max-w-[270px] rounded-[43px] bg-[#0a0a0c] p-2 transition-all duration-300 transform-style-3d shadow-2xl hover:shadow-[0_25px_60px_rgba(0,0,0,0.9)] border border-white/[0.05] group"
+      className="relative w-full max-w-[270px] h-[566px] rounded-[36px] bg-zinc-950 p-2 transition-all duration-300 transform-style-3d shadow-2xl hover:shadow-[0_25px_60px_rgba(0,0,0,0.9)] border border-white/[0.05] group"
     >
       {/* Magical Outer Neon Edge Glow & Dual-Border Shadowing */}
       <div 
-        className="absolute inset-0 rounded-[43px] border pointer-events-none transition-all duration-500"
+        className="absolute inset-0 rounded-[36px] border pointer-events-none transition-all duration-500"
         style={{
           boxShadow: `inset 0 0 16px ${colors.shadow}, 0 0 35px -5px ${colors.shadow}`,
           borderColor: colors.accent + "40", // ~25% dynamic opacity
@@ -141,21 +140,37 @@ function InteractiveIPhoneMockup({
 
       {/* Mystical backglow aura floating behind */}
       <div 
-        className={`absolute -inset-2.5 rounded-[51px] ${colors.backglow} opacity-10 blur-2xl group-hover:opacity-30 transition-all duration-700 pointer-events-none`}
+        className={`absolute -inset-2.5 rounded-[44px] ${colors.backglow} opacity-10 blur-2xl group-hover:opacity-30 transition-all duration-700 pointer-events-none`}
         style={{ transform: "translateZ(-40px)" }}
       />
 
       {/* Side physical buttons */}
-      <div className="absolute top-[160px] -right-[2px] w-[2.5px] h-[64px] rounded-r bg-zinc-700" />
-      <div className="absolute top-[100px] -left-[2px] w-[2.5px] h-[24px] rounded-l bg-zinc-700" />
-      <div className="absolute top-[142px] -left-[2px] w-[2.5px] h-[42px] rounded-l bg-zinc-700" />
-      <div className="absolute top-[192px] -left-[2px] w-[2.5px] h-[42px] rounded-l bg-zinc-700" />
+      <div className="absolute top-[90px] -right-[1.5px] w-[2px] h-9 rounded-l bg-zinc-850" />
+      <div className="absolute top-[80px] -left-[1.5px] w-[2px] h-7 rounded-r bg-zinc-850" />
+      <div className="absolute top-[115px] -left-[1.5px] w-[2px] h-9 rounded-r bg-zinc-850" />
+      <div className="absolute top-[160px] -left-[1.5px] w-[2px] h-9 rounded-r bg-zinc-850" />
 
-      {/* The screen, true to an iPhone 16 Pro: island, status bar and home
-          indicator drawn over a screenshot rendered from the app at that
-          exact size. Lifted forward so the tilt reads as glass on a body. */}
-      <div style={{ transform: "translateZ(35px)" }}>
-        <PhoneScreen src={screenshot} alt={screenshotAlt} radius={35} />
+      {/* Screen container */}
+      <div className="relative h-full w-full rounded-[28px] overflow-hidden bg-gradient-to-b from-[#090514] to-[#030107] flex flex-col justify-between p-3.5 pt-6 select-none border border-white/[0.03]">
+        
+        {/* Dynamic Island / Notch */}
+        <div className="absolute top-1.5 inset-x-0 flex justify-center z-50">
+          <div className="w-18 h-3.5 rounded-full bg-black flex items-center justify-between px-2 shadow-inner">
+            <div className="w-1 h-1 rounded-full bg-zinc-900" />
+            <div className="w-0.5 h-0.5 rounded-full bg-blue-950" />
+          </div>
+        </div>
+
+        {/* 3D Depth Content Layer */}
+        <div className="absolute inset-0 w-full h-full overflow-hidden rounded-[28px] bg-[#0c0817]" style={{ transform: "translateZ(35px)" }}>
+          <img
+            src={screenshot}
+            alt={screenshotAlt}
+            className="w-full h-full object-cover"
+            referrerPolicy="no-referrer"
+          />
+        </div>
+
       </div>
     </div>
   );
@@ -347,16 +362,16 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                 <Sliders className="w-5 h-5" />
               </div>
               <h3 className="text-xl sm:text-2xl font-black text-white font-display uppercase tracking-tight">
-                A Method Built for One Skill
+                The World's First Formalized Method
               </h3>
               <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed font-light">
-                Improvy isolates <strong className="text-[#e5a93c]">one precise skill</strong> — finding any scale degree in any key without counting — and trains only that, until it is automatic. 
+                We were <strong className="text-[#e5a93c]">the first in the world</strong> to grasp, isolate, and scientifically formalize this precise cognitive processing challenge. 
               </p>
               <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed font-light">
-                It is not a game and not a sight-reading course: short, randomised drills with a clock, in every key, that measure how fast you answer and adapt to it.
+                We aren't offering a casual game or tedious traditional sight-reading lessons. We have decoded a practical, dynamic, and incredibly fast training system that calibrates your mind from any musical angle—delivering modern drill tools focused purely on active results.
               </p>
               <p className="text-[11.5px] text-white font-light">
-                No instrument needed — a few minutes on your phone, anywhere, is enough.
+                Train anywhere, anytime, taking advantage of flexible, interactive mechanics for absolute creative control.
               </p>
             </div>
 
@@ -405,7 +420,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                   streak="7 Days"
                   timer="0:14"
                   screenshot={methodDiatonicImg}
-                  screenshotAlt="Improvy diatonic training in the key of C: a degree to place, the seven note buttons, a session at 96%"
+                  screenshotAlt="Improvy diatonic training session in the key of C — degree 7 with the note grid"
                 />
               </div>
             </div>
@@ -442,7 +457,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                   streak="12 Days"
                   timer="0:08"
                   screenshot={methodChromaticImg}
-                  screenshotAlt="Improvy chromatic training in the key of C with the twelve-note answer grid, including the enharmonic pairs"
+                  screenshotAlt="Improvy chromatic training in the key of C — the sharp-5 degree with the twelve-semitone enharmonic answer grid"
                 />
               </div>
             </div>
@@ -479,7 +494,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                   streak="21 Days"
                   timer="0:03"
                   screenshot={methodN2NImg}
-                  screenshotAlt="Improvy Note-to-Number training in the key of D: a note, answered with its scale degree"
+                  screenshotAlt="Improvy Note-to-Number training in the key of C — the note A shown for its scale degree"
                 />
               </div>
             </div>
@@ -516,7 +531,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                   streak="Continuous"
                   timer="FREEPLAY"
                   screenshot={methodPianoImg}
-                  screenshotAlt="Improvy on the piano keyboard in the key of G: the degree answered on the keys"
+                  screenshotAlt="Improvy interactive piano keyboard with answer feedback"
                 />
               </div>
             </div>
@@ -551,7 +566,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                   streak="9 Days"
                   timer="0:05"
                   screenshot={methodOfWhatImg}
-                  screenshotAlt="Improvy …Of What? mode: C as the flat 3rd — of which key? — with the twelve root answers"
+                  screenshotAlt="Improvy …Of What? mode — the note C presented as the 7th, with the twelve root answers"
                 />
               </div>
             </div>
@@ -586,7 +601,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                   streak="Continuous"
                   timer="AUTO"
                   screenshot={methodPocketImg}
-                  screenshotAlt="Improvy Pocket Mode in play: the hands-free audio drill, eight questions in, waiting for your answer"
+                  screenshotAlt="Improvy Pocket Mode in play — the hands-free audio drill revealing degree 11 with the answer note F lit on the keyboard"
                 />
               </div>
             </div>
@@ -797,7 +812,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                   },
                   {
                     icon: <Check className="w-3.5 h-3.5 text-emerald-400" />,
-                    title: "Free to Start"
+                    title: "Proven Results"
                   },
                   {
                     icon: <Check className="w-3.5 h-3.5 text-emerald-400" />,
