@@ -36,13 +36,13 @@ export function WhyImprovySection({ onLearnMoreClick }: WhyImprovySectionProps) 
 
           <div className="space-y-4 text-xs sm:text-sm text-zinc-400 font-light leading-relaxed">
             <p className="text-white font-normal text-sm">
-              The difference between "knowing" music and "playing" music lies in a single critical factor: real-time processing speed.
+              Knowing music and playing it are separated by one thing: how fast you find the note.
             </p>
             <p>
-              Many musicians study scales, memorize triads, and know interval theory perfectly, yet they get inevitably stuck when transforming that theory into real sounds on their instrument. During improvisation or live performance, mentally recalculating every single note creates a fraction-of-a-second delay—an invisible hesitation that breaks the expressive flow, increases physical tension, and dampens the natural instinct of your musical ideas.
+              Most musicians know their scales, triads and intervals. The trouble starts in the moment: on stage or in a solo, every note worked out by counting costs a fraction of a second — enough to lose the idea, tense up and play it safe.
             </p>
             <p className="text-transparent bg-clip-text bg-gradient-to-r from-[#d946ef] to-[#06b6d4] font-extrabold text-base">
-              Improvy is designed to shatter this barrier.
+              Improvy trains that fraction of a second away.
             </p>
           </div>
 
@@ -67,9 +67,9 @@ export function WhyImprovySection({ onLearnMoreClick }: WhyImprovySectionProps) 
                 <div className="w-10 h-10 rounded-xl bg-zinc-900 border border-white/[0.05] flex items-center justify-center text-rose-500 group-hover:scale-110 transition-transform duration-300 shadow-md">
                   <Zap className="w-5 h-5" />
                 </div>
-                <h4 className="text-sm font-black text-white font-display tracking-wide uppercase">Zero-Lag Theory</h4>
+                <h4 className="text-sm font-black text-white font-display tracking-wide uppercase">No more counting</h4>
                 <p className="text-xs text-zinc-400 font-sans font-light leading-relaxed">
-                  Knowing how to build a scale is not enough to make music: you need immediacy. Improvy trains your brain to eliminate any mental delay or hesitation between thought and physical execution on the instrument.
+                  Knowing how a scale is built is not the same as playing it. Improvy drills the jump from “the 6th of E♭” to the note itself until there is nothing left to work out.
                 </p>
               </div>
             </div>
@@ -81,9 +81,9 @@ export function WhyImprovySection({ onLearnMoreClick }: WhyImprovySectionProps) 
                 <div className="w-10 h-10 rounded-xl bg-zinc-900 border border-white/[0.05] flex items-center justify-center text-[#e5a93c] group-hover:scale-110 transition-transform duration-300 shadow-md">
                   <Compass className="w-5 h-5" />
                 </div>
-                <h4 className="text-sm font-black text-white font-display tracking-wide uppercase">The Universal Ruler</h4>
+                <h4 className="text-sm font-black text-white font-display tracking-wide uppercase">Twelve keys, one map</h4>
                 <p className="text-xs text-zinc-400 font-sans font-light leading-relaxed">
-                  The 12 major scales are the fundamental geometric map to measure any musical distance. You will learn to use them to project and construct any interval instantly, with absolute certainty.
+                  Every interval, chord and melody can be measured from the major scale. Learn the twelve scales as numbers and you can place any of them at once, in any key.
                 </p>
               </div>
             </div>
@@ -95,9 +95,9 @@ export function WhyImprovySection({ onLearnMoreClick }: WhyImprovySectionProps) 
                 <div className="w-10 h-10 rounded-xl bg-zinc-900 border border-white/[0.05] flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform duration-300 shadow-md">
                   <Layers className="w-5 h-5" />
                 </div>
-                <h4 className="text-sm font-black text-white font-display tracking-wide uppercase">Processing Drill</h4>
+                <h4 className="text-sm font-black text-white font-display tracking-wide uppercase">Short, focused drills</h4>
                 <p className="text-xs text-zinc-400 font-sans font-light leading-relaxed">
-                  The most effective training method, completely digitized in randomized sequences: focus on one key at a time to lock in muscle memory, and run high-intensity cognitive calculations to unlock rapid reflexes.
+                  Randomised questions, one key at a time or all twelve, against a clock that tightens as you get faster. A few minutes a day is enough.
                 </p>
               </div>
             </div>
@@ -109,9 +109,9 @@ export function WhyImprovySection({ onLearnMoreClick }: WhyImprovySectionProps) 
                 <div className="w-10 h-10 rounded-xl bg-zinc-900 border border-white/[0.05] flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform duration-300 shadow-md">
                   <Sparkle className="w-5 h-5" />
                 </div>
-                <h4 className="text-sm font-black text-white font-display tracking-wide uppercase">Expressive Freedom</h4>
+                <h4 className="text-sm font-black text-white font-display tracking-wide uppercase">Room to play</h4>
                 <p className="text-xs text-zinc-400 font-sans font-light leading-relaxed">
-                  Intervals are the building blocks of triads, chords, extensions, and melodies. Once you automate active technical calculations, your mind is freed to focus purely on creativity, expression, and the inner joy of playing.
+                  Triads, extensions and melodies are all built from scale degrees. Once finding them is automatic, your attention goes where it belongs: on the music.
                 </p>
               </div>
             </div>

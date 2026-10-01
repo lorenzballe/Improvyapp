@@ -54,32 +54,6 @@ function InteractiveIPhoneMockup({
   screenshot,
   screenshotAlt
 }: InteractiveIPhoneMockupProps) {
-  const cardRef = React.useRef<HTMLDivElement>(null);
-  const [style, setStyle] = React.useState<React.CSSProperties>({});
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return;
-
-    const { left, top, width, height } = cardRef.current.getBoundingClientRect();
-    const x = e.clientX - left;
-    const y = e.clientY - top;
-
-    const rotateX = ((y - height / 2) / (height / 2)) * -12; // Max rotation 12deg
-    const rotateY = ((x - width / 2) / (width / 2)) * 12;   // Max rotation 12deg
-
-    setStyle({
-      transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.05, 1.05, 1.05)`,
-      transition: "transform 0.08s ease-out",
-    });
-  };
-
-  const handleMouseLeave = () => {
-    setStyle({
-      transform: "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)",
-      transition: "transform 0.4s ease-in-out",
-    });
-  };
-
   const colors = {
     amber: {
       accent: "#e5a93c",
@@ -122,12 +96,9 @@ function InteractiveIPhoneMockup({
   }[badgeColor];
 
   return (
+    // Still on purpose: the phones show the app, they are not toys to tilt.
     <div
-      ref={cardRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      style={style}
-      className="relative w-full max-w-[270px] h-[566px] rounded-[36px] bg-zinc-950 p-2 transition-all duration-300 transform-style-3d shadow-2xl hover:shadow-[0_25px_60px_rgba(0,0,0,0.9)] border border-white/[0.05] group"
+      className="relative w-full max-w-[270px] h-[566px] rounded-[36px] bg-zinc-950 p-2 shadow-2xl border border-white/[0.05] group"
     >
       {/* Magical Outer Neon Edge Glow & Dual-Border Shadowing */}
       <div 
@@ -362,16 +333,16 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                 <Sliders className="w-5 h-5" />
               </div>
               <h3 className="text-xl sm:text-2xl font-black text-white font-display uppercase tracking-tight">
-                The World's First Formalized Method
+                A Method Built for One Skill
               </h3>
               <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed font-light">
-                We were <strong className="text-[#e5a93c]">the first in the world</strong> to grasp, isolate, and scientifically formalize this precise cognitive processing challenge. 
+                Improvy isolates <strong className="text-[#e5a93c]">one precise skill</strong> — finding any scale degree in any key without counting — and trains only that, until it is automatic. 
               </p>
               <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed font-light">
-                We aren't offering a casual game or tedious traditional sight-reading lessons. We have decoded a practical, dynamic, and incredibly fast training system that calibrates your mind from any musical angle—delivering modern drill tools focused purely on active results.
+                It is not a game and not a sight-reading course: short, randomised drills with a clock, in every key, that measure how fast you answer and adapt to it.
               </p>
               <p className="text-[11.5px] text-white font-light">
-                Train anywhere, anytime, taking advantage of flexible, interactive mechanics for absolute creative control.
+                No instrument needed — a few minutes on your phone, anywhere, is enough.
               </p>
             </div>
 
@@ -812,7 +783,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                   },
                   {
                     icon: <Check className="w-3.5 h-3.5 text-emerald-400" />,
-                    title: "Proven Results"
+                    title: "Free to Start"
                   },
                   {
                     icon: <Check className="w-3.5 h-3.5 text-emerald-400" />,

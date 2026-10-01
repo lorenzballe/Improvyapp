@@ -14,7 +14,7 @@ export const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com
 export function StoreBadges({ className, compact = false }: { className?: string; compact?: boolean }) {
   const base = cn(
     "flex items-center gap-4 bg-zinc-900 border border-white/10 text-white rounded-2xl transition-all duration-300 active:scale-95 cursor-pointer shadow-lg group relative overflow-hidden focus:outline-none focus:ring-0",
-    compact ? "px-5 py-3 w-full sm:w-[200px]" : "px-6 py-4 w-full sm:w-[220px]"
+    compact ? "px-5 py-3 w-full sm:w-[216px]" : "px-6 py-4 w-full sm:w-[220px]"
   );
   return (
     <div className={cn("flex flex-wrap gap-4", className)}>
