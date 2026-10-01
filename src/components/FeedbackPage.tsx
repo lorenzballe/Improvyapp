@@ -58,7 +58,7 @@ export default function FeedbackPage({ onBack }: FeedbackPageProps) {
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto px-6 pt-28 pb-16 md:pt-36 md:pb-24 text-zinc-350 font-sans relative z-30">
+    <div className="w-full max-w-3xl mx-auto px-6 pt-28 pb-8 md:pt-36 md:pb-16 text-zinc-350 font-sans relative z-30">
       
       {/* Back Button */}
       <button
