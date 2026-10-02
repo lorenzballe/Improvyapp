@@ -1,5 +1,6 @@
 import { cn } from "../lib/utils";
 import { withCampaign } from "../lib/referral";
+import { track } from "../lib/analytics";
 
 /**
  * The two store badges. One place, because they appear on the home page and
@@ -20,6 +21,9 @@ export function StoreBadges({ className, compact = false }: { className?: string
     <div className={cn("flex flex-wrap gap-4", className)}>
       <a
         href={withCampaign(APP_STORE_URL)}
+        // The step between a creator's video and an install: the one number
+        // the site can see that says the visit was worth something.
+        onClick={() => track("store_clicked", { store: "app_store" })}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Download Improvy on the App Store"
@@ -37,6 +41,7 @@ export function StoreBadges({ className, compact = false }: { className?: string
 
       <a
         href={withCampaign(PLAY_STORE_URL)}
+        onClick={() => track("store_clicked", { store: "google_play" })}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Get Improvy on Google Play"
