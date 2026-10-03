@@ -1,0 +1,1072 @@
+import { useState, useEffect, useRef, lazy, Suspense } from "react";
+import { trackView } from "./lib/analytics";
+import { motion } from "motion/react";
+import { BackgroundGradientAnimation } from "./components/BackgroundGradientAnimation";
+import { ButtonColorful } from "./components/ButtonColorful";
+import { ShineBorder } from "./components/ShineBorder";
+import { TypeWriter } from "./components/TypeWriter";
+import { TestimonialsColumn, testimonialsList } from "./components/TestimonialsColumn";
+import { Sparkle, ArrowUp, Check, X } from "lucide-react";
+import { WhyImprovySection } from "./components/WhyImprovySection";
+import { cn } from "./lib/utils";
+import { PRO_PRICE_WEB, PRO_PRICE_NOTE, PRO_PRICE_STORE_NOTE } from "./lib/pricing";
+// Only the Pro page needs Firebase and the checkout client, and they are
+// most of the JavaScript on the site. Nobody reading the home page pays for
+// them.
+// Every page but home is its own chunk: someone landing on the site should
+// download the page they are looking at, not the terms of service.
+const ProPage = lazy(() => import("./components/ProPage"));
+const WhyImprovyPage = lazy(() =>
+  import("./components/WhyImprovyPage").then((m) => ({ default: m.WhyImprovyPage }))
+);
+const TermsOfServicePage = lazy(() => import("./components/TermsOfServicePage"));
+const PrivacyPolicyPage = lazy(() => import("./components/PrivacyPolicyPage"));
+const AboutPage = lazy(() => import("./components/AboutPage"));
+const FeedbackPage = lazy(() => import("./components/FeedbackPage"));
+import { StoreBadges } from "./components/StoreBadges";
+import heroHomeScreenImg from "./assets/images/method_home_progress.webp";
+
+const revealVariants = {
+  visible: (i: number) => ({
+    y: 0,
+    opacity: 1,
+    filter: "blur(0px)",
+    transition: {
+      delay: i * 0.12,
+      duration: 0.5,
+    },
+    transitionEnd: {
+      transform: "none",
+      filter: "none"
+    }
+  }),
+  hidden: {
+    filter: "blur(10px)",
+    y: -20,
+    opacity: 0,
+  },
+};
+
+interface AnimatedTextProps {
+    text?: string;
+    className?: string;
+}
+
+function Text_03({
+    text = "Mente",
+    className = "",
+}: AnimatedTextProps) {
+    const [isHovered, setIsHovered] = useState(false);
+
+    return (
+        <span
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            className={cn(
+                "inline-block cursor-pointer font-extrabold text-white select-none whitespace-nowrap",
+                className
+            )}
+        >
+            {text.split("").map((char, index) => (
+                <motion.span
+                    key={index}
+                    className="inline-block text-white"
+                    animate={{
+                        y: isHovered ? -6 : 0,
+                        scale: isHovered ? 1.15 : 1,
+                    }}
+                    transition={{
+                        type: "spring",
+                        stiffness: 400,
+                        damping: 12,
+                        delay: index * 0.03,
+                    }}
+                >
+                    {char === " " ? "\u00A0" : char}
+                </motion.span>
+            ))}
+        </span>
+    );
+}
+
+/**
+ * The legal pages are the only ones that need an address of their own: the
+ * store listing and the app's own Settings screen link straight to them, and
+ * a reviewer has to be able to open the policy without hunting through the
+ * footer. A hash keeps them linkable on GitHub Pages without a router or a
+ * 404 fallback. Everything else stays plain in-page state.
+ */
+function pageFromHash(): "privacy" | "terms" | "pro" | "about" | null {
+  const hash = window.location.hash.replace(/^#\/?/, "");
+  // #about is addressed because the stores ask for a support URL, and a
+  // support URL that lands on a marketing page is not support information.
+  if (hash === "privacy" || hash === "terms" || hash === "about") return hash;
+  // #pro, and the two addresses Stripe sends people back to:
+  // #pro/success?session_id=… and #pro/cancel. ProPage reads the rest.
+  if (hash === "pro" || hash.startsWith("pro/")) return "pro";
+  return null;
+}
+
+export default function App() {
+  const [currentPage, setCurrentPage] = useState<"home" | "why" | "terms" | "privacy" | "about" | "feedback" | "pro">(
+    () => pageFromHash() ?? "home"
+  );
+  const [aboutPageScrollTo, setAboutPageScrollTo] = useState<"top" | "get-in-touch" | null>(null);
+  const [aboutScrollTrigger, setAboutScrollTrigger] = useState(0);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  // Mirror the legal pages into the address bar so the URL can be copied and
+  // shared. replaceState rather than push: the in-page Back buttons already
+  // handle navigation, and we don't want to grow the history stack.
+  useEffect(() => {
+    const addressed =
+      currentPage === "privacy" ||
+      currentPage === "terms" ||
+      currentPage === "pro" ||
+      currentPage === "about";
+    const hash = addressed ? `#${currentPage}` : "";
+    // #pro/success?… and #pro/cancel are still "pro": leave them be.
+    const already = currentPage === "pro" && window.location.hash.startsWith("#pro");
+    if (!already && window.location.hash !== hash) {
+      window.history.replaceState(null, "", window.location.pathname + window.location.search + hash);
+    }
+  }, [currentPage]);
+
+  // One event per screen somebody actually looks at. The site is a single
+  // document with a hash router, so without this PostHog would see one visit
+  // and never learn that anybody reached the Pro page.
+  useEffect(() => {
+    trackView(currentPage);
+  }, [currentPage]);
+
+  // Someone pasting or editing #privacy / #terms in the address bar.
+  useEffect(() => {
+    const onHashChange = () => setCurrentPage(pageFromHash() ?? "home");
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
+
+  const logoRef = useRef<HTMLDivElement | null>(null);
+  const [mousePct, setMousePct] = useState({ x: 50, y: 50 });
+  const [isHoveringLogo, setIsHoveringLogo] = useState(false);
+  const [keysHeight, setKeysHeight] = useState<number | null>(null);
+  const [logoHeight, setLogoHeight] = useState<number | null>(null);
+
+  useEffect(() => {
+    const updateKeysHeight = () => {
+      if (logoRef.current) {
+        const height = logoRef.current.offsetHeight;
+        setLogoHeight(height);
+        // Visual keys are drawn between Y=104 and Y=408 in a 512px height viewBox
+        const calculatedKeysHeight = (304 / 512) * height;
+        setKeysHeight(calculatedKeysHeight);
+      }
+    };
+
+    updateKeysHeight();
+    window.addEventListener("resize", updateKeysHeight);
+    
+    const timers = [
+      setTimeout(updateKeysHeight, 100),
+      setTimeout(updateKeysHeight, 500),
+      setTimeout(updateKeysHeight, 1500)
+    ];
+
+    return () => {
+      window.removeEventListener("resize", updateKeysHeight);
+      timers.forEach(t => clearTimeout(t));
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!logoRef.current) return;
+      const rect = logoRef.current.getBoundingClientRect();
+      
+      const isInside = (
+        e.clientX >= rect.left - 150 &&
+        e.clientX <= rect.right + 150 &&
+        e.clientY >= rect.top - 150 &&
+        e.clientY <= rect.bottom + 150
+      );
+      
+      setIsHoveringLogo(isInside);
+      
+      if (isInside) {
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        const pctX = Math.max(0, Math.min(100, (x / rect.width) * 100));
+        const pctY = Math.max(0, Math.min(100, (y / rect.height) * 100));
+        setMousePct({ x: pctX, y: pctY });
+      }
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Morph header bar beautifully when user starts scrolling (scrolled > 30px)
+      if (window.scrollY > 30) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToSection = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  // Free is a download, so that intent goes to the store badges at the top.
+  const scrollToStores = () => window.scrollTo({ top: 0, behavior: "smooth" });
+
+  // Pro is bought on the #pro page: sign in, pay with Stripe, and the app
+  // finds the licence on the same account. Every "get Pro" on the site
+  // lands there.
+  const goPro = () => {
+    setCurrentPage("pro");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  return (
+    <BackgroundGradientAnimation 
+      gradientBackgroundStart="rgb(6, 3, 12)"
+      gradientBackgroundEnd="rgb(2, 1, 4)"
+      interactive={true}
+      containerClassName=""
+    >
+      <div className="w-full relative z-20 min-h-screen text-[#d4d4db] font-sans pb-0">
+        {/* ULTRA-PREMIUM DYNAMIC SCROLL FLOATING HEADER */}
+        <header className={cn(
+          "fixed top-0 inset-x-0 z-50 w-full bg-gradient-to-b from-[#07040f] via-[#07040f]/80 to-transparent px-4 sm:px-6 pt-4 pb-7 flex justify-center transition-all duration-500 ease-out transform",
+          (isScrolled || currentPage !== "home")
+            ? "opacity-100 translate-y-0 pointer-events-auto" 
+            : "opacity-0 -translate-y-12 pointer-events-none"
+        )}>
+          <div className="w-auto max-w-[95vw] bg-[#07040f]/85 backdrop-blur-xl border border-white/[0.08] py-1.5 px-2.5 sm:py-2.5 sm:px-6 rounded-full shadow-[0_16px_50px_rgba(7,4,15,0.7)] flex items-center justify-center gap-2 sm:gap-7">
+            <button onClick={() => {
+              if (currentPage !== "home") {
+                setCurrentPage("home");
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              } else {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }
+            }} className="hover:text-white flex items-center gap-1.5 text-[8.5px] sm:text-[10.5px] font-sans font-extrabold uppercase tracking-[0.10em] sm:tracking-[0.18em] text-zinc-350 transition-colors duration-200 cursor-pointer focus:outline-none">
+              <span>HOME</span>
+            </button>
+            <button onClick={() => {
+              if (currentPage !== "why") {
+                setCurrentPage("why");
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              } else {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }
+            }} className={cn(
+              "hover:text-white text-[8.5px] sm:text-[10.5px] font-sans font-extrabold uppercase tracking-[0.10em] sm:tracking-[0.18em] transition-colors duration-200 cursor-pointer focus:outline-none",
+              currentPage === "why" ? "text-[#e5a93c]" : "text-zinc-400"
+            )}>Method</button>
+            <button onClick={() => {
+              // The questions live at the foot of the Method page.
+              if (currentPage !== "why") {
+                setCurrentPage("why");
+                setTimeout(() => scrollToSection("faq"), 450);
+              } else {
+                scrollToSection("faq");
+              }
+            }} className="hover:text-white text-[8.5px] sm:text-[10.5px] font-sans font-extrabold uppercase tracking-[0.10em] sm:tracking-[0.18em] text-zinc-400 transition-colors duration-200 cursor-pointer focus:outline-none">FAQ</button>
+            <div className="relative group/btn p-[1.5px] rounded-xl bg-gradient-to-r from-rose-500/50 via-purple-500/50 to-[#e5a93c]/60 hover:from-rose-500 hover:via-purple-500 hover:to-[#e5a93c] bg-[length:200%_auto] animate-rainbow-shift transition-all duration-500">
+              <div className="absolute -inset-[3px] rounded-xl bg-gradient-to-r from-rose-500 via-purple-500 to-[#e5a93c] opacity-0 group-hover/btn:opacity-60 blur-[8px] transition-all duration-500 bg-[length:200%_auto] group-hover/btn:animate-rainbow-shift" />
+              
+              <button 
+                onClick={goPro}
+                className={cn(
+                  "relative px-2 py-1 sm:px-4 sm:py-2 rounded-[11px] text-[8px] sm:text-[10px] font-black uppercase tracking-widest transition-all duration-350 active:scale-95 cursor-pointer whitespace-nowrap focus:outline-none",
+                  currentPage === "pro" ? "bg-transparent text-white" : "bg-white text-zinc-950 hover:bg-transparent hover:text-white"
+                )}
+              >
+                <span className="inline sm:hidden">Improvy Pro</span>
+                <span className="hidden sm:inline">Get Improvy Pro</span>
+              </button>
+            </div>
+          </div>
+        </header>
+
+        {/* PAGES COMPONENT */}
+        <Suspense fallback={<div className="min-h-[60vh]" aria-busy="true" />}>
+        {currentPage === "why" ? (
+          <WhyImprovyPage onBack={() => {
+            setCurrentPage("home");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }} />
+        ) : currentPage === "pro" ? (
+          <Suspense fallback={<div className="min-h-[60vh]" aria-busy="true" />}>
+            <ProPage
+              onBack={() => {
+                setCurrentPage("home");
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              onOpenTerms={() => {
+                setCurrentPage("terms");
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              onOpenPrivacy={() => {
+                setCurrentPage("privacy");
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+            />
+          </Suspense>
+        ) : currentPage === "terms" ? (
+          <TermsOfServicePage onBack={() => {
+            setCurrentPage("home");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }} />
+        ) : currentPage === "privacy" ? (
+          <PrivacyPolicyPage onBack={() => {
+            setCurrentPage("home");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }} />
+        ) : currentPage === "about" ? (
+          <AboutPage 
+            scrollToSection={aboutPageScrollTo}
+            scrollTrigger={aboutScrollTrigger}
+            onBack={() => {
+              setCurrentPage("home");
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }} 
+          />
+        ) : currentPage === "feedback" ? (
+          <FeedbackPage onBack={() => {
+            setCurrentPage("home");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }} />
+        ) : (
+          <>
+
+             {/* HERO SECTION */}
+        <section className="relative min-h-[90vh] flex flex-col justify-center items-center px-6 md:px-12 pt-10 sm:pt-14 md:pt-16 pb-24 max-w-7xl mx-auto z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 w-full items-center">
+            
+            {/* Left Column: Copywriting and CTAs */}
+            <div className="lg:col-span-7 space-y-8 text-left">
+              
+              {/* Asymmetrical Master Heading */}
+              <motion.h1 
+                initial={{ opacity: 0, y: -20, filter: "blur(10px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                transition={{ delay: 0.12, duration: 0.5 }}
+                className="font-display text-5xl sm:text-7xl xl:text-8xl font-extrabold text-white leading-[1.05] tracking-tight"
+              >
+                Train your <Text_03 text="Mind" />{" "}
+                to{" "}
+                {/* The typed word changes every few seconds, so a crawler or a
+                    screen reader catches whichever it lands on. They get the
+                    whole sentence instead; the animation is for eyes only. */}
+                <span className="sr-only">improvise, visualize, compose and transpose in every key</span>
+                <span aria-hidden="true">
+                  <TypeWriter 
+                    className="italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#e5a93c] via-rose-500 to-purple-500 font-serif"
+                    strings={["improvise", "visualize", "compose", "transpose"]}
+                    holdDelay={10000}
+                  />
+                </span>
+              </motion.h1>
+
+              {/* Subheading text in clean neural tone */}
+              <motion.p 
+                initial={{ opacity: 0, y: -20, filter: "blur(10px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                transition={{ delay: 0.24, duration: 0.5 }}
+                className="text-zinc-400 text-sm md:text-base leading-relaxed max-w-xl font-sans font-light"
+              >
+                Every note is just a number in its key. Improvy trains you to see that number instantly — in all 12 keys — so improvising, transposing, and composing stop being mental math and start feeling like second nature.
+              </motion.p>
+
+              {/* Actions with glowing custom premium buttons */}
+              <motion.div 
+                initial={{ opacity: 0, y: -20, filter: "blur(10px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                transition={{ delay: 0.36, duration: 0.5 }}
+                className="flex flex-col sm:flex-row gap-4 pt-2 items-stretch sm:items-center"
+              >
+                <ButtonColorful
+                  onClick={goPro}
+                  label={`Get Improvy Pro — ${PRO_PRICE_WEB}`}
+                  className="sm:w-auto"
+                />
+              </motion.div>
+
+              {/* App Stores badges section (as requested: "metter su gli store, cioè i bollettini degli store") */}
+              <motion.div 
+                initial={{ opacity: 0, y: -20, filter: "blur(10px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                transition={{ delay: 0.48, duration: 0.5 }}
+                className="pt-6 space-y-4"
+              >
+                <div className="flex items-center gap-2">
+                  <p className="text-[12.5px] sm:text-sm font-sans uppercase tracking-[0.22em] bg-gradient-to-r from-[#f43f5e] via-[#d946ef] to-[#6366f1] bg-clip-text text-transparent font-black">Now on iOS and Android — free to start</p>
+                </div>
+                <StoreBadges />
+              </motion.div>
+
+            </div>
+
+            {/* Right Column: Premium Mobile iPhone Mockup (gently floating) */}
+            <motion.div 
+              custom={5}
+              initial="hidden"
+              animate="visible"
+              variants={revealVariants}
+              className="lg:col-span-5 flex justify-center items-center relative z-10 pt-10 lg:pt-0"
+            >
+              <motion.div 
+                initial={{ y: 15 }}
+                animate={{ y: -15 }}
+                transition={{
+                  duration: 5.5,
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                  ease: "easeInOut"
+                }}
+                className="flex-shrink-0"
+              >
+                <div className="card">
+                  <div className="card-int">
+                    
+                    <div className="btn1"></div>
+                    <div className="btn2"></div>
+                    <div className="btn3"></div>
+                    <div className="btn4"></div>
+ 
+                    <div className="phone-screen">
+                      <img
+                        src={heroHomeScreenImg}
+                        alt="Improvy training home screen with total progress and all-keys mastery"
+                        className="w-full h-full object-cover"
+                        referrerPolicy="no-referrer"
+                      />
+                      {/* The screenshot is the app at iPhone 16 Pro geometry, which
+                          leaves the status bar's band and the home indicator's
+                          strip free — so the phone draws them, where an iPhone
+                          does, instead of showing an empty margin. */}
+                      <div className="phone-island" />
+                      <div className="phone-status" aria-hidden="true">
+                        <span className="phone-time">9:41</span>
+                        <span className="phone-icons">
+                          <svg width="17" height="11" viewBox="0 0 17 11" fill="white">
+                            <rect x="0" y="7" width="3" height="4" rx="0.8" />
+                            <rect x="4.6" y="5" width="3" height="6" rx="0.8" />
+                            <rect x="9.2" y="2.6" width="3" height="8.4" rx="0.8" />
+                            <rect x="13.8" y="0" width="3" height="11" rx="0.8" />
+                          </svg>
+                          <svg width="15" height="11" viewBox="0 0 15 11" fill="white">
+                            <path d="M7.5 2.3c2.2 0 4.2.85 5.7 2.25l1.1-1.1A9.6 9.6 0 0 0 7.5.7 9.6 9.6 0 0 0 .7 3.45l1.1 1.1A8.1 8.1 0 0 1 7.5 2.3Z" />
+                            <path d="M7.5 5.4c1.35 0 2.6.5 3.55 1.35l1.1-1.1A6.6 6.6 0 0 0 7.5 3.8a6.6 6.6 0 0 0-4.65 1.85l1.1 1.1A5.1 5.1 0 0 1 7.5 5.4Z" />
+                            <path d="M7.5 8.5c.5 0 .95.18 1.3.48L7.5 10.3 6.2 8.98c.35-.3.8-.48 1.3-.48Z" />
+                          </svg>
+                          <svg width="25" height="12" viewBox="0 0 25 12" fill="none">
+                            <rect x="0.5" y="0.5" width="21" height="11" rx="3.4" stroke="white" strokeOpacity="0.4" />
+                            <rect x="2" y="2" width="18" height="8" rx="2.1" fill="white" />
+                            <path d="M23 4v4c.8-.3 1.3-1.1 1.3-2s-.5-1.7-1.3-2Z" fill="white" fillOpacity="0.45" />
+                          </svg>
+                        </span>
+                      </div>
+                      <div className="phone-home" />
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+
+          </div>
+        </section>
+        {/* INTERACTIVE BACKGROUND BRAND KEYS CONTAINER */}
+        <div className="relative w-full overflow-hidden mt-16 bg-transparent">
+
+
+          {/* IMPROVY PEDAGOGICAL EDUCATIONAL METHOD SHOWCASE */}
+          <motion.div
+            id="why"
+            custom={6}
+            initial="hidden"
+            animate="visible"
+            variants={revealVariants}
+          >
+            <WhyImprovySection onLearnMoreClick={() => {
+              setCurrentPage("why");
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }} />
+          </motion.div>
+          {/* SECTION 3: SIGNATURE LIFE-TIME ACCESS PRICING (Side-by-side comparison) */}
+          <motion.section 
+            id="pricing" 
+            custom={7}
+            initial="hidden"
+            animate="visible"
+            variants={revealVariants}
+            className="pt-20 pb-20 sm:pt-24 sm:pb-24 max-w-7xl mx-auto px-6 md:px-12 relative z-30 scroll-mt-6 bg-transparent"
+          >
+            {/* Section Header */}
+            <div className="text-center mb-16 space-y-4">
+              <h2 className="text-3xl sm:text-5xl font-black text-white font-display tracking-tight leading-[1.3] sm:leading-[1.2] uppercase">
+                CHOOSE YOUR{" "}
+                <span className="relative inline-block ml-6 sm:ml-8 mr-2 px-6 py-2">
+                  <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-rose-500 via-purple-500 to-indigo-500 font-black">
+                    FLOW
+                  </span>
+                  <div className="absolute -inset-x-3 -inset-y-3 pointer-events-none z-0">
+                    <motion.svg
+                      width="100%"
+                      height="100%"
+                      viewBox="0 0 200 80"
+                      preserveAspectRatio="none"
+                      initial="hidden"
+                      whileInView="visible"
+                      viewport={{ once: true }}
+                      className="w-full h-full overflow-visible"
+                    >
+                      <motion.path
+                        d="M 180 16 
+                           C 205 34, 195 72, 100 74
+                           C 30 76, 5 65, 5 40
+                           C 5 15, 30 8, 100 8
+                           C 155 8, 185 16, 175 28"
+                        fill="none"
+                        strokeWidth="3.5"
+                        stroke="#ffffff"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        variants={{
+                          hidden: { pathLength: 0, opacity: 0 },
+                          visible: {
+                            pathLength: 1,
+                            opacity: 0.9,
+                            transition: {
+                              pathLength: { duration: 2.2, ease: [0.43, 0.13, 0.23, 0.96], delay: 0.15 },
+                              opacity: { duration: 0.4, delay: 0.15 },
+                            },
+                          },
+                        }}
+                      />
+                      <defs>
+                        <linearGradient id="rainbow-gradient-sintonia-new" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stopColor="#f43f5e" />
+                          <stop offset="50%" stopColor="#a855f7" />
+                          <stop offset="100%" stopColor="#6366f1" />
+                        </linearGradient>
+                      </defs>
+                    </motion.svg>
+                  </div>
+                </span>
+              </h2>
+              <p className="text-xs sm:text-sm text-zinc-400 font-light max-w-xl mx-auto leading-relaxed">
+                Start free — diatonic training in every key. Go Pro once, for good — {PRO_PRICE_WEB} here, a euro less than in the app stores, no subscription.
+              </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto items-stretch">
+              {/* RETTANGOLO 1: Improvy Standard (Base) */}
+              <div className="group relative overflow-hidden bg-[#07040f]/60 border border-white/[0.05] p-8 sm:p-10 rounded-[28px] backdrop-blur-3xl flex flex-col justify-between text-left hover:border-white/15 transition-all duration-500 hover:-translate-y-1.5 shadow-2xl">
+                {/* Subtle shine sweep */}
+                <span className="absolute inset-0 w-[200%] h-full bg-gradient-to-r from-transparent via-white/[0.03] to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out pointer-events-none" />
+                <div className="absolute top-0 left-0 w-64 h-64 bg-[#e5a93c]/2 rounded-full blur-3xl pointer-events-none" />
+                
+                <div className="relative z-10 space-y-6">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <span className="text-[9px] font-sans font-extrabold uppercase tracking-[0.2em] text-zinc-500">STANDARD VERSION</span>
+                      <h4 className="text-3xl font-black font-display tracking-tight text-white mt-1">Improvy</h4>
+                    </div>
+                    <span className="text-[9px] font-extrabold text-zinc-400 bg-white/5 border border-white/10 px-3 py-1 rounded-md uppercase font-sans tracking-wide">
+                      Free
+                    </span>
+                  </div>
+
+                  <p className="text-xs text-zinc-450 font-sans font-light leading-relaxed">
+                    Perfect for your first steps. Master scale-degree relationships in the key of C, plus the free …Of What? and Pocket modes.
+                  </p>
+
+                  <div className="py-5 border-t border-b border-white/[0.05]">
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-5xl font-black text-white font-sans tracking-tight">€0</span>
+                      <span className="text-xs text-zinc-500 font-sans font-medium">/ lifetime</span>
+                    </div>
+                    <span className="text-[9px] text-[#e5a93c] block mt-1.5 uppercase tracking-widest font-extrabold">RECOMMENDED TO START</span>
+                  </div>
+
+                  <div className="space-y-4">
+                    <p className="text-[9px] text-zinc-400 font-extrabold uppercase tracking-widest">What's Included:</p>
+                    <ul className="space-y-3.5 text-xs text-zinc-350 font-sans font-light">
+                      <li className="flex items-center gap-3">
+                        <div className="w-5 h-5 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
+                          <Check className="w-3 h-3 text-emerald-400 stroke-[3]" />
+                        </div>
+                        <span>Diatonic Mode in all 12 keys, Chromatic in C</span>
+                      </li>
+                      <li className="flex items-center gap-3">
+                        <div className="w-5 h-5 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
+                          <Check className="w-3 h-3 text-emerald-400 stroke-[3]" />
+                        </div>
+                        <span><span className="font-semibold text-white">Note-to-Number</span>, <span className="font-semibold text-white">…Of What?</span> & <span className="font-semibold text-white">Pocket</span> with the scale degrees</span>
+                      </li>
+                      <li className="flex items-center gap-3">
+                        <div className="w-5 h-5 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
+                          <Check className="w-3 h-3 text-emerald-400 stroke-[3]" />
+                        </div>
+                        <span>Visualize scale degrees on the keyboard</span>
+                      </li>
+                      <li className="flex items-center gap-3 text-zinc-650 opacity-45">
+                        <div className="w-5 h-5 rounded-full bg-zinc-800/20 border border-white/5 flex items-center justify-center shrink-0">
+                          <X className="w-3 h-3 text-zinc-500" />
+                        </div>
+                        <span className="line-through">Chromatic Mode in the other 11 keys</span>
+                      </li>
+                      <li className="flex items-center gap-3 text-zinc-650 opacity-45">
+                        <div className="w-5 h-5 rounded-full bg-zinc-800/20 border border-white/5 flex items-center justify-center shrink-0">
+                          <X className="w-3 h-3 text-zinc-500" />
+                        </div>
+                        <span className="line-through">Custom Mode & every chromatic degree</span>
+                      </li>
+                      <li className="flex items-center gap-3 text-zinc-650 opacity-45">
+                        <div className="w-5 h-5 rounded-full bg-zinc-800/20 border border-white/5 flex items-center justify-center shrink-0">
+                          <X className="w-3 h-3 text-zinc-500" />
+                        </div>
+                        <span className="line-through">Adaptive difficulty & deep analytics</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="relative z-10 pt-8 mt-8 border-t border-white/[0.05]">
+                  <button
+                    onClick={scrollToStores}
+                    className="w-full py-4 rounded-xl bg-white/[0.03] hover:bg-white/[0.07] text-white border border-white/10 text-xs font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer flex items-center justify-center gap-2 active:scale-95 focus:outline-none focus:ring-0"
+                  >
+                    <ArrowUp className="w-3.5 h-3.5" />
+                    <span>Start for Free</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* RETTANGOLO 2: Improvy Pro (Premium) */}
+              <div className="relative overflow-hidden p-[2px] rounded-[28px] flex flex-col justify-between text-left group hover:-translate-y-1.5 transition-all duration-500 rainbow-gold-glow">
+                
+                {/* Stunning rotating conic gradient (creates the active rainbow-gold glowing halo border effect requested by the user) */}
+                <div className="absolute -inset-[200%] bg-[conic-gradient(from_0deg,#e5a93c_0deg,#f43f5e_60deg,#a855f7_120deg,#3b82f6_180deg,#10b981_240deg,#e5a93c_300deg)] animate-spin-slow opacity-85 group-hover:opacity-100 transition-opacity duration-500" />
+                
+                {/* Luxury gradient shine sweep overlay */}
+                <span className="absolute inset-0 w-[200%] h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-[1200ms] ease-out pointer-events-none z-10" />
+                
+                {/* Inner Obsidian Black Card */}
+                <div className="bg-[#07050d] rounded-[26.5px] p-8 sm:p-10 flex flex-col justify-between h-full relative overflow-hidden backdrop-blur-3xl z-10">
+                  {/* Subtle solar flare gold background radial bleed to tone down the purple/cold neon */}
+                  <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-br from-[#e5a93c]/10 to-transparent rounded-full blur-3xl pointer-events-none" />
+                  <div className="absolute -bottom-10 -left-10 w-64 h-64 bg-gradient-to-tr from-purple-500/5 to-transparent rounded-full blur-2xl pointer-events-none" />
+                  
+                  <div className="relative z-10 space-y-6">
+                     <div className="flex justify-between items-start">
+                       <div>
+                         {/* Symmetrical Elite Golden Label */}
+                         <span className="text-[9px] font-sans font-extrabold uppercase tracking-[0.22em] text-[#e5a93c]">LIFETIME PRO UNLOCK</span>
+                         <h4 className="text-3xl font-black font-display tracking-tight text-white mt-1">Improvy Pro</h4>
+                       </div>
+                       <span className="text-[9px] font-black text-white bg-gradient-to-r from-amber-600 via-[#e5a93c] to-amber-500 border border-amber-400/20 px-3 py-1.5 rounded-full uppercase font-sans tracking-widest shadow-lg shadow-amber-950/20 animate-pulse">
+                         Recommended
+                       </span>
+                     </div>
+
+                    <p className="text-xs text-zinc-350 font-sans font-light leading-relaxed">
+                      Unlock the entire chromatic keyboard, cognitive stimulation modes, and intelligent self-assessment algorithms.
+                    </p>
+
+                    {/* Elite Gold pricing block with exactly the same font-size layout as Section 1 */}
+                    <div className="py-5 border-t border-b border-white/[0.05]">
+                      <div className="flex items-baseline gap-1.5">
+                        <span className="text-5xl font-black text-white font-sans tracking-tight">{PRO_PRICE_WEB}</span>
+                        <span className="text-xs text-zinc-500 font-sans font-medium">{PRO_PRICE_NOTE}</span>
+                      </div>
+                      <span className="text-[9px] text-[#e5a93c] block mt-1.5 uppercase tracking-widest font-extrabold">ON THIS SITE · {PRO_PRICE_STORE_NOTE}</span>
+                    </div>
+
+                    <div className="space-y-4">
+                      <p className="text-[9px] text-[#e5a93c] font-black uppercase tracking-widest font-sans">Everything in Standard, plus:</p>
+                      <ul className="space-y-3.5 text-xs text-zinc-100 font-sans font-light">
+                        <li className="flex items-center gap-3">
+                          <div className="w-5 h-5 rounded-full bg-[#e5a93c]/12 border border-[#e5a93c]/25 flex items-center justify-center shrink-0">
+                            <Check className="w-3 h-3 text-[#e5a93c] stroke-[3]" />
+                          </div>
+                          <span className="font-semibold text-white">Chromatic Mode in all 12 keys</span>
+                        </li>
+                        <li className="flex items-center gap-3">
+                          <div className="w-5 h-5 rounded-full bg-[#e5a93c]/12 border border-[#e5a93c]/25 flex items-center justify-center shrink-0">
+                            <Check className="w-3 h-3 text-[#e5a93c] stroke-[3]" />
+                          </div>
+                          <span>Jazz extensions — <span className="font-semibold text-white">9 · 11 · 13</span>, altered</span>
+                        </li>
+                        <li className="flex items-center gap-3">
+                          <div className="w-5 h-5 rounded-full bg-[#e5a93c]/12 border border-[#e5a93c]/25 flex items-center justify-center shrink-0">
+                            <Check className="w-3 h-3 text-[#e5a93c] stroke-[3]" />
+                          </div>
+                          <span><span className="font-semibold text-white">Custom Mode</span>, plus every degree in Note-to-Number, …Of What? & Pocket</span>
+                        </li>
+                        <li className="flex items-center gap-3">
+                          <div className="w-5 h-5 rounded-full bg-[#e5a93c]/12 border border-[#e5a93c]/25 flex items-center justify-center shrink-0">
+                            <Check className="w-3 h-3 text-[#e5a93c] stroke-[3]" />
+                          </div>
+                          <span>Real-time <span className="font-semibold text-[#e5a93c]">Adaptive Difficulty</span> algorithm</span>
+                        </li>
+                        <li className="flex items-center gap-3">
+                          <div className="w-5 h-5 rounded-full bg-[#e5a93c]/12 border border-[#e5a93c]/25 flex items-center justify-center shrink-0">
+                            <Check className="w-3 h-3 text-[#e5a93c] stroke-[3]" />
+                          </div>
+                          <span>Deep Analytics with keyboard heatmaps</span>
+                        </li>
+                        <li className="flex items-center gap-3">
+                          <div className="w-5 h-5 rounded-full bg-[#e5a93c]/12 border border-[#e5a93c]/25 flex items-center justify-center shrink-0">
+                            <Check className="w-3 h-3 text-[#e5a93c] stroke-[3]" />
+                          </div>
+                          <span className="text-[#e5a93c] font-medium">No future subscriptions - Lifetime access</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className="relative z-10 pt-8 mt-8 border-t border-white/[0.04]">
+                    <div className="relative group/btn w-full rounded-xl">
+                      <div className="absolute -inset-[3.5px] rounded-xl bg-gradient-to-r from-rose-500 via-purple-600 via-[#e5a93c] to-amber-500 opacity-0 group-hover/btn:opacity-75 blur-[10px] transition-all duration-500 bg-[length:100%_auto] group-hover/btn:bg-[length:200%_auto] group-hover/btn:animate-rainbow-shift" />
+                      
+                      <button
+                        onClick={goPro}
+                        className="relative w-full py-4 rounded-xl bg-gradient-to-r from-rose-500 via-purple-600 via-[#e5a93c] to-amber-500 bg-[length:100%_auto] group-hover/btn:bg-[length:200%_auto] group-hover/btn:animate-rainbow-shift text-white text-xs font-black uppercase tracking-widest transition-all duration-300 active:scale-95 cursor-pointer flex items-center justify-center gap-2 border border-white/10 shadow-xl shadow-rose-600/10 z-10 focus:outline-none focus:ring-0"
+                      >
+                        <Sparkle className="w-3.5 h-3.5" />
+                        <span>Get Pro — {PRO_PRICE_WEB}</span>
+                      </button>
+                    </div>
+                    <span className="text-[8.5px] font-sans text-zinc-500 block text-center mt-2.5 uppercase tracking-widest">
+                      Sign in, pay once with Stripe, and the app unlocks on the same account — any phone
+                    </span>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+          </motion.section>
+
+          {/* SECTION 2.5: UNLIMITED SCROLLING TESTIMONIALS */}
+          <motion.section 
+            id="testimonials"
+            custom={8}
+            initial="hidden"
+            animate="visible"
+            variants={revealVariants}
+            className="pt-20 pb-0 sm:pt-24 sm:pb-0 relative z-30 max-w-7xl mx-auto px-6 md:px-12 bg-transparent overflow-hidden"
+          >
+            <div className="text-center mb-12 space-y-4">
+              <h2 className="text-3xl sm:text-5xl font-black text-white font-display tracking-tight leading-none uppercase">
+                WHAT PEOPLE SAY ABOUT <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 via-purple-500 to-indigo-500">IMPROVY</span>
+              </h2>
+              <p className="text-xs sm:text-sm text-zinc-400 font-light max-w-xl mx-auto leading-relaxed">
+                Musicians, educators, and creatives who built their harmonic awareness and improvisation skills on our 12-key relational system.
+              </p>
+            </div>
+
+            {/* Testimonials Vertical Columns Layout */}
+            <div 
+              className="relative overflow-hidden mt-10 transition-all duration-300 w-full"
+              style={{ height: keysHeight ? `${Math.max(keysHeight, 560)}px` : "600px" }}
+            >
+              {/* Real-time Interactive Glowing Keys Logo in background layer - mathematically mapped to keysHeight boundaries */}
+              <div 
+                className="absolute inset-x-0 pointer-events-none select-none flex items-center justify-center -z-10"
+                style={{ 
+                  height: logoHeight ? `${logoHeight}px` : "100%",
+                  top: logoHeight ? `-${(104 / 512) * logoHeight}px` : "0px",
+                }}
+              >
+                <div ref={logoRef} className="relative w-full max-w-6xl aspect-square overflow-hidden flex items-center justify-center">
+                  {/* LAYER 2: INTERACTIVE ILLUMINATED MULTI-COLOR KEYS */}
+                  <div
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      pointerEvents: "none",
+                      opacity: isHoveringLogo ? 1.0 : 0,
+                      filter: isHoveringLogo ? "saturate(1.45)" : "none",
+                      maskImage: `radial-gradient(ellipse 35% 35% at ${mousePct.x}% ${mousePct.y}%, black 0%, rgba(0, 0, 0, 0.8) 25%, rgba(0, 0, 0, 0.45) 55%, rgba(0, 0, 0, 0.12) 80%, transparent 100%)`,
+                      WebkitMaskImage: `radial-gradient(ellipse 35% 35% at ${mousePct.x}% ${mousePct.y}%, black 0%, rgba(0, 0, 0, 0.8) 25%, rgba(0, 0, 0, 0.45) 55%, rgba(0, 0, 0, 0.12) 80%, transparent 100%)`,
+                      transition: "opacity 0.4s ease-out, filter 0.3s ease-out"
+                    }}
+                    className="absolute inset-0 select-none pointer-events-none"
+                  >
+                    <svg
+                      viewBox="0 0 512 512"
+                      className="w-full h-full max-h-[1100px] object-contain absolute inset-0 select-none pointer-events-none"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <defs>
+                        <linearGradient id="bg-key-1-grad" x1="256" y1="104" x2="256" y2="408" gradientUnits="userSpaceOnUse">
+                          <stop offset="0%" stopColor="#7e3ff2" />
+                          <stop offset="50%" stopColor="#26bcff" />
+                          <stop offset="100%" stopColor="#13f5ab" />
+                        </linearGradient>
+                        <linearGradient id="bg-key-2-grad" x1="256" y1="104" x2="256" y2="408" gradientUnits="userSpaceOnUse">
+                          <stop offset="0%" stopColor="#923ff2" />
+                          <stop offset="40%" stopColor="#668bf6" />
+                          <stop offset="100%" stopColor="#85f33d" />
+                        </linearGradient>
+                        <linearGradient id="bg-key-3-grad" x1="256" y1="104" x2="256" y2="408" gradientUnits="userSpaceOnUse">
+                          <stop offset="0%" stopColor="#d633af" />
+                          <stop offset="45%" stopColor="#f5527a" />
+                          <stop offset="100%" stopColor="#ecf52a" />
+                        </linearGradient>
+                        <linearGradient id="bg-key-4-grad" x1="256" y1="104" x2="256" y2="408" gradientUnits="userSpaceOnUse">
+                          <stop offset="0%" stopColor="#f52d50" />
+                          <stop offset="45%" stopColor="#fa7f23" />
+                          <stop offset="100%" stopColor="#fbcb18" />
+                        </linearGradient>
+                      </defs>
+
+                      {/* KEY 1 */}
+                      <path
+                        d="M 110,104 L 130,104 A 12,12 0 0 1 142,116 L 142,276 C 142,284 156,284 156,292 L 156,392 A 16,16 0 0 1 140,408 L 93,408 A 16,16 0 0 1 77,392 L 77,120 A 16,16 0 0 1 93,104 Z"
+                        fill="url(#bg-key-1-grad)"
+                      />
+
+                      {/* KEY 2 */}
+                      <path
+                        d="M 196,104 L 223,104 A 12,12 0 0 1 235,116 L 235,276 C 235,284 249,284 249,292 L 249,392 A 16,16 0 0 1 233,408 L 186,408 A 16,16 0 0 1 170,392 L 170,292 C 170,284 184,284 184,276 L 184,116 A 12,12 0 0 1 196,104 Z"
+                        fill="url(#bg-key-2-grad)"
+                      />
+
+                      {/* KEY 3 */}
+                      <path
+                        d="M 289,104 L 316,104 A 12,12 0 0 1 328,116 L 328,276 C 328,284 342,284 342,292 L 342,392 A 16,16 0 0 1 326,408 L 279,408 A 16,16 0 0 1 263,392 L 263,292 C 263,284 277,284 277,276 L 277,116 A 12,12 0 0 1 289,104 Z"
+                        fill="url(#bg-key-3-grad)"
+                      />
+
+                      {/* KEY 4 */}
+                      <path
+                        d="M 382,104 L 419,104 A 16,16 0 0 1 435,120 L 435,392 A 16,16 0 0 1 419,408 L 372,408 A 16,16 0 0 1 356,392 L 356,292 C 356,284 370,284 370,276 L 370,116 A 12,12 0 0 1 382,104 Z"
+                        fill="url(#bg-key-4-grad)"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              {/* Fade out top and bottom */}
+              <div 
+                className="absolute top-0 inset-x-0 h-24 md:h-32 bg-gradient-to-b from-black to-transparent z-40 pointer-events-none select-none" 
+              />
+              <div 
+                className="absolute bottom-0 inset-x-0 h-24 md:h-32 bg-gradient-to-t from-black to-transparent z-40 pointer-events-none select-none" 
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 h-full items-start">
+                {/* Column 1 */}
+                <TestimonialsColumn 
+                  testimonials={testimonialsList.slice(0, 2)} 
+                  duration={16} 
+                  className="flex flex-col gap-6"
+                />
+
+                {/* Column 2 - Hidden on Mobile but visible on desktop */}
+                <TestimonialsColumn 
+                  testimonials={testimonialsList.slice(2, 4)} 
+                  duration={22} 
+                  className="hidden md:flex flex-col gap-6"
+                />
+
+                {/* Column 3 - Hidden on tablet, visible on desktop */}
+                <TestimonialsColumn 
+                  testimonials={testimonialsList.slice(4, 6)} 
+                  duration={18} 
+                  className="hidden lg:flex flex-col gap-6"
+                />
+              </div>
+            </div>
+          </motion.section>
+        </div>
+          </>
+        )}
+        </Suspense>
+
+        {/* EDITORIAL PREMIUM FOOTER */}
+        <motion.footer 
+          custom={9}
+          initial="hidden"
+          animate="visible"
+          variants={revealVariants}
+          className="border-t border-white/5 pt-10 pb-6 md:pt-12 md:pb-8 px-6 md:px-12 relative z-30 bg-[#07040f]/95 backdrop-blur-xl overflow-hidden mt-8 w-full"
+        >
+          {/* Ambient light flares inside the footer */}
+          <div className="absolute top-0 right-1/4 w-48 h-48 bg-indigo-500/5 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-0 left-10 w-48 h-48 bg-rose-500/5 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="max-w-7xl mx-auto font-sans text-zinc-400">
+            
+            {/* Main Footer Clean Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 text-left mb-0">
+              
+              {/* Column 1: Brand Manifesto & Core Mission */}
+              <div className="col-span-2 md:col-span-1 flex flex-col gap-3">
+                <div>
+                  <span className="font-display text-xl sm:text-2xl font-black text-white italic tracking-tight">Improvy</span>
+                </div>
+                <p className="text-xs text-zinc-400 leading-relaxed font-light">
+                  Train your mind to see every note before you play it. Instant scale-degree mastery across all 12 keys for real musical fluency.
+                </p>
+              </div>
+
+              {/* Column 2: Explore */}
+              <div className="flex flex-col gap-3.5">
+                <h4 className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-[#e5a93c]">Explore</h4>
+                <div className="flex flex-col gap-2 text-xs font-medium text-zinc-400 font-normal">
+                  <button 
+                    onClick={() => {
+                      if (currentPage !== "home") {
+                        setCurrentPage("home");
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                      } else {
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                      }
+                    }}
+                    className="hover:text-white transition-colors duration-200 cursor-pointer text-left focus:outline-none"
+                  >
+                    Home
+                  </button>
+                  <button 
+                    onClick={() => {
+                      if (currentPage !== "why") {
+                        setCurrentPage("why");
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                      } else {
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                      }
+                    }}
+                    className={cn(
+                      "hover:text-white transition-colors duration-200 cursor-pointer text-left focus:outline-none",
+                      currentPage === "why" ? "text-[#e5a93c]" : "text-zinc-300"
+                    )}
+                  >
+                    The Method
+                  </button>
+                  <button 
+                    onClick={() => {
+                      if (currentPage !== "home") {
+                        setCurrentPage("home");
+                        setTimeout(() => scrollToSection("pricing"), 100);
+                      } else {
+                        scrollToSection("pricing");
+                      }
+                    }}
+                    className="hover:text-white transition-colors duration-200 cursor-pointer text-left focus:outline-none"
+                  >
+                    Pricing
+                  </button>
+                  <button 
+                    onClick={goPro}
+                    className={cn(
+                      "hover:text-white transition-colors duration-200 cursor-pointer text-left focus:outline-none",
+                      currentPage === "pro" ? "text-[#e5a93c]" : ""
+                    )}
+                  >
+                    Get Improvy Pro
+                  </button>
+                </div>
+              </div>
+
+              {/* Column 3: Engage */}
+              <div className="flex flex-col gap-3.5">
+                <h4 className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-rose-400">Engage</h4>
+                <div className="flex flex-col gap-2 text-xs font-medium text-zinc-400">
+                  <button 
+                    onClick={() => {
+                      setAboutPageScrollTo("get-in-touch");
+                      setAboutScrollTrigger(prev => prev + 1);
+                      setCurrentPage("about");
+                    }}
+                    className="hover:text-white transition-colors duration-200 cursor-pointer text-left focus:outline-none"
+                  >
+                    About Us
+                  </button>
+                  <button 
+                    onClick={() => {
+                      setAboutPageScrollTo("get-in-touch");
+                      setAboutScrollTrigger(prev => prev + 1);
+                      setCurrentPage("about");
+                    }}
+                    className="hover:text-white transition-colors duration-200 cursor-pointer text-left focus:outline-none"
+                  >
+                    Affiliates
+                  </button>
+                  <button 
+                    onClick={() => {
+                      setCurrentPage("feedback");
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                    className="hover:text-white transition-colors duration-200 cursor-pointer text-left focus:outline-none"
+                  >
+                    Feedback
+                  </button>
+                </div>
+              </div>
+
+              {/* Column 4: Harmonics & Legal */}
+              <div className="flex flex-col gap-3.5">
+                <h4 className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-indigo-400">Harmonics & Legal</h4>
+                <div className="flex flex-col gap-2 text-xs font-medium text-zinc-400">
+                  <button 
+                    onClick={() => {
+                      setAboutPageScrollTo("get-in-touch");
+                      setAboutScrollTrigger(prev => prev + 1);
+                      setCurrentPage("about");
+                    }}
+                    className="hover:text-white transition-colors duration-200 cursor-pointer text-left focus:outline-none"
+                  >
+                    Contact Us
+                  </button>
+                  <button 
+                    onClick={() => {
+                      setCurrentPage("privacy");
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                    className="hover:text-white transition-colors duration-200 cursor-pointer text-left focus:outline-none"
+                  >
+                    Privacy Policy
+                  </button>
+                  <button 
+                    onClick={() => {
+                      setCurrentPage("terms");
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                    className="hover:text-white transition-colors duration-200 cursor-pointer text-left focus:outline-none"
+                  >
+                    Terms of Service
+                  </button>
+                </div>
+                <div className="pt-6 mt-2 text-[11px] text-zinc-500 font-light">
+                  <p>© 2026 Improvy. All rights reserved.</p>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </motion.footer>
+
+      </div>
+    </BackgroundGradientAnimation>
+  );
+}
