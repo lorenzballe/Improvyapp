@@ -61,7 +61,7 @@ export default function PrivacyPolicyPage({ onBack }: PrivacyPolicyPageProps) {
             </span>
           </h1>
           <div className="space-y-4 text-sm sm:text-base text-zinc-400 font-light leading-relaxed max-w-2xl pt-2">
-            <p className="text-xs uppercase tracking-widest text-zinc-500">Last updated: 24 September 2026</p>
+            <p className="text-xs uppercase tracking-widest text-zinc-500">Last updated: 3 October 2026</p>
             <p>
               Improvy (“App”, “we”, “us”) — the app and this website — is developed and operated by Lorenzo
               Ballestrazzi (“Developer”). This Privacy Policy explains what information we collect, how we use it,
@@ -88,7 +88,8 @@ export default function PrivacyPolicyPage({ onBack }: PrivacyPolicyPageProps) {
               key and difficulty chosen, and level-up or streak milestones. For a purchase in the app we also record
               its outcome — the product, its price and currency, the store's transaction reference, and whether it
               was a test purchase — and, when the store refuses one, which app store installed Improvy. On their own
-              these contain nothing that identifies you.
+              these contain nothing that identifies you. If you enter a creator's code in the app, the creator's
+              name and the code are attached to your later events too, so we can tell which creator brought whom.
             </Point>
             <Point title="Account data (only if you sign in)">
               Signing in with Apple, Google or an email address creates an account with a unique identifier, your
