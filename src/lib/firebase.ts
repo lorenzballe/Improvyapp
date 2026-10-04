@@ -252,3 +252,39 @@ export function describeAuthError(e: unknown): string {
       return "Sign-in failed. Try again.";
   }
 }
+
+export type CreatorSale = {
+  source: "site" | "app_store" | "play_store" | "store";
+  /** In minor units of [currency]; null when the store did not say. */
+  amount: number | null;
+  currency: string | null;
+  /** Milliseconds since the epoch. */
+  at: number;
+  refunded?: boolean;
+  disputed?: boolean;
+};
+
+export type CreatorDashboard = {
+  ref: string;
+  pct: number;
+  since: string | null;
+  totals: {
+    sales: number;
+    refunded: number;
+    site: number;
+    app: number;
+    revenue: { currency: string; amount: number; commission: number }[];
+  };
+  sales: CreatorSale[];
+  proCode: { code: string; uses: number; maxUses: number } | null;
+  updatedAt: string;
+};
+
+/**
+ * A creator's own numbers, opened with the key from their private link
+ * (improvy.app/#creator/{ref}/{key}). No account: the key is the access.
+ */
+export async function creatorDashboard(ref: string, key: string): Promise<CreatorDashboard> {
+  const call = httpsCallable<{ ref: string; key: string }, CreatorDashboard>(functions(), "creatorDashboard");
+  return (await call({ ref, key })).data;
+}

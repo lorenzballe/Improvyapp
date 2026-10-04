@@ -23,6 +23,7 @@ const TermsOfServicePage = lazy(() => import("./components/TermsOfServicePage"))
 const PrivacyPolicyPage = lazy(() => import("./components/PrivacyPolicyPage"));
 const AboutPage = lazy(() => import("./components/AboutPage"));
 const FeedbackPage = lazy(() => import("./components/FeedbackPage"));
+const CreatorPage = lazy(() => import("./components/CreatorPage"));
 import { StoreBadges } from "./components/StoreBadges";
 import heroHomeScreenImg from "./assets/images/method_home_progress.webp";
 
@@ -96,7 +97,7 @@ function Text_03({
  * footer. A hash keeps them linkable on GitHub Pages without a router or a
  * 404 fallback. Everything else stays plain in-page state.
  */
-function pageFromHash(): "privacy" | "terms" | "pro" | "about" | null {
+function pageFromHash(): "privacy" | "terms" | "pro" | "about" | "creator" | null {
   const hash = window.location.hash.replace(/^#\/?/, "");
   // #about is addressed because the stores ask for a support URL, and a
   // support URL that lands on a marketing page is not support information.
@@ -104,11 +105,13 @@ function pageFromHash(): "privacy" | "terms" | "pro" | "about" | null {
   // #pro, and the two addresses Stripe sends people back to:
   // #pro/success?session_id=… and #pro/cancel. ProPage reads the rest.
   if (hash === "pro" || hash.startsWith("pro/")) return "pro";
+  // #creator/{ref}/{key}: a creator's private sales page. CreatorPage reads the rest.
+  if (hash.startsWith("creator/")) return "creator";
   return null;
 }
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState<"home" | "why" | "terms" | "privacy" | "about" | "feedback" | "pro">(
+  const [currentPage, setCurrentPage] = useState<"home" | "why" | "terms" | "privacy" | "about" | "feedback" | "pro" | "creator">(
     () => pageFromHash() ?? "home"
   );
   const [aboutPageScrollTo, setAboutPageScrollTo] = useState<"top" | "get-in-touch" | null>(null);
@@ -126,7 +129,10 @@ export default function App() {
       currentPage === "about";
     const hash = addressed ? `#${currentPage}` : "";
     // #pro/success?… and #pro/cancel are still "pro": leave them be.
-    const already = currentPage === "pro" && window.location.hash.startsWith("#pro");
+    const already =
+      (currentPage === "pro" && window.location.hash.startsWith("#pro")) ||
+      // The creator page's address carries its key: never rewrite it.
+      currentPage === "creator";
     if (!already && window.location.hash !== hash) {
       window.history.replaceState(null, "", window.location.pathname + window.location.search + hash);
     }
@@ -136,7 +142,8 @@ export default function App() {
   // document with a hash router, so without this PostHog would see one visit
   // and never learn that anybody reached the Pro page.
   useEffect(() => {
-    trackView(currentPage);
+    // Not the creator page: its address is a private key.
+    if (currentPage !== "creator") trackView(currentPage);
   }, [currentPage]);
 
   // Someone pasting or editing #privacy / #terms in the address bar.
@@ -343,6 +350,8 @@ export default function App() {
               window.scrollTo({ top: 0, behavior: "smooth" });
             }} 
           />
+        ) : currentPage === "creator" ? (
+          <CreatorPage />
         ) : currentPage === "feedback" ? (
           <FeedbackPage onBack={() => {
             setCurrentPage("home");

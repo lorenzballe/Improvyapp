@@ -5,11 +5,16 @@ import './index.css';
 import { startAnalytics, tagVisit } from './lib/analytics.ts';
 import { captureRef } from './lib/referral.ts';
 
-// Before the first render, so the first view is counted.
-startAnalytics();
-// Which creator's link, if any: every event of this visit carries it.
-const ref = captureRef();
-if (ref) tagVisit({ ref });
+// A creator's private page (#creator/{ref}/{key}) carries its key in the
+// address: no analytics there at all, so the key is never sent anywhere.
+const privatePage = /^#\/?creator\//.test(window.location.hash);
+if (!privatePage) {
+  // Before the first render, so the first view is counted.
+  startAnalytics();
+  // Which creator's link, if any: every event of this visit carries it.
+  const ref = captureRef();
+  if (ref) tagVisit({ ref });
+}
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
