@@ -10,16 +10,22 @@ export interface Testimonial {
 
 export const testimonialsList: Testimonial[] = [
   {
+    text: "Improvy is extremely effective. I have never seen anything like it. Thank you for this app.",
+    name: "Sarah Fratai",
+    role: "Theory & Ear Training · The Juilliard School",
+    image: ""
+  },
+  {
     text: "Improvy's relational tuning has completely transformed my approach to improvisation. I can now visualize and calculate harmonic relationships instantly across the keyboard.",
     name: "Marco Valeri",
     role: "Jazz Pianist",
     image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=256&h=256&fit=crop"
   },
   {
-    text: "An extraordinarily polished application for avant-garde composition. The 12-tone relational processing system unlocks a stunning sense of spatial awareness.",
-    name: "Elena Rossini",
-    role: "Composer & Sound Designer",
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=256&h=256&fit=crop"
+    text: "It truly works, and it's excellent, especially at the start. It really unlocks improvisation.",
+    name: "Roberto Bisi",
+    role: "Jazz Composition · Conservatorio Vecchi-Tonelli, Modena",
+    image: ""
   },
   {
     text: "Measuring my processing lag has taught me to eliminate hesitation during live jazz improvisations. Absolutely indispensable.",
@@ -28,16 +34,10 @@ export const testimonialsList: Testimonial[] = [
     image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=256&h=256&fit=crop"
   },
   {
-    text: "I use Improvy daily with my Conservatory students. The seamless transition between melodic geometry and relational sound vectors is simply genius.",
-    name: "Prof. Julian Sterling",
-    role: "Harmony Professor",
-    image: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=256&h=256&fit=crop"
-  },
-  {
-    text: "The dynamic visual curves and chromatic calibration offer a spectacular visual layer for composition. I have never seen anything like this.",
-    name: "Charlotte Dubois",
-    role: "Classical Violinist",
-    image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=256&h=256&fit=crop"
+    text: "It really helps you visualize. A tool that helps a lot with visualization.",
+    name: "Esther Shanti",
+    role: "Civica Scuola di Musica, Milan",
+    image: ""
   },
   {
     text: "The ultimate tool for my daily cognitive alignment. It allows me to calculate and improvise through highly complex chord progressions in seconds with total awareness.",
@@ -83,7 +83,7 @@ export const TestimonialsColumn = (props: {
                         given with their consent, can replace this. */}
                     <div
                       aria-hidden
-                      className="h-10 w-10 rounded-full border border-white/10 bg-gradient-to-br from-rose-500/80 via-purple-500/80 to-indigo-500/80 flex items-center justify-center font-display font-bold text-white text-[12px] tracking-wide"
+                      className="h-10 w-10 shrink-0 rounded-full border border-white/10 bg-gradient-to-br from-rose-500/80 via-purple-500/80 to-indigo-500/80 flex items-center justify-center font-display font-bold text-white text-[12px] tracking-wide"
                     >
                       {name.replace(/^Prof\.\s*/, "").split(/\s+/).map((w) => w[0]).slice(0, 2).join("")}
                     </div>
