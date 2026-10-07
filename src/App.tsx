@@ -374,7 +374,7 @@ export default function App() {
                 transition={{ delay: 0.12, duration: 0.5 }}
                 className="font-display text-5xl sm:text-7xl xl:text-8xl font-extrabold text-white leading-[1.05] tracking-tight"
               >
-                Train your <Text_03 text="mind" />{" "}
+                Train your <Text_03 text="Mind" />{" "}
                 to{" "}
                 {/* The typed word changes every few seconds, so a crawler or a
                     screen reader catches whichever it lands on. They get the
@@ -1066,7 +1066,7 @@ export default function App() {
                   </button>
                 </div>
                 <div className="pt-6 mt-2 text-[11px] text-zinc-500 font-light">
-                  <p>© 2026 Improvy. All rights reserved.</p>
+                  <p>© 2026 The Bale Company. All rights reserved.</p>
                 </div>
               </div>
 
