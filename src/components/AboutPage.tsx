@@ -62,10 +62,10 @@ export default function AboutPage({ onBack, scrollToSection, scrollTrigger }: Ab
           </h1>
           <div className="space-y-4 text-sm sm:text-base text-zinc-400 font-light leading-relaxed max-w-2xl pt-2">
             <p>
-              Improvy is a music-training app by The Bale Company, built around one skill: knowing instantly where every note lives, in every key, as a degree of the scale.
+              Improvy is a music-learning company dedicated to musical fluency through instant scale-degree mastery — knowing exactly where every note lives, in every key.
             </p>
             <p>
-              It turns functional music theory into reflexes, so you can find any note or degree on your instrument the moment you think of it, without counting and without guessing.
+              We design innovative tools that turn functional music theory into instant mental reflexes, so you can find any note or degree on your instrument the moment you think of it — no slow calculation, no guessing.
             </p>
           </div>
         </div>
@@ -127,12 +127,12 @@ export default function AboutPage({ onBack, scrollToSection, scrollTrigger }: Ab
             </div>
             
             <div className="text-sm text-zinc-400 font-light leading-relaxed pl-10 space-y-4">
-              <p>Improvy is made by The Bale Company, founded by:</p>
+              <p>Improvy is an independent project, created and developed by one person:</p>
 
               <div className="grid grid-cols-1 gap-4 pt-2">
                 <div className="bg-zinc-950/40 border border-white/[0.04] p-5 rounded-xl space-y-1">
                   <h4 className="text-sm font-bold text-white">Lorenzo Ballestrazzi</h4>
-                  <p className="text-xs text-zinc-450">Founder · Young pianist and software developer.</p>
+                  <p className="text-xs text-zinc-450">Young pianist and software developer.</p>
                 </div>
               </div>
             </div>
