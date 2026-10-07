@@ -16,7 +16,7 @@ export const testimonialsList: Testimonial[] = [
     image: ""
   },
   {
-    text: "The interface is fast, with no lag like you get with other similar apps. I like that there are no subscriptions — we're all tired of paying for everything every month by now. The keyboard maps are precise and help me see where my harmonic weak spots are. Sometimes the questions get too fast in advanced mode if you're already good, but I understand it's part of the challenge to push you further. Great work.",
+    text: "The interface is fast, with no lag like you get with other similar apps. I like that there are no subscriptions. We're all tired of paying for everything every month by now. The keyboard maps are precise and help me see where my harmonic weak spots are. Sometimes the questions get too fast in advanced mode if you're already good, but I understand it's part of the challenge to push you further. Great work.",
     name: "Marco V.",
     role: "Producer & Sound Designer · Milan",
     image: ""
