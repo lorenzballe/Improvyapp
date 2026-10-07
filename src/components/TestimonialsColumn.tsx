@@ -28,10 +28,10 @@ export const testimonialsList: Testimonial[] = [
     image: ""
   },
   {
-    text: "Measuring my processing lag has taught me to eliminate hesitation during live jazz improvisations. Absolutely indispensable.",
-    name: "Alex Chen",
-    role: "Bedroom Producer",
-    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=256&h=256&fit=crop"
+    text: "I'm just starting out on piano, and Improvy is helping me a lot. I used to get stuck on chords and scales right at the beginning, and now I'm really improving.",
+    name: "Oliver Hoffman",
+    role: "Beginner Pianist · England",
+    image: ""
   },
   {
     text: "It really helps you visualize. A tool that helps a lot with visualization.",
@@ -40,10 +40,10 @@ export const testimonialsList: Testimonial[] = [
     image: ""
   },
   {
-    text: "The ultimate tool for my daily cognitive alignment. It allows me to calculate and improvise through highly complex chord progressions in seconds with total awareness.",
-    name: "David Martinez",
-    role: "Session Bassist",
-    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=256&h=256&fit=crop"
+    text: "The app works really well and it's very effective. Above all, there's a clear path to improve: the difficulty keeps going up.",
+    name: "Rodolfo Castelli",
+    role: "Bassist & Composer",
+    image: ""
   }
 ];
 
