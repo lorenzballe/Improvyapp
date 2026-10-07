@@ -361,7 +361,7 @@ export default function App() {
           <>
 
              {/* HERO SECTION */}
-        <section className="relative min-h-[90vh] flex flex-col justify-center items-center px-6 md:px-12 pt-10 sm:pt-14 md:pt-16 pb-24 max-w-7xl mx-auto z-10">
+        <section className="relative min-h-[90vh] lg:min-h-0 flex flex-col justify-center items-center px-6 md:px-12 pt-10 sm:pt-14 md:pt-16 pb-24 max-w-7xl mx-auto z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 w-full items-center">
             
             {/* Left Column: Copywriting and CTAs */}
@@ -374,7 +374,7 @@ export default function App() {
                 transition={{ delay: 0.12, duration: 0.5 }}
                 className="font-display text-5xl sm:text-7xl xl:text-8xl font-extrabold text-white leading-[1.05] tracking-tight"
               >
-                Train your <Text_03 text="Mind" />{" "}
+                Train your <Text_03 text="mind" />{" "}
                 to{" "}
                 {/* The typed word changes every few seconds, so a crawler or a
                     screen reader catches whichever it lands on. They get the
@@ -498,7 +498,7 @@ export default function App() {
           </div>
         </section>
         {/* INTERACTIVE BACKGROUND BRAND KEYS CONTAINER */}
-        <div className="relative w-full overflow-hidden mt-16 bg-transparent">
+        <div className="relative w-full overflow-hidden mt-8 bg-transparent">
 
 
           {/* IMPROVY PEDAGOGICAL EDUCATIONAL METHOD SHOWCASE */}
@@ -607,7 +607,7 @@ export default function App() {
                       <span className="text-5xl font-black text-white font-sans tracking-tight">€0</span>
                       <span className="text-xs text-zinc-500 font-sans font-medium">/ lifetime</span>
                     </div>
-                    <span className="text-[9px] text-[#e5a93c] block mt-1.5 uppercase tracking-widest font-extrabold">RECOMMENDED TO START</span>
+                    <span className="text-[9px] text-[#e5a93c] block mt-1.5 uppercase tracking-widest font-extrabold">FREE FOREVER</span>
                   </div>
 
                   <div className="space-y-4">
@@ -692,7 +692,7 @@ export default function App() {
                      </div>
 
                     <p className="text-xs text-zinc-350 font-sans font-light leading-relaxed">
-                      Unlock the entire chromatic keyboard, cognitive stimulation modes, and intelligent self-assessment algorithms.
+                      Every key and every mode, jazz extensions, a difficulty that adapts to you, and detailed stats on where you are slow.
                     </p>
 
                     {/* Elite Gold pricing block with exactly the same font-size layout as Section 1 */}
@@ -741,7 +741,7 @@ export default function App() {
                           <div className="w-5 h-5 rounded-full bg-[#e5a93c]/12 border border-[#e5a93c]/25 flex items-center justify-center shrink-0">
                             <Check className="w-3 h-3 text-[#e5a93c] stroke-[3]" />
                           </div>
-                          <span className="text-[#e5a93c] font-medium">No future subscriptions - Lifetime access</span>
+                          <span className="text-[#e5a93c] font-medium">One payment, yours for life</span>
                         </li>
                       </ul>
                     </div>
@@ -785,7 +785,7 @@ export default function App() {
                 WHAT PEOPLE SAY ABOUT <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 via-purple-500 to-indigo-500">IMPROVY</span>
               </h2>
               <p className="text-xs sm:text-sm text-zinc-400 font-light max-w-xl mx-auto leading-relaxed">
-                Musicians, educators, and creatives who built their harmonic awareness and improvisation skills on our 12-key relational system.
+                Musicians and teachers who use Improvy to improvise, transpose and find their way around every key.
               </p>
             </div>
 
@@ -996,9 +996,9 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Column 3: Engage */}
+              {/* Column 3: Company */}
               <div className="flex flex-col gap-3.5">
-                <h4 className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-rose-400">Engage</h4>
+                <h4 className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-rose-400">Company</h4>
                 <div className="flex flex-col gap-2 text-xs font-medium text-zinc-400">
                   <button 
                     onClick={() => {
@@ -1032,9 +1032,9 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Column 4: Harmonics & Legal */}
+              {/* Column 4: Help & Legal */}
               <div className="flex flex-col gap-3.5">
-                <h4 className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-indigo-400">Harmonics & Legal</h4>
+                <h4 className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-indigo-400">Help & Legal</h4>
                 <div className="flex flex-col gap-2 text-xs font-medium text-zinc-400">
                   <button 
                     onClick={() => {

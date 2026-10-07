@@ -253,7 +253,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-8 mt-8 border-t border-white/[0.06] text-left">
             <div className="p-5 rounded-2xl bg-white/[0.01] border border-white/[0.03]">
               <span className="text-rose-400 text-[10px] font-bold block uppercase tracking-wider mb-2">THE ANALOG TRAP</span>
-              <p className="text-xs text-zinc-400 font-light leading-snug">Playing notes blindly, guessing the correct key, and suffering frustrating cognitive delays.</p>
+              <p className="text-xs text-zinc-400 font-light leading-snug">Playing by shape and memory, guessing which notes fit, and stopping to count every time the key changes.</p>
             </div>
             <div className="p-5 rounded-2xl bg-white/[0.01] border border-white/[0.03]">
               <span className="text-[#e5a93c] text-[10px] font-bold block uppercase tracking-wider mb-2">THE "ILLUMINATED" MENTAL LINK</span>
@@ -301,16 +301,16 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                 <Sliders className="w-5 h-5" />
               </div>
               <h3 className="text-xl sm:text-2xl font-black text-white font-display uppercase tracking-tight">
-                The World's First Formalized Method
+                A Method, Not a Game
               </h3>
               <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed font-light">
-                We were <strong className="text-[#e5a93c]">the first in the world</strong> to grasp, isolate, and scientifically formalize this precise cognitive processing challenge. 
+                Improvy isolates <strong className="text-[#e5a93c]">one specific skill</strong>: turning a note into its degree, and a degree into a note, in any key. Then it trains that skill directly.
               </p>
               <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed font-light">
-                We aren't offering a casual game or tedious traditional sight-reading lessons. We have decoded a practical, dynamic, and incredibly fast training system that calibrates your mind from any musical angle—delivering modern drill tools focused purely on active results.
+                It isn't a casual game, and it isn't a sight-reading course. It is a set of short drills, approached from several angles, that adapt to your speed and show you exactly which keys and degrees still slow you down.
               </p>
               <p className="text-[11.5px] text-white font-light">
-                Train anywhere, anytime, taking advantage of flexible, interactive mechanics for absolute creative control.
+                Train anywhere, a few minutes at a time, on your phone.
               </p>
             </div>
 
@@ -634,7 +634,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                   
                   <div className="space-y-2">
                     <p className="text-xs sm:text-sm text-zinc-300 font-light leading-relaxed">
-                      Under the illusion of improvising, you navigate by trial and error. To find a flat 13th starting from F-sharp, your brain laboriously counts keys and forces theoretical calculations, breaking your inner groove and rhythm.
+                      You think you are improvising, but you are finding your way by trial and error. To find the flat 13th of F♯, you count up the keys one by one, and by the time you get there the groove has moved on.
                     </p>
                   </div>
 
@@ -642,7 +642,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                   <div className="flex gap-2.5 items-center bg-rose-500/[0.03] border border-rose-500/10 rounded-xl p-3">
                     <X className="w-4 h-4 text-rose-400 shrink-0" />
                     <span className="text-[10px] text-zinc-400 font-sans tracking-wide font-bold">
-                      PROCESSING LATENCY: HIGH (~3-5 SECONDS HESITATION)
+                      EVERY NOTE WORKED OUT BY COUNTING
                     </span>
                   </div>
                 </div>
@@ -693,12 +693,12 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                       <span className="text-[10px] font-sans font-black uppercase tracking-[0.2em] text-[#2ce293]">AFTER</span>
                     </div>
                     <span className="text-[9px] font-sans text-[#2ce293] font-bold tracking-widest uppercase bg-[#10b981]/10 px-2.5 py-1 rounded border border-[#10b981]/15">
-                      THE GEOMETRIC MIND
+                      THINKING IN DEGREES
                     </span>
                   </div>
                   
                   <p className="text-xs sm:text-sm text-zinc-100 font-light leading-relaxed">
-                    Keys instantly <span className="text-emerald-400 font-bold">"light up"</span> on the spatial grid projected in your mind. No more disconnected black or white keys; instead, you see clear interval maps and play whatever melody you hear in all keys in real time.
+                    Keys instantly <span className="text-emerald-400 font-bold">"light up"</span> in your mind as degrees of the key. Black and white keys stop being separate shapes: you see the scale, and you can play what you hear in any key.
                   </p>
 
 
@@ -706,7 +706,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                   <div className="flex gap-2.5 items-center bg-emerald-500/[0.03] border border-emerald-500/15 rounded-xl p-3 shadow-sm">
                     <Check className="w-4 h-4 text-emerald-400 shrink-0" />
                     <span className="text-[10px] text-zinc-300 font-sans tracking-wide font-bold">
-                      ACTIVE VISUALIZATION STABILIZED & 100% SECURE
+                      THE NOTE IS THERE BEFORE YOU THINK
                     </span>
                   </div>
                 </div>
@@ -738,7 +738,7 @@ export function WhyImprovyPage({ onBack }: WhyImprovyPageProps) {
                   </span>
                 </h3>
                 <p className="text-xs sm:text-sm text-zinc-400 font-light leading-relaxed max-w-lg mx-auto">
-                  Training takes just a few minutes a day. It is the perfect cognitive bridge that permanently changes your perception and unlocks true improvisational freedom.
+                  Training takes just a few minutes a day. It is the bridge between knowing the theory and hearing it, seeing it and playing it without thinking.
                 </p>
               </div>
 

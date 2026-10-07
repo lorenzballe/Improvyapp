@@ -52,7 +52,7 @@ export default function AboutPage({ onBack, scrollToSection, scrollTrigger }: Ab
         {/* Header Block */}
         <div className="space-y-6 pb-10 border-b border-white/[0.08]">
           <span className="text-[10px] font-extrabold uppercase tracking-[0.25em] text-[#e5a93c]">
-            THE IMPROVY INTENT
+            ABOUT
           </span>
           <h1 className="text-4xl sm:text-5xl font-black text-white font-display tracking-tight uppercase leading-[1.1] select-none">
             ABOUT <br />
@@ -62,10 +62,10 @@ export default function AboutPage({ onBack, scrollToSection, scrollTrigger }: Ab
           </h1>
           <div className="space-y-4 text-sm sm:text-base text-zinc-400 font-light leading-relaxed max-w-2xl pt-2">
             <p>
-              Improvy is a music-learning company dedicated to musical fluency through instant scale-degree mastery — knowing exactly where every note lives, in every key.
+              Improvy is a music-training app built around one skill: knowing instantly where every note lives, in every key, as a degree of the scale.
             </p>
             <p>
-              We design innovative tools that turn functional music theory into instant mental reflexes, so you can find any note or degree on your instrument the moment you think of it — no slow calculation, no guessing.
+              It turns functional music theory into reflexes, so you can find any note or degree on your instrument the moment you think of it, without counting and without guessing.
             </p>
           </div>
         </div>
@@ -132,7 +132,7 @@ export default function AboutPage({ onBack, scrollToSection, scrollTrigger }: Ab
               <div className="grid grid-cols-1 gap-4 pt-2">
                 <div className="bg-zinc-950/40 border border-white/[0.04] p-5 rounded-xl space-y-1">
                   <h4 className="text-sm font-bold text-white">Lorenzo Ballestrazzi</h4>
-                  <p className="text-xs text-zinc-450">A young Italian musician and the creator of Improvy.</p>
+                  <p className="text-xs text-zinc-450">Pianist and software developer. Diploma in classical piano, now studying jazz piano, and the creator of Improvy.</p>
                 </div>
               </div>
             </div>
