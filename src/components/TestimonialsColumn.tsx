@@ -16,10 +16,10 @@ export const testimonialsList: Testimonial[] = [
     image: ""
   },
   {
-    text: "Improvy's relational tuning has completely transformed my approach to improvisation. I can now visualize and calculate harmonic relationships instantly across the keyboard.",
-    name: "Marco Valeri",
-    role: "Jazz Pianist",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=256&h=256&fit=crop"
+    text: "The interface is fast, with no lag like you get with other similar apps. I like that there are no subscriptions — we're all tired of paying for everything every month by now. The keyboard maps are precise and help me see where my harmonic weak spots are. Sometimes the questions get too fast in advanced mode if you're already good, but I understand it's part of the challenge to push you further. Great work.",
+    name: "Marco V.",
+    role: "Producer & Sound Designer · Milan",
+    image: ""
   },
   {
     text: "It truly works, and it's excellent, especially at the start. It really unlocks improvisation.",
