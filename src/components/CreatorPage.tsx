@@ -7,9 +7,11 @@ import { creatorDashboard, type CreatorDashboard, type CreatorSale } from "../li
  * A creator's private page: improvy.app/#creator/{ref}/{key}.
  *
  * What their audience bought — on the site and in the apps — and what that
- * earned them, straight from the server each time it opens. The key in the
- * address is the only access, so this page loads no analytics (main.tsx) and
- * never puts the address anywhere.
+ * earned them, straight from the server each time it opens. Until their share
+ * has been agreed with them the page shows no percentage and no commission,
+ * only that it is still to be agreed. The key in the address is the only
+ * access, so this page loads no analytics (main.tsx) and never puts the
+ * address anywhere.
  */
 
 const IT = typeof navigator !== "undefined" && /^it\b/i.test(navigator.language ?? "");
@@ -23,6 +25,8 @@ const t = IT
       earned: "La tua commissione",
       revenue: "Incassato",
       share: (p: number) => `${p}% di ogni vendita`,
+      open: "Da definire",
+      openSub: "La tua percentuale la definiamo insieme",
       site: "dal sito",
       app: "dalle app",
       code: "Codice Pro gratuito",
@@ -37,6 +41,7 @@ const t = IT
       invalid: "Questo link non è valido. Controlla di averlo copiato per intero, o scrivi a Lorenzo.",
       failed: "Non riesco a caricare i dati in questo momento. Riprova tra poco.",
       note: "La commissione è calcolata su quanto paga chi compra; le vendite rimborsate non contano. Questo link è personale: non condividerlo.",
+      noteOpen: "La tua percentuale su ogni vendita è ancora da definire: quando l'avremo concordata, qui vedrai anche la tua commissione. Le vendite rimborsate non contano. Questo link è personale: non condividerlo.",
       locale: "it-IT",
     }
   : {
@@ -47,6 +52,8 @@ const t = IT
       earned: "Your commission",
       revenue: "Revenue",
       share: (p: number) => `${p}% of every sale`,
+      open: "To be agreed",
+      openSub: "We'll set your share together",
       site: "on the site",
       app: "in the apps",
       code: "Free Pro code",
@@ -61,6 +68,7 @@ const t = IT
       invalid: "This link is not valid. Check it was copied in full, or write to Lorenzo.",
       failed: "Couldn't load your numbers right now. Try again in a moment.",
       note: "Commission is worked out on what the buyer paid; refunded sales don't count. This link is personal: please don't share it.",
+      noteOpen: "Your share of each sale is still to be agreed: once it is, your commission will show here too. Refunded sales don't count. This link is personal: please don't share it.",
       locale: "en-GB",
     };
 
@@ -135,10 +143,15 @@ export default function CreatorPage() {
 function Dashboard({ data, busy, onRefresh }: { data: CreatorDashboard; busy: boolean; onRefresh: () => void }) {
   const eur = data.totals.revenue.find((r) => r.currency === "eur");
   const others = data.totals.revenue.filter((r) => r.currency !== "eur");
+  const pct = data.pct;
   return (
     <div className="space-y-8">
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <Stat label={t.earned} value={money(eur?.commission ?? 0, "eur")} sub={t.share(data.pct)} highlight extra={others.map((r) => money(r.commission, r.currency))} />
+        {pct == null ? (
+          <Stat label={t.earned} value={t.open} sub={t.openSub} highlight compact />
+        ) : (
+          <Stat label={t.earned} value={money(eur?.commission ?? 0, "eur")} sub={t.share(pct)} highlight extra={others.map((r) => money(r.commission ?? 0, r.currency))} />
+        )}
         <Stat label={t.sales} value={String(data.totals.sales)} sub={`${data.totals.site} ${t.site} · ${data.totals.app} ${t.app}`} />
         <Stat label={t.revenue} value={money(eur?.amount ?? 0, "eur")} sub="Improvy Pro" extra={others.map((r) => money(r.amount, r.currency))} />
       </div>
@@ -171,7 +184,7 @@ function Dashboard({ data, busy, onRefresh }: { data: CreatorDashboard; busy: bo
           <ul className="divide-y divide-white/[0.06] rounded-xl border border-white/[0.08] bg-white/[0.02]">
             {data.sales.map((s, i) => (
               <Fragment key={`${s.at}-${i}`}>
-                <SaleRow sale={s} pct={data.pct} />
+                <SaleRow sale={s} pct={pct} />
               </Fragment>
             ))}
           </ul>
@@ -179,7 +192,7 @@ function Dashboard({ data, busy, onRefresh }: { data: CreatorDashboard; busy: bo
       </div>
 
       <div className="space-y-1 text-[11px] text-zinc-500 leading-relaxed">
-        <p>{t.note}</p>
+        <p>{pct == null ? t.noteOpen : t.note}</p>
         <p>
           {t.updated}: {new Date(data.updatedAt).toLocaleString(t.locale)}
         </p>
@@ -188,18 +201,19 @@ function Dashboard({ data, busy, onRefresh }: { data: CreatorDashboard; busy: bo
   );
 }
 
-function Stat({ label, value, sub, highlight, extra = [] }: { label: string; value: string; sub: string; highlight?: boolean; extra?: string[] }) {
+function Stat({ label, value, sub, highlight, compact, extra = [] }: { label: string; value: string; sub: string; highlight?: boolean; compact?: boolean; extra?: string[] }) {
   return (
     <div className={`rounded-2xl border p-5 ${highlight ? "border-[#e5a93c]/40 bg-[#e5a93c]/[0.07]" : "border-white/[0.08] bg-white/[0.03]"}`}>
       <div className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-zinc-400">{label}</div>
-      <div className={`mt-2 text-3xl font-black font-display ${highlight ? "text-[#e5a93c]" : "text-white"}`}>{value}</div>
+      {/* A word, not a figure, sits a size down so it holds one line in the card. */}
+      <div className={`mt-2 ${compact ? "text-2xl leading-9" : "text-3xl"} font-black font-display ${highlight ? "text-[#e5a93c]" : "text-white"}`}>{value}</div>
       {extra.length ? <div className="text-xs text-zinc-300 mt-0.5">+ {extra.join(" + ")}</div> : null}
       <div className="mt-1 text-[11px] text-zinc-400">{sub}</div>
     </div>
   );
 }
 
-function SaleRow({ sale, pct }: { sale: CreatorSale; pct: number }) {
+function SaleRow({ sale, pct }: { sale: CreatorSale; pct: number | null }) {
   const Icon = sale.source === "site" ? Globe : Smartphone;
   const off = sale.refunded || sale.disputed;
   return (
@@ -211,12 +225,20 @@ function SaleRow({ sale, pct }: { sale: CreatorSale; pct: number }) {
       </div>
       <div className="text-right">
         {sale.amount != null && sale.currency ? (
-          <>
-            <div className={`text-sm font-semibold ${off ? "text-zinc-500 line-through" : "text-white"}`}>
-              {money(Math.round((sale.amount * pct) / 100), sale.currency)}
-            </div>
-            <div className="text-[11px] text-zinc-500">{off ? t.refunded : money(sale.amount, sale.currency)}</div>
-          </>
+          pct == null ? (
+            // No share agreed yet: the sale itself, and nothing worked out from it.
+            <>
+              <div className={`text-sm font-semibold ${off ? "text-zinc-500 line-through" : "text-white"}`}>{money(sale.amount, sale.currency)}</div>
+              {off ? <div className="text-[11px] text-zinc-500">{t.refunded}</div> : null}
+            </>
+          ) : (
+            <>
+              <div className={`text-sm font-semibold ${off ? "text-zinc-500 line-through" : "text-white"}`}>
+                {money(Math.round((sale.amount * pct) / 100), sale.currency)}
+              </div>
+              <div className="text-[11px] text-zinc-500">{off ? t.refunded : money(sale.amount, sale.currency)}</div>
+            </>
+          )
         ) : null}
       </div>
     </li>

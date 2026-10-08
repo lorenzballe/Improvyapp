@@ -266,14 +266,15 @@ export type CreatorSale = {
 
 export type CreatorDashboard = {
   ref: string;
-  pct: number;
+  /** Their share of each sale, in %; null while it is still to be agreed. */
+  pct: number | null;
   since: string | null;
   totals: {
     sales: number;
     refunded: number;
     site: number;
     app: number;
-    revenue: { currency: string; amount: number; commission: number }[];
+    revenue: { currency: string; amount: number; commission: number | null }[];
   };
   sales: CreatorSale[];
   proCode: { code: string; uses: number; maxUses: number } | null;
