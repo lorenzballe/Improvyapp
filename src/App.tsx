@@ -24,6 +24,12 @@ const PrivacyPolicyPage = lazy(() => import("./components/PrivacyPolicyPage"));
 const AboutPage = lazy(() => import("./components/AboutPage"));
 const FeedbackPage = lazy(() => import("./components/FeedbackPage"));
 const CreatorPage = lazy(() => import("./components/CreatorPage"));
+const WhatsNextPage = lazy(() => import("./components/WhatsNextPage"));
+import { HarmonyTeaser } from "./components/HarmonyTeaser";
+
+// Preview only: ?harmony shows the "coming next" teaser in the places it might
+// go, so they can be judged in context before anything is decided.
+const harmonyPreview = new URLSearchParams(window.location.search).has("harmony");
 import { StoreBadges } from "./components/StoreBadges";
 import heroHomeScreenImg from "./assets/images/method_home_progress.webp";
 
@@ -97,8 +103,9 @@ function Text_03({
  * footer. A hash keeps them linkable on GitHub Pages without a router or a
  * 404 fallback. Everything else stays plain in-page state.
  */
-function pageFromHash(): "privacy" | "terms" | "pro" | "about" | "creator" | null {
+function pageFromHash(): "privacy" | "terms" | "pro" | "about" | "creator" | "next" | null {
   const hash = window.location.hash.replace(/^#\/?/, "");
+  if (hash === "next") return "next";
   // #about is addressed because the stores ask for a support URL, and a
   // support URL that lands on a marketing page is not support information.
   if (hash === "privacy" || hash === "terms" || hash === "about") return hash;
@@ -111,7 +118,7 @@ function pageFromHash(): "privacy" | "terms" | "pro" | "about" | "creator" | nul
 }
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState<"home" | "why" | "terms" | "privacy" | "about" | "feedback" | "pro" | "creator">(
+  const [currentPage, setCurrentPage] = useState<"home" | "why" | "terms" | "privacy" | "about" | "feedback" | "pro" | "creator" | "next">(
     () => pageFromHash() ?? "home"
   );
   const [aboutPageScrollTo, setAboutPageScrollTo] = useState<"top" | "get-in-touch" | null>(null);
@@ -126,7 +133,8 @@ export default function App() {
       currentPage === "privacy" ||
       currentPage === "terms" ||
       currentPage === "pro" ||
-      currentPage === "about";
+      currentPage === "about" ||
+      currentPage === "next";
     const hash = addressed ? `#${currentPage}` : "";
     // #pro/success?… and #pro/cancel are still "pro": leave them be.
     const already =
@@ -310,10 +318,24 @@ export default function App() {
         {/* PAGES COMPONENT */}
         <Suspense fallback={<div className="min-h-[60vh]" aria-busy="true" />}>
         {currentPage === "why" ? (
-          <WhyImprovyPage onBack={() => {
-            setCurrentPage("home");
-            window.scrollTo({ top: 0, behavior: "smooth" });
-          }} />
+          <WhyImprovyPage
+            onBack={() => {
+              setCurrentPage("home");
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+            onOpenNext={harmonyPreview ? () => {
+              setCurrentPage("next");
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            } : undefined}
+          />
+        ) : currentPage === "next" ? (
+          <WhatsNextPage
+            onBack={() => {
+              setCurrentPage("home");
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+            onGoPro={goPro}
+          />
         ) : currentPage === "pro" ? (
           <Suspense fallback={<div className="min-h-[60vh]" aria-busy="true" />}>
             <ProPage
@@ -514,6 +536,14 @@ export default function App() {
               window.scrollTo({ top: 0, behavior: "smooth" });
             }} />
           </motion.div>
+          {harmonyPreview && (
+            <div id="harmony-teaser" className="pb-4">
+              <HarmonyTeaser onOpen={() => {
+                setCurrentPage("next");
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }} />
+            </div>
+          )}
           {/* SECTION 3: SIGNATURE LIFE-TIME ACCESS PRICING (Side-by-side comparison) */}
           <motion.section 
             id="pricing" 
