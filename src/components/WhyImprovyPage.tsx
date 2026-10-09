@@ -228,16 +228,19 @@ export function WhyImprovyPage({ onBack, onOpenNext }: WhyImprovyPageProps) {
           </p>
         </div>
 
-        {/* The method in a minute, at the top of the page. Served from
-            public/ rather than bundled, and only its first frame is fetched
-            until it is played (#t=0.1 makes Safari show that frame). */}
+        {/* The method in a minute, at the top of the page, playing as soon
+            as the page opens. Browsers only start a video on their own when
+            it is muted, so it starts without sound and the controls are
+            there to turn it up. Served from public/ rather than bundled. */}
         <div className="relative rounded-[32px] p-1.5 bg-gradient-to-br from-[#e5a93c]/30 via-rose-500/20 to-purple-500/30 shadow-2xl">
           <video
             className="block w-full aspect-video rounded-[26px] bg-black"
-            src="./video/improvy-video.mp4#t=0.1"
+            src="./video/improvy-video.mp4"
+            autoPlay
+            muted
             controls
             playsInline
-            preload="metadata"
+            preload="auto"
             aria-label="Improvy: the method in a minute"
             id="method-video"
           />
