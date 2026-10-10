@@ -29,6 +29,9 @@ const TeachersPage = lazy(() => import("./components/TeachersPage"));
 // the first screen does not wait for the keyboard and its music.
 const HarmonyTeaser = lazy(() => import("./components/HarmonyTeaser").then((m) => ({ default: m.HarmonyTeaser })));
 import { DownloadFree } from "./components/StoreBadges";
+import { ButtonColorful } from "./components/ButtonColorful";
+import { HeroHeadline } from "./components/HeroHeadline";
+import { PhoneMockup } from "./components/PhoneMockup";
 import { CreatorWelcome } from "./components/CreatorWelcome";
 import { ProofStrip } from "./components/ProofStrip";
 import { TryOne } from "./components/quiz/TryOne";
@@ -375,30 +378,9 @@ export default function App() {
                   where it goes — only for creators already agreed. */}
               <CreatorWelcome />
 
-              {/* What this is, for whom, in one line above the headline. */}
-              <motion.p
-                initial={{ opacity: 0, y: -20, filter: "blur(10px)" }}
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                transition={{ delay: 0.06, duration: 0.5 }}
-                className="text-[11px] sm:text-xs font-sans uppercase tracking-[0.24em] bg-gradient-to-r from-[#f43f5e] via-[#d946ef] to-[#6366f1] bg-clip-text text-transparent font-black"
-              >
-                The scale-degree trainer for improvisers
-              </motion.p>
-
-              {/* The headline says what the app does, not what it hopes for:
-                  a visitor should know in five seconds what they would train. */}
-              <motion.h1
-                initial={{ opacity: 0, y: -20, filter: "blur(10px)" }}
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                transition={{ delay: 0.12, duration: 0.5 }}
-                className="font-display text-5xl sm:text-7xl xl:text-8xl font-extrabold text-white leading-[1.05] tracking-tight"
-              >
-                Every note is
-                <br />
-                <span className="italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#e5a93c] via-rose-500 to-purple-500 font-serif pr-3">
-                  a number.
-                </span>
-              </motion.h1>
+              {/* What Improvy is, then what it is for: the two headlines take
+                  turns, the second typed as the site's first one was. */}
+              <HeroHeadline />
 
               <motion.p
                 initial={{ opacity: 0, y: -20, filter: "blur(10px)" }}
@@ -410,26 +392,37 @@ export default function App() {
               </motion.p>
 
               {/* The free download first, from this device's own store; Pro
-                  second, for whoever has already decided. */}
+                  second, for whoever has already decided. A computer gets
+                  both badges and the site's colourful Pro button beside them;
+                  a phone gets its one store and a quieter line for Pro. */}
               <motion.div
                 initial={{ opacity: 0, y: -20, filter: "blur(10px)" }}
                 animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                 transition={{ delay: 0.36, duration: 0.5 }}
                 className="pt-2 space-y-4"
               >
-                <DownloadFree platform={platform} placement="hero" />
+                {platform === "desktop" ? (
+                  <div className="flex flex-wrap items-center gap-4">
+                    <DownloadFree platform={platform} placement="hero" />
+                    <ButtonColorful onClick={goPro} label={`Get Improvy Pro — ${PRO_PRICE_WEB}`} className="h-12" />
+                  </div>
+                ) : (
+                  <DownloadFree platform={platform} placement="hero" />
+                )}
                 <p className="text-[11px] sm:text-xs font-sans uppercase tracking-[0.16em] text-zinc-500 font-bold">
                   Free to start · Pro is one payment, never a subscription · No ads
                 </p>
-                <button
-                  onClick={goPro}
-                  className="group inline-flex items-center gap-2 text-sm font-sans text-zinc-300 hover:text-white transition-colors duration-200 cursor-pointer focus:outline-none"
-                >
-                  <span>
-                    Already sure? Get Pro once — <span className="font-bold text-white">{PRO_PRICE_WEB}</span>
-                  </span>
-                  <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
-                </button>
+                {platform !== "desktop" && (
+                  <button
+                    onClick={goPro}
+                    className="group inline-flex items-center gap-2 text-sm font-sans text-zinc-300 hover:text-white transition-colors duration-200 cursor-pointer focus:outline-none"
+                  >
+                    <span>
+                      Already sure? Get Pro once — <span className="font-bold text-white">{PRO_PRICE_WEB}</span>
+                    </span>
+                    <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+                  </button>
+                )}
               </motion.div>
 
             </div>
@@ -453,51 +446,17 @@ export default function App() {
                 }}
                 className="flex-shrink-0"
               >
-                <div className="card">
-                  <div className="card-int">
-                    
-                    <div className="btn1"></div>
-                    <div className="btn2"></div>
-                    <div className="btn3"></div>
-                    <div className="btn4"></div>
- 
-                    <div className="phone-screen">
-                      <img
-                        src={heroHomeScreenImg}
-                        alt="Improvy training home screen with total progress and all-keys mastery"
-                        className="w-full h-full object-cover"
-                        referrerPolicy="no-referrer"
-                      />
-                      {/* The screenshot is the app at iPhone 16 Pro geometry, which
-                          leaves the status bar's band and the home indicator's
-                          strip free — so the phone draws them, where an iPhone
-                          does, instead of showing an empty margin. */}
-                      <div className="phone-island" />
-                      <div className="phone-status" aria-hidden="true">
-                        <span className="phone-time">9:41</span>
-                        <span className="phone-icons">
-                          <svg width="17" height="11" viewBox="0 0 17 11" fill="white">
-                            <rect x="0" y="7" width="3" height="4" rx="0.8" />
-                            <rect x="4.6" y="5" width="3" height="6" rx="0.8" />
-                            <rect x="9.2" y="2.6" width="3" height="8.4" rx="0.8" />
-                            <rect x="13.8" y="0" width="3" height="11" rx="0.8" />
-                          </svg>
-                          <svg width="15" height="11" viewBox="0 0 15 11" fill="white">
-                            <path d="M7.5 2.3c2.2 0 4.2.85 5.7 2.25l1.1-1.1A9.6 9.6 0 0 0 7.5.7 9.6 9.6 0 0 0 .7 3.45l1.1 1.1A8.1 8.1 0 0 1 7.5 2.3Z" />
-                            <path d="M7.5 5.4c1.35 0 2.6.5 3.55 1.35l1.1-1.1A6.6 6.6 0 0 0 7.5 3.8a6.6 6.6 0 0 0-4.65 1.85l1.1 1.1A5.1 5.1 0 0 1 7.5 5.4Z" />
-                            <path d="M7.5 8.5c.5 0 .95.18 1.3.48L7.5 10.3 6.2 8.98c.35-.3.8-.48 1.3-.48Z" />
-                          </svg>
-                          <svg width="25" height="12" viewBox="0 0 25 12" fill="none">
-                            <rect x="0.5" y="0.5" width="21" height="11" rx="3.4" stroke="white" strokeOpacity="0.4" />
-                            <rect x="2" y="2" width="18" height="8" rx="2.1" fill="white" />
-                            <path d="M23 4v4c.8-.3 1.3-1.1 1.3-2s-.5-1.7-1.3-2Z" fill="white" fillOpacity="0.45" />
-                          </svg>
-                        </span>
-                      </div>
-                      <div className="phone-home" />
-                    </div>
-                  </div>
-                </div>
+                {/* The screenshot is the app at iPhone 16 Pro geometry, which
+                    leaves the status bar's band and the home indicator's strip
+                    free — so the phone draws them, where an iPhone does. */}
+                <PhoneMockup>
+                  <img
+                    src={heroHomeScreenImg}
+                    alt="Improvy training home screen with total progress and all-keys mastery"
+                    className="w-full h-full object-cover"
+                    referrerPolicy="no-referrer"
+                  />
+                </PhoneMockup>
               </motion.div>
             </motion.div>
 
