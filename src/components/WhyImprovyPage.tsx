@@ -232,7 +232,7 @@ export function WhyImprovyPage({ onBack, onOpenNext }: WhyImprovyPageProps) {
         {/* The method in a minute, at the top of the page, with its music. */}
         <MethodVideo
           video="./video/improvy-video-2026-10-10.mp4"
-          music="./video/improvy-music-v7.wav"
+          music="./video/improvy-music-v7.mp3"
         />
 
          {/* 1. SECTION: THE RE-ALIGNMENT OF EAR AND VISUALIZATION */}
