@@ -235,7 +235,7 @@ export function WhyImprovyPage({ onBack, onOpenNext }: WhyImprovyPageProps) {
         <div className="relative rounded-[32px] p-1.5 bg-gradient-to-br from-[#e5a93c]/30 via-rose-500/20 to-purple-500/30 shadow-2xl">
           <video
             className="block w-full aspect-video rounded-[26px] bg-black"
-            src="./video/improvy-video.mp4"
+            src="./video/improvy-video-2026-10-10.mp4"
             autoPlay
             muted
             controls
