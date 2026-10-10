@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import { AppLogo } from "./AppLogo";
 import { FaqSection } from "./FaqSection";
 import { HarmonyTeaser } from "./HarmonyTeaser";
+import { MethodVideo } from "./MethodVideo";
 import methodDiatonicImg from "../assets/images/method_diatonic_grid.webp";
 import methodHomeImg from "../assets/images/method_home_progress.webp";
 import methodChromaticImg from "../assets/images/method_chromatic.webp";
@@ -228,23 +229,11 @@ export function WhyImprovyPage({ onBack, onOpenNext }: WhyImprovyPageProps) {
           </p>
         </div>
 
-        {/* The method in a minute, at the top of the page, playing as soon
-            as the page opens. Browsers only start a video on their own when
-            it is muted, so it starts without sound and the controls are
-            there to turn it up. Served from public/ rather than bundled. */}
-        <div className="relative rounded-[32px] p-1.5 bg-gradient-to-br from-[#e5a93c]/30 via-rose-500/20 to-purple-500/30 shadow-2xl">
-          <video
-            className="block w-full aspect-video rounded-[26px] bg-black"
-            src="./video/improvy-video-2026-10-10.mp4"
-            autoPlay
-            muted
-            controls
-            playsInline
-            preload="auto"
-            aria-label="Improvy: the method in a minute"
-            id="method-video"
-          />
-        </div>
+        {/* The method in a minute, at the top of the page, with its music. */}
+        <MethodVideo
+          video="./video/improvy-video-2026-10-10.mp4"
+          music="./video/improvy-music-v7.wav"
+        />
 
          {/* 1. SECTION: THE RE-ALIGNMENT OF EAR AND VISUALIZATION */}
         <div className="relative overflow-hidden bg-gradient-to-br from-amber-500/[0.03] via-zinc-950 to-rose-500/[0.03] border border-amber-500/10 rounded-[32px] p-6 sm:p-10 shadow-2xl">
