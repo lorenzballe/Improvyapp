@@ -65,9 +65,11 @@ const revealVariants = {
  * footer. A hash keeps them linkable on GitHub Pages without a router or a
  * 404 fallback. Everything else stays plain in-page state.
  */
-function pageFromHash(): "privacy" | "terms" | "pro" | "about" | "creator" | "next" | "quiz" | "teachers" | null {
+function pageFromHash(): "privacy" | "terms" | "pro" | "about" | "creator" | "next" | "quiz" | "teachers" | "why" | null {
   const hash = window.location.hash.replace(/^#\/?/, "");
   if (hash === "next") return "next";
+  // #method: the Method page and its video, the link sent to creators.
+  if (hash === "method") return "why";
   // The 60-second test is shared by link, and teachers are sent the page.
   if (hash === "quiz" || hash === "teachers") return hash;
   // #about is addressed because the stores ask for a support URL, and a
@@ -102,8 +104,10 @@ export default function App() {
       currentPage === "about" ||
       currentPage === "next" ||
       currentPage === "quiz" ||
-      currentPage === "teachers";
-    const hash = addressed ? `#${currentPage}` : "";
+      currentPage === "teachers" ||
+      currentPage === "why";
+    // The Method page is "why" inside, "#method" in the address bar.
+    const hash = addressed ? `#${currentPage === "why" ? "method" : currentPage}` : "";
     // #pro/success?… and #pro/cancel are still "pro": leave them be.
     const already =
       (currentPage === "pro" && window.location.hash.startsWith("#pro")) ||
