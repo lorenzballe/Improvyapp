@@ -132,6 +132,7 @@ export default function QuizPage({ onBack, platform }: { onBack: () => void; pla
       correct={t.correct}
       answered={t.answered}
       streak={t.streak}
+      lastRight={t.lastRight}
       leftMs={t.leftMs}
       totalMs={DURATION_MS}
       onPick={t.pick}

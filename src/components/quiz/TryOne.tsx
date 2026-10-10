@@ -78,6 +78,7 @@ export function TryOne({ onOpenQuiz }: { onOpenQuiz: () => void }) {
                 correct={t.correct}
                 answered={t.answered}
                 streak={t.streak}
+                lastRight={t.lastRight}
                 length={LENGTH}
                 onPick={pick}
                 onExit={t.start}

@@ -45,6 +45,9 @@ export function useTrainer(opts: { length?: number; durationMs?: number; onFinis
   const [streak, setStreak] = useState(0);
   const [leftMs, setLeftMs] = useState(opts.durationMs ?? 0);
   const [result, setResult] = useState<TrainerResult | null>(null);
+  // The last answer, right or wrong: the halo behind the screen outlives the
+  // feedback of a right answer, as the app's does.
+  const [lastRight, setLastRight] = useState(true);
 
   const phaseRef = useRef<Phase>(phase);
   const startedAt = useRef(0);
@@ -151,6 +154,7 @@ export function useTrainer(opts: { length?: number; durationMs?: number; onFinis
       setAnswered(c.answered);
       setCorrect(c.correct);
       setStreak(c.streak);
+      setLastRight(right);
       setFeedback({ right, picked: pitch });
       nextTimer.current = window.setTimeout(
         () => {
@@ -179,6 +183,7 @@ export function useTrainer(opts: { length?: number; durationMs?: number; onFinis
     streak,
     leftMs,
     result,
+    lastRight,
     start,
     abort,
     pick,

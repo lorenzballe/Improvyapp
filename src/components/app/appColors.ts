@@ -36,13 +36,4 @@ export function noteColor(name: string): string {
   return BY_PITCH[pitchOf(name)];
 }
 
-/** The trainer's screen background: the app's slow-moving washes, held still. */
-export const APP_BG =
-  "radial-gradient(ellipse 65% 27.5% at 20% 0%, rgba(30,41,59,0.85), rgba(30,41,59,0) 100%)," +
-  "radial-gradient(ellipse 60% 30% at 100% 4%, rgba(49,46,129,0.8), rgba(49,46,129,0) 100%)," +
-  "radial-gradient(ellipse 52.5% 31% at 88% 22%, rgba(76,29,149,0.7), rgba(76,29,149,0) 100%)," +
-  "radial-gradient(ellipse 70% 30% at 85% 100%, rgba(76,29,149,0.55), rgba(76,29,149,0) 100%)," +
-  "radial-gradient(ellipse 60% 25% at 10% 55%, rgba(18,78,99,0.35), rgba(18,78,99,0) 100%)," +
-  "#0F0A1A";
-
 export const LEXEND = '"Lexend", "Plus Jakarta Sans", system-ui, sans-serif';
