@@ -213,36 +213,51 @@ const WHITE_OF_PC: Record<number, number> = { 0: 0, 2: 1, 4: 2, 5: 3, 7: 4, 9: 5
 const BLACK_AFTER: Record<number, number> = { 1: 0, 3: 1, 6: 3, 8: 4, 10: 5 };
 
 /**
- * Keys lit on a keyboard drawn from the C at or below the lowest one. Each
- * mark is a position in semitones from that C, a colour and a label.
+ * Keys lit on a keyboard drawn like the app's: white keys with hairline
+ * seams, slate black keys, inside the app's dark frame, from the C at or
+ * below the lowest key. Each mark is a position in semitones from that C, a
+ * colour and a label.
  */
 function keyboardSvg(marks: { pos: number; color: string; label: string }[]) {
-  const W = 36;
-  const H = 150;
-  const BW = 22;
-  const BH = 92;
+  const W = 40;
+  const H = 168;
+  const BW = W * 0.62;
+  const BH = H * 0.65;
+  const PAD = 7;
   const top = Math.max(...marks.map((m) => m.pos));
   const octaves = Math.max(1, Math.ceil((top + 1) / 12));
-  const width = octaves * 7 * W;
+  const keysW = octaves * 7 * W;
+  const width = keysW + PAD * 2;
+  const height = H + PAD * 2;
   const markAt = (pos: number) => marks.find((m) => m.pos === pos);
   let whites = "";
+  let seams = "";
   let blacks = "";
   for (let o = 0; o < octaves; o++) {
     for (let p = 0; p < 12; p++) {
       const pos = o * 12 + p;
       const m = markAt(pos);
       if (p in WHITE_OF_PC) {
-        const x = (o * 7 + WHITE_OF_PC[p]) * W;
-        whites += `<rect x="${x + 1}" y="1" width="${W - 2}" height="${H - 2}" rx="5" fill="${m ? m.color : "#f4f4f5"}"/>`;
-        if (m) whites += `<text x="${x + W / 2}" y="${H - 14}" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">${esc(m.label)}</text>`;
+        const i = o * 7 + WHITE_OF_PC[p];
+        const x = PAD + i * W;
+        whites += `<rect x="${x}" y="${PAD}" width="${W}" height="${H}" fill="${m ? m.color : "#FFFFFF"}"/>`;
+        if (i > 0) seams += `<rect x="${x - 0.5}" y="${PAD}" width="1" height="${H}" fill="#CBD5E1"/>`;
+        if (m) whites += `<text x="${x + W / 2}" y="${PAD + H - 16}" text-anchor="middle" font-size="15" font-weight="900" fill="#fff">${esc(m.label)}</text>`;
       } else {
-        const x = (o * 7 + BLACK_AFTER[p] + 1) * W - BW / 2;
-        blacks += `<rect x="${x}" y="1" width="${BW}" height="${BH}" rx="4" fill="${m ? m.color : "#18181b"}" stroke="rgba(255,255,255,.12)"/>`;
-        if (m) blacks += `<text x="${x + BW / 2}" y="${BH - 12}" text-anchor="middle" font-size="10" font-weight="800" fill="#fff">${esc(m.label)}</text>`;
+        const x = PAD + (o * 7 + BLACK_AFTER[p] + 1) * W - BW / 2;
+        blacks += `<path d="M${x} ${PAD}h${BW}v${BH - 6}a6 6 0 0 1 -6 6h${-(BW - 12)}a6 6 0 0 1 -6 -6z" fill="${m ? m.color : "#1E293B"}" stroke="rgba(255,255,255,.10)"${m ? "" : ' filter="url(#drop)"'}/>`;
+        if (m) blacks += `<text x="${x + BW / 2}" y="${PAD + BH - 12}" text-anchor="middle" font-size="11" font-weight="900" fill="#fff">${esc(m.label)}</text>`;
       }
     }
   }
-  return `<svg viewBox="0 0 ${width} ${H}" width="100%" role="img" aria-hidden="true" style="max-width:${width}px;display:block;margin:0 auto">${whites}${blacks}</svg>`;
+  return `<svg viewBox="0 0 ${width} ${height}" width="100%" role="img" aria-hidden="true" font-family="Lexend, 'Plus Jakarta Sans', sans-serif" style="max-width:${width}px;display:block;margin:0 auto">
+<defs>
+<clipPath id="keys"><rect x="${PAD}" y="${PAD}" width="${keysW}" height="${H}" rx="12"/></clipPath>
+<filter id="drop" x="-30%" y="-10%" width="160%" height="140%"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#000" flood-opacity=".45"/></filter>
+</defs>
+<rect x=".5" y=".5" width="${width - 1}" height="${height - 1}" rx="18" fill="rgba(0,0,0,.25)" stroke="rgba(255,255,255,.10)"/>
+<g clip-path="url(#keys)">${whites}${seams}${blacks}</g>
+</svg>`;
 }
 
 // ── The page around it ───────────────────────────────────────────────────────
@@ -250,39 +265,56 @@ function keyboardSvg(marks: { pos: number; color: string; label: string }[]) {
 const CSS = `
 :root{color-scheme:dark}
 *{box-sizing:border-box}
-body{margin:0;background:#06030c;color:#d4d4db;font-family:"Plus Jakarta Sans",system-ui,-apple-system,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
-a{color:#e5a93c;text-decoration:none}a:hover{text-decoration:underline}
-.wrap{max-width:760px;margin:0 auto;padding:24px 16px 64px}
-.top{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:13px}
-.brand{font-weight:800;font-style:italic;font-size:20px;color:#fff}
-.crumbs{margin-top:32px;font-size:12px;color:#71717a}
-.crumbs a{color:#a1a1aa}
-h1{color:#fff;font-size:clamp(30px,7vw,48px);line-height:1.1;letter-spacing:-.02em;margin:10px 0 12px}
-.lead{font-size:18px;color:#a1a1aa;margin:0}
-.lead b{color:#fff}
-.kb{margin:28px 0 8px;padding:18px;border:1px solid rgba(255,255,255,.07);border-radius:20px;background:rgba(255,255,255,.02)}
-.legend{display:flex;flex-wrap:wrap;gap:8px 18px;justify-content:center;margin-top:12px;font-size:13px;color:#a1a1aa}
-.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle}
-h2{color:#fff;font-size:22px;line-height:1.25;margin:40px 0 10px}
-p{margin:10px 0}
-.tones{font-size:18px;color:#fff;font-weight:700;letter-spacing:.02em}
-table{width:100%;border-collapse:collapse;font-size:15px}
-th,td{padding:9px 10px;border-bottom:1px solid rgba(255,255,255,.06);text-align:left}
-th{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:#71717a;font-weight:800}
-td a{font-weight:700}
-tr.here td{background:rgba(229,169,60,.08)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px;margin-top:12px}
-.chip{display:block;padding:9px 12px;border:1px solid rgba(255,255,255,.08);border-radius:12px;background:rgba(255,255,255,.02);color:#d4d4db;font-size:14px}
-.chip b{color:#fff}
-.chip:hover{border-color:rgba(229,169,60,.5);text-decoration:none}
-.cta{margin-top:48px;padding:24px;border-radius:24px;border:1px solid rgba(229,169,60,.25);background:rgba(229,169,60,.05)}
-.cta h2{margin-top:0}
-.btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
-.btn{display:inline-block;padding:12px 18px;border-radius:12px;background:#fff;color:#09090b;font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
-.btn.ghost{background:rgba(255,255,255,.04);color:#fff;border:1px solid rgba(255,255,255,.12)}
-.btn:hover{text-decoration:none;opacity:.9}
-footer{margin-top:56px;padding-top:20px;border-top:1px solid rgba(255,255,255,.06);font-size:12px;color:#71717a}
-footer a{color:#a1a1aa;margin-right:14px}
+html{background:#06030c}
+body{margin:0;min-height:100vh;color:#d4d4db;font-family:"Plus Jakarta Sans",system-ui,-apple-system,sans-serif;line-height:1.65;-webkit-font-smoothing:antialiased;
+background:radial-gradient(900px 520px at 6% -8%,rgba(244,63,94,.16),transparent 62%),radial-gradient(820px 560px at 98% 2%,rgba(168,85,247,.17),transparent 62%),radial-gradient(900px 600px at 72% 104%,rgba(229,169,60,.09),transparent 62%),#06030c}
+a{color:#e5a93c;text-decoration:none;transition:color .2s}a:hover{color:#fff}
+.wrap{max-width:820px;margin:0 auto;padding:18px 20px 72px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 8px 8px 18px;border:1px solid rgba(255,255,255,.08);border-radius:999px;background:rgba(7,4,15,.72);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 16px 50px rgba(7,4,15,.7)}
+.brand{font-weight:900;font-style:italic;font-size:20px;color:#fff;letter-spacing:-.01em}
+.brand:hover{color:#fff}
+.pill{font-size:10px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:#09090b;background:#fff;padding:9px 14px;border-radius:999px;white-space:nowrap}
+.pill:hover{color:#09090b;opacity:.88}
+.crumbs{margin-top:40px;font-size:10.5px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:#71717a}
+.crumbs a{color:#a1a1aa}.crumbs a:hover{color:#fff}
+.eyebrow{display:block;margin-top:22px;font-size:11px;font-weight:900;letter-spacing:.24em;text-transform:uppercase;background:linear-gradient(90deg,#f43f5e,#d946ef,#6366f1);-webkit-background-clip:text;background-clip:text;color:transparent}
+h1{color:#fff;font-size:clamp(36px,8vw,64px);line-height:1.02;letter-spacing:-.035em;font-weight:800;margin:12px 0 18px}
+h1 em{font-style:italic;font-weight:300;background:linear-gradient(90deg,#e5a93c,#f43f5e 55%,#a855f7);-webkit-background-clip:text;background-clip:text;color:transparent;padding-right:.1em}
+.lead{font-size:17px;line-height:1.7;color:#a1a1aa;margin:0;font-weight:300}
+.lead b{color:#fff;font-weight:700}
+.kb{margin:34px 0 8px;padding:22px 18px 18px;border:1px solid rgba(255,255,255,.08);border-radius:28px;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.012));box-shadow:0 30px 70px -24px rgba(0,0,0,.8)}
+.legend{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:center;margin-top:16px;font-size:13px;color:#a1a1aa}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:7px;vertical-align:middle;box-shadow:0 0 10px currentColor}
+h2{margin:50px 0 12px;font-size:11px;font-weight:900;letter-spacing:.22em;text-transform:uppercase;color:#e5a93c}
+p{margin:10px 0;font-weight:300;color:#c4c4cc}
+p b{color:#fff;font-weight:700}
+.tones{font-size:22px;color:#fff;font-weight:800;letter-spacing:.01em}
+table{width:100%;border-collapse:separate;border-spacing:0;font-size:15px;border:1px solid rgba(255,255,255,.07);border-radius:20px;overflow:hidden;background:rgba(255,255,255,.015)}
+th,td{padding:11px 16px;border-bottom:1px solid rgba(255,255,255,.06);text-align:left}
+tr:last-child td{border-bottom:0}
+th{font-size:10px;text-transform:uppercase;letter-spacing:.18em;color:#71717a;font-weight:900;background:rgba(255,255,255,.02)}
+td{color:#d4d4db}
+td a{font-weight:800}
+td b{color:#fff}
+tr.here td{background:rgba(229,169,60,.09)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px;margin-top:14px}
+.chip{display:block;padding:10px 14px;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:rgba(255,255,255,.025);color:#a1a1aa;font-size:14px;transition:border-color .2s,background .2s}
+.chip b{color:#fff;font-weight:800}
+.chip:hover{border-color:rgba(229,169,60,.55);background:rgba(229,169,60,.06);color:#d4d4db}
+.cta{margin-top:64px;padding:32px 28px;border-radius:30px;border:1px solid rgba(229,169,60,.26);background:radial-gradient(520px 260px at 0% 0%,rgba(229,169,60,.13),transparent 70%),radial-gradient(520px 260px at 100% 100%,rgba(168,85,247,.12),transparent 70%),rgba(7,4,15,.65);box-shadow:0 30px 70px -24px rgba(0,0,0,.8)}
+.cta h3{margin:0 0 12px;font-size:clamp(26px,5vw,38px);line-height:1.04;letter-spacing:-.02em;font-weight:900;text-transform:uppercase;color:#fff}
+.cta h3 span{background:linear-gradient(90deg,#f43f5e,#a855f7,#6366f1);-webkit-background-clip:text;background-clip:text;color:transparent}
+.cta p{max-width:560px}
+.btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
+.store{display:flex;align-items:center;gap:12px;padding:12px 20px;border-radius:16px;background:#18181b;border:1px solid rgba(255,255,255,.1);color:#fff;min-width:190px}
+.store:hover{color:#fff;border-color:rgba(229,169,60,.5);box-shadow:0 0 20px rgba(229,169,60,.15)}
+.store small{display:block;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:#71717a;font-weight:800;line-height:1.2}
+.store strong{display:block;font-size:16px;line-height:1.2}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 22px;border-radius:14px;background:#fff;color:#09090b;font-weight:900;font-size:11.5px;letter-spacing:.16em;text-transform:uppercase}
+.btn:hover{color:#09090b;opacity:.88}
+footer{margin-top:64px;padding-top:22px;border-top:1px solid rgba(255,255,255,.06);font-size:12px;color:#71717a;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+footer a{color:#a1a1aa}
+footer .brand{font-size:16px;margin-right:auto}
 `;
 
 function page(opts: {
@@ -322,23 +354,27 @@ function page(opts: {
 <link rel="apple-touch-icon" href="${opts.up}apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=Lexend:wght@800..900&display=swap">
 <script type="application/ld+json">${JSON.stringify(ld).replace(/</g, "\\u003c")}</script>
 <style>${CSS}</style>
 </head>
 <body>
 <div class="wrap">
-<div class="top"><a class="brand" href="${opts.up}">Improvy</a><a href="${opts.up}#quiz">Take the 60-second test →</a></div>
+<div class="top"><a class="brand" href="${opts.up}">Improvy</a><a class="pill" href="${opts.up}#quiz">60-second test</a></div>
 <div class="crumbs">${crumbs
     .map((c, i) => (i === crumbs.length - 1 ? esc(c.name) : `<a href="${opts.up}${c.path}">${esc(c.name)}</a>`))
     .join(" › ")}</div>
 ${opts.body}
 <div class="cta">
-<h2>Name it before you can count it</h2>
+<h3>Name it before<br><span>you can count it.</span></h3>
 <p>Improvy trains every degree in all 12 keys — the 3, the ♭7, the ♯11 — until you see the note without working it out. A few minutes a day. Free to start; Pro is one payment, never a subscription.</p>
-<div class="btns"><a class="btn" href="${APP_STORE}">App Store</a><a class="btn" href="${PLAY_STORE}">Google Play</a><a class="btn ghost" href="${opts.up}#quiz">60-second test</a></div>
+<div class="btns">
+<a class="store" href="${APP_STORE}"><svg width="26" height="26" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 1.15-3.27 1.2-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5 1.07 3.29 1.07.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.02.07-.43 1.44-1.38 2.82M15.97 4.17c.66-.8 1.1-1.89 1.08-3.17-.91.04-2.01.6-2.67 1.38-.56.66-1.05 1.76-.9 3.01 1.05.08 2.06-.51 2.49-1.22z"/></svg><span><small>Download on the</small><strong>App Store</strong></span></a>
+<a class="store" href="${PLAY_STORE}"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.25 1.75C3.06 1.93 2.95 2.22 2.95 2.6V21.4C2.95 21.78 3.06 22.07 3.25 22.25L3.32 22.32L13.84 11.8V11.53L3.32 1.01L3.25 1.75Z" fill="#00A0FF"/><path d="M17.34 15.33L13.84 11.82V11.51L17.34 8L17.42 8.04L21.57 10.4C22.75 11.07 22.75 12.26 21.57 12.93L17.42 15.29L17.34 15.33Z" fill="#FFE000"/><path d="M13.84 11.66L3.25 22.25C3.59 22.59 4.19 22.61 4.88 22.22L17.34 15.14L13.84 11.66Z" fill="#FF2C00"/><path d="M13.84 11.66L17.34 8.18L4.88 1.1C4.19 0.71 3.59 0.73 3.25 1.07L13.84 11.66Z" fill="#00E676"/></svg><span><small>Get it on</small><strong>Google Play</strong></span></a>
+<a class="btn" href="${opts.up}#quiz">The 60-second test →</a>
 </div>
-<footer><a href="${opts.up}">Improvy.app</a><a href="${opts.up}degrees/">Every degree in every key</a><a href="${opts.up}#teachers">For teachers</a><a href="${opts.up}#about">About</a></footer>
+</div>
+<footer><a class="brand" href="${opts.up}">Improvy</a><a href="${opts.up}degrees/">Every degree in every key</a><a href="${opts.up}#teachers">For teachers</a><a href="${opts.up}#about">About</a><span>© 2026 The Bale Company</span></footer>
 </div>
 </body>
 </html>
@@ -406,7 +442,8 @@ function degreePage(key: KeyName, d: DegreeInfo) {
     : "";
 
   const body = `
-<h1>The ${esc(d.token)} of ${esc(key)} is ${esc(N)}</h1>
+<span class="eyebrow">Scale degrees · ${esc(key)} major</span>
+<h1>The ${esc(d.token)} of ${esc(key)} is <em>${esc(N)}</em></h1>
 <p class="lead">The <b>${esc(d.token)}</b> (${esc(d.words)}${ascii(d.token) !== d.token ? `, written ${esc(ascii(d.token))}` : ""}) of <b>${esc(key)}</b>${key.length > 1 ? ` (${esc(keyWords(key))}, ${esc(ascii(key))})` : ""} is <b>${esc(N)}</b>${note.acc !== 0 ? ` (${esc(keyWords(N).replace("𝄫", " double flat").replace("𝄪", " double sharp"))})` : ""}: ${esc(a(d.interval))} above the root.</p>
 <div class="kb">
 ${keyboardSvg([
@@ -458,7 +495,8 @@ function keyPage(key: KeyName) {
     return `<tr><td><a href="${d.slug}/">${esc(d.token)}</a></td><td><b>${esc(n)}</b></td><td>${esc(d.interval)}</td></tr>`;
   }).join("");
   const body = `
-<h1>Every scale degree in ${esc(key)}</h1>
+<span class="eyebrow">Scale degrees · ${esc(key)} major</span>
+<h1>Every degree<br>in <em>${esc(key)}</em></h1>
 <p class="lead">The major scale of <b>${esc(key)}</b> is <b>${scale.map((t) => esc(noteName(spelled(root, t)))).join(" ")}</b>. Below, every degree a chart can ask for — the chromatic ones and the 9s, 11s and 13s — spelled the way it is written.</p>
 <div class="kb">
 ${keyboardSvg(scale.map((t) => ({ pos: pc(root) + degreeSemitones(parseDegree(t)), color: degreeColor(parseDegree(t)), label: t })))}
@@ -494,7 +532,8 @@ function indexPage() {
     )}`;
   }).join("");
   const body = `
-<h1>Every degree in every key</h1>
+<span class="eyebrow">Scale degree finder</span>
+<h1>Every degree,<br><em>every key.</em></h1>
 <p class="lead">The ♭7 of E♭, the ♯11 of D, the 13 of B♭: pick a key and a degree to see the note, why it is spelled that way, and where you meet it.</p>
 ${blocks}
 `;
