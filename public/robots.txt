@@ -1,5 +1,6 @@
-# improvy.app — one page, hash-routed. Everything is crawlable; the sitemap
-# names the only URL that exists, so Google does not go looking for more.
+# improvy.app — the home page (hash-routed: #pro, #quiz, #teachers…) and a
+# static page for every degree in every key under /degrees/. The sitemap is
+# written at build time and lists every one of them.
 User-agent: *
 Allow: /
 

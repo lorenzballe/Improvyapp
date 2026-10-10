@@ -2,11 +2,9 @@ import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { trackView } from "./lib/analytics";
 import { motion } from "motion/react";
 import { BackgroundGradientAnimation } from "./components/BackgroundGradientAnimation";
-import { ButtonColorful } from "./components/ButtonColorful";
 import { ShineBorder } from "./components/ShineBorder";
-import { TypeWriter } from "./components/TypeWriter";
 import { TestimonialsColumn, testimonialsList } from "./components/TestimonialsColumn";
-import { Sparkle, ArrowUp, Check, X } from "lucide-react";
+import { Sparkle, ArrowUp, ArrowRight, Check, X } from "lucide-react";
 import { WhyImprovySection } from "./components/WhyImprovySection";
 import { cn } from "./lib/utils";
 import { PRO_PRICE_WEB, PRO_PRICE_NOTE, PRO_PRICE_STORE_NOTE } from "./lib/pricing";
@@ -25,10 +23,16 @@ const AboutPage = lazy(() => import("./components/AboutPage"));
 const FeedbackPage = lazy(() => import("./components/FeedbackPage"));
 const CreatorPage = lazy(() => import("./components/CreatorPage"));
 const WhatsNextPage = lazy(() => import("./components/WhatsNextPage"));
+const QuizPage = lazy(() => import("./components/quiz/QuizPage"));
+const TeachersPage = lazy(() => import("./components/TeachersPage"));
 // Below the fold on Home and at the foot of the Method: loaded when needed, so
 // the first screen does not wait for the keyboard and its music.
 const HarmonyTeaser = lazy(() => import("./components/HarmonyTeaser").then((m) => ({ default: m.HarmonyTeaser })));
-import { StoreBadges } from "./components/StoreBadges";
+import { DownloadFree } from "./components/StoreBadges";
+import { CreatorWelcome } from "./components/CreatorWelcome";
+import { ProofStrip } from "./components/ProofStrip";
+import { TryOne } from "./components/quiz/TryOne";
+import { detectPlatform } from "./lib/platform";
 import heroHomeScreenImg from "./assets/images/method_home_progress.webp";
 
 const revealVariants = {
@@ -52,48 +56,6 @@ const revealVariants = {
   },
 };
 
-interface AnimatedTextProps {
-    text?: string;
-    className?: string;
-}
-
-function Text_03({
-    text = "Mente",
-    className = "",
-}: AnimatedTextProps) {
-    const [isHovered, setIsHovered] = useState(false);
-
-    return (
-        <span
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            className={cn(
-                "inline-block cursor-pointer font-extrabold text-white select-none whitespace-nowrap",
-                className
-            )}
-        >
-            {text.split("").map((char, index) => (
-                <motion.span
-                    key={index}
-                    className="inline-block text-white"
-                    animate={{
-                        y: isHovered ? -6 : 0,
-                        scale: isHovered ? 1.15 : 1,
-                    }}
-                    transition={{
-                        type: "spring",
-                        stiffness: 400,
-                        damping: 12,
-                        delay: index * 0.03,
-                    }}
-                >
-                    {char === " " ? "\u00A0" : char}
-                </motion.span>
-            ))}
-        </span>
-    );
-}
-
 /**
  * The legal pages are the only ones that need an address of their own: the
  * store listing and the app's own Settings screen link straight to them, and
@@ -101,9 +63,11 @@ function Text_03({
  * footer. A hash keeps them linkable on GitHub Pages without a router or a
  * 404 fallback. Everything else stays plain in-page state.
  */
-function pageFromHash(): "privacy" | "terms" | "pro" | "about" | "creator" | "next" | null {
+function pageFromHash(): "privacy" | "terms" | "pro" | "about" | "creator" | "next" | "quiz" | "teachers" | null {
   const hash = window.location.hash.replace(/^#\/?/, "");
   if (hash === "next") return "next";
+  // The 60-second test is shared by link, and teachers are sent the page.
+  if (hash === "quiz" || hash === "teachers") return hash;
   // #about is addressed because the stores ask for a support URL, and a
   // support URL that lands on a marketing page is not support information.
   if (hash === "privacy" || hash === "terms" || hash === "about") return hash;
@@ -116,12 +80,14 @@ function pageFromHash(): "privacy" | "terms" | "pro" | "about" | "creator" | "ne
 }
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState<"home" | "why" | "terms" | "privacy" | "about" | "feedback" | "pro" | "creator" | "next">(
+  const [currentPage, setCurrentPage] = useState<"home" | "why" | "terms" | "privacy" | "about" | "feedback" | "pro" | "creator" | "next" | "quiz" | "teachers">(
     () => pageFromHash() ?? "home"
   );
   const [aboutPageScrollTo, setAboutPageScrollTo] = useState<"top" | "get-in-touch" | null>(null);
   const [aboutScrollTrigger, setAboutScrollTrigger] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
+  // Read once: which store the free-download button points at.
+  const [platform] = useState(detectPlatform);
 
   // Mirror the legal pages into the address bar so the URL can be copied and
   // shared. replaceState rather than push: the in-page Back buttons already
@@ -132,7 +98,9 @@ export default function App() {
       currentPage === "terms" ||
       currentPage === "pro" ||
       currentPage === "about" ||
-      currentPage === "next";
+      currentPage === "next" ||
+      currentPage === "quiz" ||
+      currentPage === "teachers";
     const hash = addressed ? `#${currentPage}` : "";
     // #pro/success?… and #pro/cancel are still "pro": leave them be.
     const already =
@@ -247,6 +215,18 @@ export default function App() {
   // lands there.
   const goPro = () => {
     setCurrentPage("pro");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+  const goQuiz = () => {
+    setCurrentPage("quiz");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+  const goTeachers = () => {
+    setCurrentPage("teachers");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+  const goHome = () => {
+    setCurrentPage("home");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -370,6 +350,10 @@ export default function App() {
               window.scrollTo({ top: 0, behavior: "smooth" });
             }} 
           />
+        ) : currentPage === "quiz" ? (
+          <QuizPage onBack={goHome} platform={platform} />
+        ) : currentPage === "teachers" ? (
+          <TeachersPage onBack={goHome} platform={platform} />
         ) : currentPage === "creator" ? (
           <CreatorPage />
         ) : currentPage === "feedback" ? (
@@ -387,63 +371,65 @@ export default function App() {
             {/* Left Column: Copywriting and CTAs */}
             <div className="lg:col-span-7 space-y-8 text-left">
               
-              {/* Asymmetrical Master Heading */}
-              <motion.h1 
+              {/* A creator's audience sees who sent them, their code and
+                  where it goes — only for creators already agreed. */}
+              <CreatorWelcome />
+
+              {/* What this is, for whom, in one line above the headline. */}
+              <motion.p
+                initial={{ opacity: 0, y: -20, filter: "blur(10px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                transition={{ delay: 0.06, duration: 0.5 }}
+                className="text-[11px] sm:text-xs font-sans uppercase tracking-[0.24em] bg-gradient-to-r from-[#f43f5e] via-[#d946ef] to-[#6366f1] bg-clip-text text-transparent font-black"
+              >
+                The scale-degree trainer for improvisers
+              </motion.p>
+
+              {/* The headline says what the app does, not what it hopes for:
+                  a visitor should know in five seconds what they would train. */}
+              <motion.h1
                 initial={{ opacity: 0, y: -20, filter: "blur(10px)" }}
                 animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                 transition={{ delay: 0.12, duration: 0.5 }}
                 className="font-display text-5xl sm:text-7xl xl:text-8xl font-extrabold text-white leading-[1.05] tracking-tight"
               >
-                Train your <Text_03 text="Mind" />{" "}
-                to{" "}
-                {/* The typed word changes every few seconds, so a crawler or a
-                    screen reader catches whichever it lands on. They get the
-                    whole sentence instead; the animation is for eyes only. */}
-                <span className="sr-only">improvise, visualize, compose and transpose in every key</span>
-                <span aria-hidden="true">
-                  <TypeWriter 
-                    className="italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#e5a93c] via-rose-500 to-purple-500 font-serif"
-                    strings={["improvise", "visualize", "compose", "transpose"]}
-                    holdDelay={10000}
-                  />
+                Every note is
+                <br />
+                <span className="italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#e5a93c] via-rose-500 to-purple-500 font-serif pr-3">
+                  a number.
                 </span>
               </motion.h1>
 
-              {/* Subheading text in clean neural tone */}
-              <motion.p 
+              <motion.p
                 initial={{ opacity: 0, y: -20, filter: "blur(10px)" }}
                 animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                 transition={{ delay: 0.24, duration: 0.5 }}
-                className="text-zinc-400 text-sm md:text-base leading-relaxed max-w-xl font-sans font-light"
+                className="text-zinc-300 text-base md:text-lg leading-relaxed max-w-xl font-sans font-light"
               >
-                Every note is just a number in its key. Improvy trains you to see that number instantly — in all 12 keys — so improvising, transposing, and composing stop being mental math and start feeling like second nature.
+                See it instantly in all 12 keys — the 3, the ♭7, the ♯11 — and improvising, transposing and composing stop being mental math.
               </motion.p>
 
-              {/* Actions with glowing custom premium buttons */}
-              <motion.div 
+              {/* The free download first, from this device's own store; Pro
+                  second, for whoever has already decided. */}
+              <motion.div
                 initial={{ opacity: 0, y: -20, filter: "blur(10px)" }}
                 animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                 transition={{ delay: 0.36, duration: 0.5 }}
-                className="flex flex-col sm:flex-row gap-4 pt-2 items-stretch sm:items-center"
+                className="pt-2 space-y-4"
               >
-                <ButtonColorful
+                <DownloadFree platform={platform} placement="hero" />
+                <p className="text-[11px] sm:text-xs font-sans uppercase tracking-[0.16em] text-zinc-500 font-bold">
+                  Free to start · Pro is one payment, never a subscription · No ads
+                </p>
+                <button
                   onClick={goPro}
-                  label={`Get Improvy Pro — ${PRO_PRICE_WEB}`}
-                  className="sm:w-auto"
-                />
-              </motion.div>
-
-              {/* App Stores badges section (as requested: "metter su gli store, cioè i bollettini degli store") */}
-              <motion.div 
-                initial={{ opacity: 0, y: -20, filter: "blur(10px)" }}
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                transition={{ delay: 0.48, duration: 0.5 }}
-                className="pt-6 space-y-4"
-              >
-                <div className="flex items-center gap-2">
-                  <p className="text-[12.5px] sm:text-sm font-sans uppercase tracking-[0.22em] bg-gradient-to-r from-[#f43f5e] via-[#d946ef] to-[#6366f1] bg-clip-text text-transparent font-black">Now on iOS and Android — free to start</p>
-                </div>
-                <StoreBadges />
+                  className="group inline-flex items-center gap-2 text-sm font-sans text-zinc-300 hover:text-white transition-colors duration-200 cursor-pointer focus:outline-none"
+                >
+                  <span>
+                    Already sure? Get Pro once — <span className="font-bold text-white">{PRO_PRICE_WEB}</span>
+                  </span>
+                  <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+                </button>
               </motion.div>
 
             </div>
@@ -517,6 +503,8 @@ export default function App() {
 
           </div>
         </section>
+        <ProofStrip />
+        <TryOne onOpenQuiz={goQuiz} />
         {/* INTERACTIVE BACKGROUND BRAND KEYS CONTAINER */}
         <div className="relative w-full overflow-hidden mt-8 bg-transparent">
 
@@ -534,15 +522,6 @@ export default function App() {
               window.scrollTo({ top: 0, behavior: "smooth" });
             }} />
           </motion.div>
-          {/* What comes next: chords and scales, lit up. */}
-          <div id="harmony-teaser" className="pb-4">
-            <Suspense fallback={<div className="min-h-[420px]" aria-busy="true" />}>
-              <HarmonyTeaser onOpen={() => {
-                setCurrentPage("next");
-                window.scrollTo({ top: 0, behavior: "smooth" });
-              }} />
-            </Suspense>
-          </div>
           {/* SECTION 3: SIGNATURE LIFE-TIME ACCESS PRICING (Side-by-side comparison) */}
           <motion.section 
             id="pricing" 
@@ -628,7 +607,7 @@ export default function App() {
                   </div>
 
                   <p className="text-xs text-zinc-450 font-sans font-light leading-relaxed">
-                    Perfect for your first steps. Master scale-degree relationships in the key of C, plus the free …Of What? and Pocket modes.
+                    Perfect for your first steps: every diatonic degree in all 12 keys, the chromatic ones in C, and the Daily Challenge.
                   </p>
 
                   <div className="py-5 border-t border-b border-white/[0.05]">
@@ -798,7 +777,31 @@ export default function App() {
 
             </div>
 
+            {/* A teacher buys for a class, not for one phone. */}
+            <p className="text-center text-xs sm:text-sm text-zinc-400 font-light mt-10">
+              Teaching a class?{" "}
+              <button
+                onClick={goTeachers}
+                className="group inline-flex items-center gap-1 font-semibold text-white hover:text-[#e5a93c] transition-colors duration-200 cursor-pointer focus:outline-none"
+              >
+                Free Pro for teachers, and classroom packs
+                <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1" />
+              </button>
+            </p>
+
           </motion.section>
+
+          {/* What comes next: chords and scales, lit up. After the prices, so
+              a promise about tomorrow never stands between someone and today's
+              app. */}
+          <div id="harmony-teaser" className="pb-4">
+            <Suspense fallback={<div className="min-h-[420px]" aria-busy="true" />}>
+              <HarmonyTeaser onOpen={() => {
+                setCurrentPage("next");
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }} />
+            </Suspense>
+          </div>
 
           {/* SECTION 2.5: UNLIMITED SCROLLING TESTIMONIALS */}
           <motion.section 
@@ -1021,6 +1024,27 @@ export default function App() {
                     )}
                   >
                     Get Improvy Pro
+                  </button>
+                  <button
+                    onClick={goQuiz}
+                    className={cn(
+                      "hover:text-white transition-colors duration-200 cursor-pointer text-left focus:outline-none",
+                      currentPage === "quiz" ? "text-[#e5a93c]" : ""
+                    )}
+                  >
+                    60-second test
+                  </button>
+                  <a href="degrees/" className="hover:text-white transition-colors duration-200 text-left">
+                    Degree finder
+                  </a>
+                  <button
+                    onClick={goTeachers}
+                    className={cn(
+                      "hover:text-white transition-colors duration-200 cursor-pointer text-left focus:outline-none",
+                      currentPage === "teachers" ? "text-[#e5a93c]" : ""
+                    )}
+                  >
+                    For teachers
                   </button>
                 </div>
               </div>
