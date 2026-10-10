@@ -29,7 +29,6 @@ const TeachersPage = lazy(() => import("./components/TeachersPage"));
 // the first screen does not wait for the keyboard and its music.
 const HarmonyTeaser = lazy(() => import("./components/HarmonyTeaser").then((m) => ({ default: m.HarmonyTeaser })));
 import { DownloadFree } from "./components/StoreBadges";
-import { ButtonColorful } from "./components/ButtonColorful";
 import { HeroHeadline } from "./components/HeroHeadline";
 import { PhoneMockup } from "./components/PhoneMockup";
 import { CreatorWelcome } from "./components/CreatorWelcome";
@@ -392,37 +391,27 @@ export default function App() {
               </motion.p>
 
               {/* The free download first, from this device's own store; Pro
-                  second, for whoever has already decided. A computer gets
-                  both badges and the site's colourful Pro button beside them;
-                  a phone gets its one store and a quieter line for Pro. */}
+                  second, as a quiet line, for whoever has already decided.
+                  The header's button is there for Pro on every screen. */}
               <motion.div
                 initial={{ opacity: 0, y: -20, filter: "blur(10px)" }}
                 animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                 transition={{ delay: 0.36, duration: 0.5 }}
                 className="pt-2 space-y-4"
               >
-                {platform === "desktop" ? (
-                  <div className="flex flex-wrap items-center gap-4">
-                    <DownloadFree platform={platform} placement="hero" />
-                    <ButtonColorful onClick={goPro} label={`Get Improvy Pro — ${PRO_PRICE_WEB}`} className="h-12" />
-                  </div>
-                ) : (
-                  <DownloadFree platform={platform} placement="hero" />
-                )}
+                <DownloadFree platform={platform} placement="hero" />
                 <p className="text-[11px] sm:text-xs font-sans uppercase tracking-[0.16em] text-zinc-500 font-bold">
                   Free to start · Pro is one payment, never a subscription · No ads
                 </p>
-                {platform !== "desktop" && (
-                  <button
-                    onClick={goPro}
-                    className="group inline-flex items-center gap-2 text-sm font-sans text-zinc-300 hover:text-white transition-colors duration-200 cursor-pointer focus:outline-none"
-                  >
-                    <span>
-                      Already sure? Get Pro once — <span className="font-bold text-white">{PRO_PRICE_WEB}</span>
-                    </span>
-                    <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
-                  </button>
-                )}
+                <button
+                  onClick={goPro}
+                  className="group inline-flex items-center gap-2 text-sm font-sans text-zinc-300 hover:text-white transition-colors duration-200 cursor-pointer focus:outline-none"
+                >
+                  <span>
+                    Already sure? Get Pro once — <span className="font-bold text-white">{PRO_PRICE_WEB}</span>
+                  </span>
+                  <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+                </button>
               </motion.div>
 
             </div>
