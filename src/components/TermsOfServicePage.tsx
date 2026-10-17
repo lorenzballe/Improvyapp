@@ -146,8 +146,8 @@ export default function TermsOfServicePage({ onBack }: TermsOfServicePageProps) 
               international copyright, trademark, and other intellectual property laws.
             </p>
             <p>
-              The piano notes played in the App and on this website come from the Salamander Grand Piano by Alexander
-              Holm, used under the{" "}
+              The piano notes played in the App come from the Salamander Grand Piano by Alexander Holm, used under
+              the{" "}
               <a
                 href="https://creativecommons.org/licenses/by/3.0/"
                 target="_blank"

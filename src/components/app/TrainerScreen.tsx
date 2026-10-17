@@ -1,9 +1,8 @@
-import { Fragment, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { Fragment, useState, type CSSProperties, type ReactNode } from "react";
 import { NoteText } from "./NoteText";
 import { LEXEND, noteColor } from "./appColors";
 import type { Feedback } from "./useTrainer";
 import type { Question } from "../../lib/quiz";
-import { preloadNotes } from "../../lib/noteSound";
 
 /**
  * The app's trainer screen (lib/screens/trainer_screen.dart), drawn at the
@@ -162,30 +161,8 @@ export function TrainerScreen(p: TrainerScreenProps) {
   const [piano, setPiano] = useState(true);
   const q = p.question;
   const pick = p.onPick;
-  // The piano notes are fetched once the screen is close to being seen, so
-  // the first tap already sounds.
-  const root = useRef<HTMLDivElement | null>(null);
-  useEffect(() => {
-    const el = root.current;
-    if (!el || typeof IntersectionObserver === "undefined") {
-      void preloadNotes();
-      return;
-    }
-    const io = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((e) => e.isIntersecting)) {
-          void preloadNotes();
-          io.disconnect();
-        }
-      },
-      { rootMargin: "400px" }
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
   return (
     <div
-      ref={root}
       style={{
         width: SCREEN_W,
         height: SCREEN_H,
