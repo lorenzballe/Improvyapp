@@ -117,3 +117,61 @@ export function identifyVisitor(uid: string) {
 export function resetVisitor() {
   withClient((posthog) => posthog.reset());
 }
+
+/**
+ * Sends one event straight to PostHog and says whether it arrived.
+ *
+ * For the messages a person writes to us (the feedback form): there the
+ * fire-and-forget of track() is not enough, because an ad blocker swallows
+ * the request silently and the visitor would be thanked for a message nobody
+ * ever reads. A plain request to the capture endpoint either comes back OK or
+ * it does not, and the form can offer email instead.
+ */
+export async function deliver(
+  event: string,
+  properties: Record<string, unknown>,
+  timeoutMs = 8000,
+): Promise<boolean> {
+  let distinctId: string | undefined;
+  try {
+    distinctId = client?.get_distinct_id();
+  } catch {
+    /* ignore */
+  }
+  // Signed in on the site: the message joins that person. Otherwise a
+  // one-off id, and no person profile made for it.
+  const anonymous = !distinctId;
+  if (!distinctId) {
+    distinctId =
+      typeof crypto !== "undefined" && "randomUUID" in crypto
+        ? crypto.randomUUID()
+        : `web-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  }
+  const controller = new AbortController();
+  const timer = window.setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const r = await fetch(`${HOST}/i/v0/e/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        api_key: KEY,
+        event,
+        distinct_id: distinctId,
+        timestamp: new Date().toISOString(),
+        properties: {
+          ...properties,
+          $current_url: window.location.href,
+          $lib: "web",
+          ...(anonymous ? { $process_person_profile: false } : {}),
+        },
+      }),
+      signal: controller.signal,
+      keepalive: true,
+    });
+    return r.ok;
+  } catch {
+    return false;
+  } finally {
+    window.clearTimeout(timer);
+  }
+}

@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { ArrowLeft, Send, Sparkles, MessageSquare, CheckCircle, Bug, Star, Heart, Lightbulb } from "lucide-react";
+import { ArrowLeft, Send, Sparkles, MessageSquare, CheckCircle, Bug, Star, Heart, Lightbulb, Mail } from "lucide-react";
+import { deliver, track } from "../lib/analytics";
+import { getRef } from "../lib/referral";
 
 interface FeedbackPageProps {
   onBack: () => void;
@@ -9,6 +11,15 @@ interface FeedbackPageProps {
 type FeedbackCategory = "feature" | "bug" | "curriculum" | "other" | null;
 
 const SUPPORT_EMAIL = "thebalecompany@gmail.com";
+
+// The app's three kinds, so feedback from the site and from the app read as
+// one list. The site's finer category travels alongside.
+const KIND: Record<Exclude<FeedbackCategory, null>, "idea" | "bug" | "other"> = {
+  feature: "idea",
+  bug: "bug",
+  curriculum: "other",
+  other: "other",
+};
 
 export default function FeedbackPage({ onBack }: FeedbackPageProps) {
   const [category, setCategory] = useState<FeedbackCategory>(null);
@@ -20,6 +31,13 @@ export default function FeedbackPage({ onBack }: FeedbackPageProps) {
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  // Set when the message could not leave the page (most often an ad blocker):
+  // it is kept, and email is offered with it already written.
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    track("feedback_opened", { source: "website" });
+  }, []);
 
   const categories = [
     { id: "feature" as const, label: "Feature Suggestion", icon: Lightbulb, color: "text-[#e5a93c]" },
@@ -28,15 +46,10 @@ export default function FeedbackPage({ onBack }: FeedbackPageProps) {
     { id: "other" as const, label: "General & Hello", icon: MessageSquare, color: "text-emerald-500" },
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!category || !message.trim()) return;
+  const label = categories.find((c) => c.id === category)?.label ?? "Feedback";
 
-    setIsSubmitting(true);
-
-    // The site is a static build with no backend to post to, so hand the
-    // message to the visitor's mail client rather than dropping it.
-    const label = categories.find((c) => c.id === category)?.label ?? "Feedback";
+  // Only the fallback: the message, and whatever the visitor chose to add.
+  const mailtoHref = () => {
     const body = [
       message.trim(),
       "",
@@ -47,14 +60,39 @@ export default function FeedbackPage({ onBack }: FeedbackPageProps) {
     ]
       .filter((line) => line !== null)
       .join("\n");
-
-    window.location.href =
+    return (
       `mailto:${SUPPORT_EMAIL}` +
       `?subject=${encodeURIComponent(`Improvy — ${label}`)}` +
-      `&body=${encodeURIComponent(body)}`;
+      `&body=${encodeURIComponent(body)}`
+    );
+  };
 
+  // Straight to us, like the feedback box in the app: the same event in the
+  // same project, so nothing opens and no address is required.
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!category || !message.trim() || isSubmitting) return;
+
+    setIsSubmitting(true);
+    setFailed(false);
+    const text = message.trim();
+    const reply = email.trim();
+    const ref = getRef();
+    const ok = await deliver("feedback_submitted", {
+      kind: KIND[category],
+      category,
+      message: text,
+      length: text.length,
+      has_email: reply.length > 0,
+      ...(reply ? { email: reply } : {}),
+      ...(name.trim() ? { name: name.trim() } : {}),
+      ...(rating > 0 ? { rating } : {}),
+      ...(ref ? { ref } : {}),
+      source: "website",
+    });
     setIsSubmitting(false);
-    setIsSuccess(true);
+    if (ok) setIsSuccess(true);
+    else setFailed(true);
   };
 
   return (
@@ -251,12 +289,37 @@ export default function FeedbackPage({ onBack }: FeedbackPageProps) {
                       </>
                     ) : (
                       <>
-                        <span>Transmit Feedback</span>
+                        <span>Send feedback</span>
                         <Send className="w-3.5 h-3.5" />
                       </>
                     )}
                   </button>
                 </div>
+
+                <AnimatePresence>
+                  {failed && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.25 }}
+                      role="alert"
+                      className="flex flex-col sm:flex-row sm:items-center gap-3 rounded-xl border border-rose-500/25 bg-rose-500/[0.06] p-4"
+                    >
+                      <p className="text-xs text-zinc-300 font-light leading-relaxed flex-1">
+                        It couldn't be sent from this page — an ad blocker is the usual reason. Your message is still here:
+                        try again, or send it by email, already written.
+                      </p>
+                      <a
+                        href={mailtoHref()}
+                        className="inline-flex items-center justify-center gap-2 shrink-0 px-4 py-2.5 rounded-lg bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.1] text-xs font-bold uppercase tracking-wider text-white transition-colors"
+                      >
+                        <Mail className="w-3.5 h-3.5" />
+                        Send by email
+                      </a>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </form>
             </motion.div>
           ) : (
@@ -273,14 +336,13 @@ export default function FeedbackPage({ onBack }: FeedbackPageProps) {
               
               <div className="space-y-2 max-w-md mx-auto">
                 <h2 className="text-2xl sm:text-3xl font-black text-white font-display uppercase tracking-tight">
-                  ONE LAST STEP
+                  THANK YOU{name.trim() ? `, ${name.trim().toUpperCase()}` : ""}
                 </h2>
                 <p className="text-sm text-zinc-400 font-light leading-relaxed">
-                  Your mail app should have opened with the message ready{name ? `, ${name}` : ""} — press send and it reaches us.
-                  If nothing opened, write to{" "}
-                  <a href={`mailto:${SUPPORT_EMAIL}`} className="text-[#e5a93c] hover:text-white hover:underline">
-                    {SUPPORT_EMAIL}
-                  </a>. Every message is read personally.
+                  Your message has reached us, and every one is read personally.
+                  {email.trim()
+                    ? ` If there's something to answer, we'll write to ${email.trim()}.`
+                    : " You didn't leave an email, so we can't reply — but it will be read all the same."}
                 </p>
               </div>
 
