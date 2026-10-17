@@ -312,6 +312,14 @@ tr.here td{background:rgba(229,169,60,.09)}
 .store strong{display:block;font-size:16px;line-height:1.2}
 .btn{display:inline-flex;align-items:center;gap:8px;padding:14px 22px;border-radius:14px;background:#fff;color:#09090b;font-weight:900;font-size:11.5px;letter-spacing:.16em;text-transform:uppercase}
 .btn:hover{color:#09090b;opacity:.88}
+.shots{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:18px;margin-top:22px}
+.shots figure{margin:0}
+.shots img{display:block;width:100%;height:auto;border-radius:26px;border:1px solid rgba(255,255,255,.08);box-shadow:0 24px 60px -24px rgba(0,0,0,.85)}
+.shots figcaption{margin-top:10px;font-size:13.5px;color:#a1a1aa;line-height:1.5}
+.shots figcaption b{color:#fff}
+.icon{display:flex;align-items:center;gap:18px;margin-top:28px}
+.icon img{width:96px;height:96px;border-radius:22px;box-shadow:0 18px 40px -16px rgba(0,0,0,.9)}
+.banner{display:block;width:100%;height:auto;margin-top:34px;border-radius:24px;border:1px solid rgba(255,255,255,.08)}
 footer{margin-top:64px;padding-top:22px;border-top:1px solid rgba(255,255,255,.06);font-size:12px;color:#71717a;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
 footer a{color:#a1a1aa}
 footer .brand{font-size:16px;margin-right:auto}
@@ -374,7 +382,7 @@ ${opts.body}
 <a class="btn" href="${opts.up}#quiz">The 60-second test →</a>
 </div>
 </div>
-<footer><a class="brand" href="${opts.up}">Improvy</a><a href="${opts.up}degrees/">Every degree in every key</a><a href="${opts.up}#teachers">For teachers</a><a href="${opts.up}#about">About</a><span>© 2026 The Bale Company</span></footer>
+<footer><a class="brand" href="${opts.up}">Improvy</a><a href="${opts.up}degrees/">Every degree in every key</a><a href="${opts.up}app/">The app</a><a href="${opts.up}#teachers">For teachers</a><a href="${opts.up}#about">About</a><span>© 2026 The Bale Company</span></footer>
 </div>
 </body>
 </html>
@@ -550,9 +558,59 @@ ${blocks}
   };
 }
 
+/** The app's own pictures, under public/images: what an image search for
+ *  "Improvy" should find — the icon and the store screenshots. */
+export const APP_IMAGES = [
+  { file: "improvy-app-icon.png", w: 512, h: 512, title: "Improvy app icon",
+    caption: "<b>The Improvy icon</b> — the app on iPhone and Android." },
+  { file: "improvy-app-chromatic-scale-degree-trainer.jpg", w: 660, h: 1434, title: "Improvy app: chromatic scale-degree trainer",
+    caption: "<b>The trainer.</b> A degree is asked — ♭3, ♯11, 13 — and you find its note in the key, against the clock." },
+  { file: "improvy-app-daily-challenge.jpg", w: 660, h: 1434, title: "Improvy app: the Daily Challenge",
+    caption: "<b>The Daily Challenge.</b> The same run for everyone, once a day, with a score to share." },
+  { file: "improvy-app-progress-stats.jpg", w: 660, h: 1434, title: "Improvy app: progress and statistics",
+    caption: "<b>Stats.</b> Mastery in each of the 12 keys, response time, and the degrees that still cost you." },
+  { file: "improvy-app-pocket-mode.jpg", w: 660, h: 1434, title: "Improvy app: Pocket Mode, hands-free audio training",
+    caption: "<b>Pocket Mode.</b> A voice asks, waits, and answers — training with the screen off." },
+  { file: "improvy-app-home-screen-widgets.jpg", w: 660, h: 1434, title: "Improvy app: Home Screen widgets",
+    caption: "<b>Widgets.</b> A question, the daily and your key on the Home Screen." },
+  { file: "improvy-app-banner.jpg", w: 1920, h: 823, title: "Improvy — see every note as its scale degree, in all 12 keys",
+    caption: "" },
+];
+
+function appPage() {
+  const up = "../";
+  const path = "app/";
+  const [icon, ...rest] = APP_IMAGES;
+  const shots = rest.filter((i) => i.caption);
+  const banner = rest.find((i) => !i.caption)!;
+  const body = `
+<span class="eyebrow">The app</span>
+<h1>Improvy,<br><em>on your phone.</em></h1>
+<p class="lead">Improvy is a music app for iPhone and Android that trains you to see every note as its <b>scale degree</b> — the 3, the ♭7, the ♯11 — instantly, in all 12 keys. For improvising, transposing and reading chord charts without counting.</p>
+<div class="icon"><img src="${up}images/${icon.file}" width="${icon.w}" height="${icon.h}" alt="${esc(icon.title)}"><p>Free to download. <b>Improvy Pro</b> is one payment, never a subscription.</p></div>
+<h2>Screenshots</h2>
+<div class="shots">${shots
+    .map((i) => `<figure><img src="${up}images/${i.file}" width="${i.w}" height="${i.h}" alt="${esc(i.title)}" loading="lazy"><figcaption>${i.caption}</figcaption></figure>`)
+    .join("")}</div>
+<img class="banner" src="${up}images/${banner.file}" width="${banner.w}" height="${banner.h}" alt="${esc(banner.title)}" loading="lazy">
+`;
+  return {
+    path,
+    images: APP_IMAGES.map((i) => ({ loc: `${SITE}images/${i.file}`, title: i.title })),
+    html: page({
+      up,
+      path,
+      title: "Improvy app — screenshots of the scale-degree trainer for iPhone and Android",
+      description: "See the Improvy app: the scale-degree trainer, the Daily Challenge, stats, Pocket Mode and widgets. Free on the App Store and Google Play.",
+      crumbs: [{ name: "The app", path }],
+      body,
+    }),
+  };
+}
+
 /** Every page, for the sitemap and for the build. */
 export function allPages() {
-  const out = [indexPage()];
+  const out: { path: string; html: string; images?: { loc: string; title: string }[] }[] = [indexPage(), appPage()];
   for (const key of KEYS) {
     out.push(keyPage(key));
     for (const d of DEGREES) out.push(degreePage(key, d));
@@ -560,18 +618,24 @@ export function allPages() {
   return out;
 }
 
-function sitemap(paths: string[]) {
-  const urls = ["", ...paths]
-    .map(
-      (p) =>
-        `  <url>\n    <loc>${SITE}${p}</loc>\n    <changefreq>${p === "" ? "weekly" : "monthly"}</changefreq>\n    <priority>${p === "" ? "1.0" : p === "degrees/" ? "0.8" : "0.6"}</priority>\n  </url>`
-    )
+function sitemap(pages: { path: string; images?: { loc: string; title: string }[] }[]) {
+  // The home page carries the app's pictures too: it is the page an image
+  // search for the name lands on.
+  const home = { path: "", images: APP_IMAGES.map((i) => ({ loc: `${SITE}images/${i.file}`, title: i.title })) };
+  const urls = [home, ...pages]
+    .map((p) => {
+      const imgs = (p.images ?? [])
+        .map((i) => `\n    <image:image>\n      <image:loc>${i.loc}</image:loc>\n      <image:title>${esc(i.title)}</image:title>\n    </image:image>`)
+        .join("");
+      return `  <url>\n    <loc>${SITE}${p.path}</loc>\n    <changefreq>${p.path === "" ? "weekly" : "monthly"}</changefreq>\n    <priority>${p.path === "" ? "1.0" : p.path === "degrees/" || p.path === "app/" ? "0.8" : "0.6"}</priority>${imgs}\n  </url>`;
+    })
     .join("\n");
   return `<?xml version="1.0" encoding="UTF-8"?>
-<!-- Written by tools/degree-pages.ts at build time: the home page, and the
-     static page for every degree in every key. The home page's sections
-     (#pro, #quiz, #teachers…) are hash fragments, not URLs to a crawler. -->
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<!-- Written by tools/degree-pages.ts at build time: the home page, the app's
+     page with its screenshots, and the static page for every degree in every
+     key. The home page's sections (#pro, #quiz, #teachers…) are hash
+     fragments, not URLs to a crawler. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 ${urls}
 </urlset>
 `;
@@ -584,7 +648,7 @@ export function degreePages(): Plugin {
     generateBundle() {
       const pages = allPages();
       for (const p of pages) this.emitFile({ type: "asset", fileName: `${p.path}index.html`, source: p.html });
-      this.emitFile({ type: "asset", fileName: "sitemap.xml", source: sitemap(pages.map((p) => p.path)) });
+      this.emitFile({ type: "asset", fileName: "sitemap.xml", source: sitemap(pages) });
     },
   };
 }

@@ -989,6 +989,9 @@ export default function App() {
                   <a href="degrees/" className="hover:text-white transition-colors duration-200 text-left">
                     Degree finder
                   </a>
+                  <a href="app/" className="hover:text-white transition-colors duration-200 text-left">
+                    The app &amp; screenshots
+                  </a>
                   <button
                     onClick={goTeachers}
                     className={cn(
