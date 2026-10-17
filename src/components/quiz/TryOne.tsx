@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState, type RefObject } from "react";
 import { motion } from "motion/react";
 import { ArrowRight, RotateCcw, Timer } from "lucide-react";
 import { PhoneMockup } from "../PhoneMockup";
@@ -9,6 +9,30 @@ import { useTrainer } from "../app/useTrainer";
 import { track } from "../../lib/analytics";
 
 const LENGTH = 10;
+/** The app's clock for a question at Apprentice, its first level (kTierClockMs). */
+const LIMIT_MS = 5000;
+
+/** Whether [ref] is in view in a tab that is in front. */
+function useOnScreen(ref: RefObject<HTMLElement | null>) {
+  const [inView, setInView] = useState(false);
+  const [shown, setShown] = useState(() => typeof document === "undefined" || !document.hidden);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof IntersectionObserver === "undefined") {
+      setInView(true);
+      return;
+    }
+    const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { threshold: 0.6 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [ref]);
+  useEffect(() => {
+    const update = () => setShown(!document.hidden);
+    document.addEventListener("visibilitychange", update);
+    return () => document.removeEventListener("visibilitychange", update);
+  }, []);
+  return inView && shown;
+}
 
 /**
  * The app, playable on the home page: its own trainer screen, in the phone
@@ -18,8 +42,12 @@ const LENGTH = 10;
  */
 export function TryOne({ onOpenQuiz }: { onOpenQuiz: () => void }) {
   const touched = useRef(false);
+  const phone = useRef<HTMLDivElement | null>(null);
+  const onScreen = useOnScreen(phone);
   const t = useTrainer({
     length: LENGTH,
+    limitMs: LIMIT_MS,
+    active: onScreen,
     onFinish: (r) => track("try_finished", { correct: r.correct, answered: r.answered }),
   });
   const pick = (pitch: number) => {
@@ -70,6 +98,7 @@ export function TryOne({ onOpenQuiz }: { onOpenQuiz: () => void }) {
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="lg:col-span-5 lg:col-start-1 lg:row-start-1 lg:row-span-2 flex justify-center"
         >
+          <div ref={phone}>
           <PhoneMockup>
             <ScaledScreen width={284}>
               <TrainerScreen
@@ -103,6 +132,7 @@ export function TryOne({ onOpenQuiz }: { onOpenQuiz: () => void }) {
               />
             </ScaledScreen>
           </PhoneMockup>
+          </div>
         </motion.div>
 
         <motion.div

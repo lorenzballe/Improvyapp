@@ -146,6 +146,19 @@ export default function TermsOfServicePage({ onBack }: TermsOfServicePageProps) 
               international copyright, trademark, and other intellectual property laws.
             </p>
             <p>
+              The piano notes played in the App and on this website come from the Salamander Grand Piano by Alexander
+              Holm, used under the{" "}
+              <a
+                href="https://creativecommons.org/licenses/by/3.0/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-white underline decoration-white/30 underline-offset-2 hover:decoration-white"
+              >
+                Creative Commons Attribution 3.0
+              </a>{" "}
+              licence. They have been shortened, made mono and moved by up to a semitone.
+            </p>
+            <p>
               “Improvy” and the Improvy logo are trademarks of Lorenzo Ballestrazzi. You may not use them without
               prior written permission.
             </p>

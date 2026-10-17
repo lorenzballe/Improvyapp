@@ -65,11 +65,14 @@ const revealVariants = {
  * footer. A hash keeps them linkable on GitHub Pages without a router or a
  * 404 fallback. Everything else stays plain in-page state.
  */
-function pageFromHash(): "privacy" | "terms" | "pro" | "about" | "creator" | "next" | "quiz" | "teachers" | "why" | null {
+function pageFromHash(): "privacy" | "terms" | "pro" | "about" | "creator" | "next" | "quiz" | "teachers" | "why" | "feedback" | null {
   const hash = window.location.hash.replace(/^#\/?/, "");
   if (hash === "next") return "next";
-  // #method: the Method page and its video, the link sent to creators.
-  if (hash === "method") return "why";
+  // #method: the Method page and its video, the link sent to creators. #faq
+  // is the same page, scrolled to its questions (see sectionFromHash).
+  if (hash === "method" || hash === "faq") return "why";
+  // The static pages' footers link to the feedback form like any other page.
+  if (hash === "feedback") return "feedback";
   // The 60-second test is shared by link, and teachers are sent the page.
   if (hash === "quiz" || hash === "teachers") return hash;
   // #about is addressed because the stores ask for a support URL, and a
@@ -81,6 +84,27 @@ function pageFromHash(): "privacy" | "terms" | "pro" | "about" | "creator" | "ne
   // #creator/{ref}/{key}: a creator's private sales page. CreatorPage reads the rest.
   if (hash.startsWith("creator/")) return "creator";
   return null;
+}
+
+/**
+ * #faq and #pricing name a place on a page rather than a page: the Method
+ * page's questions, the home page's prices. The static pages link to them; the
+ * scroll waits until the section has been drawn.
+ */
+function sectionFromHash(): "faq" | "pricing" | null {
+  const hash = window.location.hash.replace(/^#\/?/, "");
+  return hash === "faq" || hash === "pricing" ? hash : null;
+}
+
+function scrollWhenDrawn(id: string) {
+  let tries = 0;
+  const look = () => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: "smooth" });
+    // The Method page is loaded on demand: give it a few seconds to arrive.
+    else if (tries++ < 40) window.setTimeout(look, 100);
+  };
+  window.setTimeout(look, 150);
 }
 
 export default function App() {
@@ -105,6 +129,7 @@ export default function App() {
       currentPage === "next" ||
       currentPage === "quiz" ||
       currentPage === "teachers" ||
+      currentPage === "feedback" ||
       currentPage === "why";
     // The Method page is "why" inside, "#method" in the address bar.
     const hash = addressed ? `#${currentPage === "why" ? "method" : currentPage}` : "";
@@ -128,10 +153,21 @@ export default function App() {
 
   // Someone pasting or editing #privacy / #terms in the address bar.
   useEffect(() => {
-    const onHashChange = () => setCurrentPage(pageFromHash() ?? "home");
+    const onHashChange = () => {
+      const section = sectionFromHash();
+      setCurrentPage(pageFromHash() ?? "home");
+      if (section) scrollWhenDrawn(section);
+    };
     window.addEventListener("hashchange", onHashChange);
     return () => window.removeEventListener("hashchange", onHashChange);
   }, []);
+
+  // Arriving on #faq or #pricing: read before the address is tidied to the
+  // page's own (#method, or none for the home page), then scrolled to.
+  const [arrivalSection] = useState(sectionFromHash);
+  useEffect(() => {
+    if (arrivalSection) scrollWhenDrawn(arrivalSection);
+  }, [arrivalSection]);
 
   const logoRef = useRef<HTMLDivElement | null>(null);
   const [mousePct, setMousePct] = useState({ x: 50, y: 50 });
@@ -914,7 +950,17 @@ export default function App() {
               
               {/* Column 1: Brand Manifesto & Core Mission */}
               <div className="col-span-2 md:col-span-1 flex flex-col gap-3">
-                <div>
+                <div className="flex items-center gap-2.5">
+                  {/* The app's icon, the picture an image search for the name should find. */}
+                  <img
+                    src="images/improvy-app-icon.png"
+                    alt="Improvy logo"
+                    width={512}
+                    height={512}
+                    loading="lazy"
+                    decoding="async"
+                    className="h-8 w-8 rounded-[22%] border border-white/10"
+                  />
                   <span className="font-display text-xl sm:text-2xl font-black text-white italic tracking-tight">Improvy</span>
                 </div>
                 <p className="text-xs text-zinc-400 leading-relaxed font-light">
@@ -950,7 +996,7 @@ export default function App() {
                     }}
                     className={cn(
                       "hover:text-white transition-colors duration-200 cursor-pointer text-left focus:outline-none",
-                      currentPage === "why" ? "text-[#e5a93c]" : "text-zinc-300"
+                      currentPage === "why" ? "text-[#e5a93c]" : ""
                     )}
                   >
                     The Method
@@ -1033,7 +1079,10 @@ export default function App() {
                       setCurrentPage("feedback");
                       window.scrollTo({ top: 0, behavior: "smooth" });
                     }}
-                    className="hover:text-white transition-colors duration-200 cursor-pointer text-left focus:outline-none"
+                    className={cn(
+                      "hover:text-white transition-colors duration-200 cursor-pointer text-left focus:outline-none",
+                      currentPage === "feedback" ? "text-[#e5a93c]" : ""
+                    )}
                   >
                     Feedback
                   </button>
@@ -1059,7 +1108,10 @@ export default function App() {
                       setCurrentPage("privacy");
                       window.scrollTo({ top: 0, behavior: "smooth" });
                     }}
-                    className="hover:text-white transition-colors duration-200 cursor-pointer text-left focus:outline-none"
+                    className={cn(
+                      "hover:text-white transition-colors duration-200 cursor-pointer text-left focus:outline-none",
+                      currentPage === "privacy" ? "text-[#e5a93c]" : ""
+                    )}
                   >
                     Privacy Policy
                   </button>
@@ -1068,7 +1120,10 @@ export default function App() {
                       setCurrentPage("terms");
                       window.scrollTo({ top: 0, behavior: "smooth" });
                     }}
-                    className="hover:text-white transition-colors duration-200 cursor-pointer text-left focus:outline-none"
+                    className={cn(
+                      "hover:text-white transition-colors duration-200 cursor-pointer text-left focus:outline-none",
+                      currentPage === "terms" ? "text-[#e5a93c]" : ""
+                    )}
                   >
                     Terms of Service
                   </button>

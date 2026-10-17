@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { ReturnHome } from "./ReturnHome";
 import { motion, AnimatePresence } from "motion/react";
 import { ArrowLeft, Send, Sparkles, MessageSquare, CheckCircle, Bug, Star, Heart, Lightbulb, Mail } from "lucide-react";
 import { deliver, track } from "../lib/analytics";
@@ -96,16 +97,9 @@ export default function FeedbackPage({ onBack }: FeedbackPageProps) {
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto px-6 pt-28 pb-8 md:pt-36 md:pb-16 text-zinc-350 font-sans relative z-30">
+    <div className="w-full max-w-3xl mx-auto px-6 pt-28 pb-8 md:pt-36 md:pb-16 text-zinc-300 font-sans relative z-30">
       
-      {/* Back Button */}
-      <button
-        onClick={onBack}
-        className="group mb-8 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-zinc-400 hover:text-white transition-colors duration-200 cursor-pointer focus:outline-none"
-      >
-        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-        Back to Home
-      </button>
+      <ReturnHome onBack={onBack} />
 
       {/* Main Content Animation Wrapper */}
       <motion.div 
@@ -159,6 +153,7 @@ export default function FeedbackPage({ onBack }: FeedbackPageProps) {
                           key={cat.id}
                           type="button"
                           onClick={() => setCategory(cat.id)}
+                          aria-pressed={isSelected}
                           className={`flex items-center gap-3 p-4 rounded-xl border text-left transition-all duration-200 cursor-pointer ${
                             isSelected
                               ? "bg-white/[0.05] border-[#e5a93c] shadow-[0_0_15px_rgba(229,169,60,0.1)] text-white"
@@ -194,13 +189,15 @@ export default function FeedbackPage({ onBack }: FeedbackPageProps) {
                           onClick={() => setRating(star)}
                           onMouseEnter={() => setHoveredRating(star)}
                           onMouseLeave={() => setHoveredRating(0)}
-                          className="p-1 cursor-pointer transition-transform hover:scale-110 focus:outline-none"
+                          aria-label={`${star} out of 5`}
+                          aria-pressed={star === rating}
+                          className="p-1 rounded-md cursor-pointer transition-transform hover:scale-110 focus:outline-none focus-visible:ring-1 focus-visible:ring-[#e5a93c]"
                         >
                           <Star
                             className={`w-7 h-7 transition-colors ${
                               isFilled 
                                 ? "fill-[#e5a93c] text-[#e5a93c] filter drop-shadow-[0_0_4px_rgba(229,169,60,0.4)]" 
-                                : "text-zinc-650"
+                                : "text-zinc-600"
                             }`}
                           />
                         </button>
@@ -262,21 +259,26 @@ export default function FeedbackPage({ onBack }: FeedbackPageProps) {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="e.g. you@example.com"
-                      className="w-full bg-zinc-950/50 border border-white/[0.08] rounded-xl px-4 py-2.5 text-sm text-white placeholder-zinc-650 focus:outline-none focus:border-[#e5a93c] transition-all font-light"
+                      className="w-full bg-zinc-950/50 border border-white/[0.08] rounded-xl px-4 py-2.5 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-[#e5a93c] transition-all font-light"
                     />
                   </div>
                 </div>
+                <p className="-mt-2 text-xs text-zinc-500 font-light">
+                  Leave an email only if you'd like an answer. It's used for nothing else.
+                </p>
 
                 {/* Submission button */}
                 <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-                  <p className="text-xs text-zinc-500 font-light">
-                    Your valuable suggestions directly assist the development of our musical curriculum.
+                  <p className={`text-xs font-light ${message.trim() && !category ? "text-[#e5a93c]" : "text-zinc-500"}`}>
+                    {message.trim() && !category
+                      ? "Pick a category above, and it's ready to send."
+                      : "Every message is read by the people who make Improvy."}
                   </p>
                   
                   <button
                     type="submit"
                     disabled={isSubmitting || !category || !message.trim()}
-                    className={`relative overflow-hidden w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider select-none transition-all duration-300 ${
+                    className={`relative overflow-hidden w-full sm:w-auto shrink-0 whitespace-nowrap inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider select-none transition-all duration-300 ${
                       !category || !message.trim()
                         ? "bg-zinc-800 text-zinc-500 border border-transparent cursor-not-allowed"
                         : "bg-white text-black hover:bg-zinc-100 border border-transparent hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
@@ -327,7 +329,7 @@ export default function FeedbackPage({ onBack }: FeedbackPageProps) {
               key="success-screen"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.4, cubicBezier: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
               className="py-12 text-center space-y-6 relative z-10"
             >
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 mb-2">

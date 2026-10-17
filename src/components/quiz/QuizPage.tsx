@@ -336,7 +336,7 @@ function ReadyCard({ onStart }: { onStart: () => void }) {
             <path d="M12 9v4l2.5 2M9.5 2.5h5" />
           </svg>
         </div>
-        <span style={{ marginTop: 18, fontSize: 11, fontWeight: 900, letterSpacing: 3, color: "#FBBF24", paddingLeft: 3 }}>THE 60-SECOND TEST</span>
+        <span style={{ marginTop: 18, fontSize: 11, fontWeight: 700, letterSpacing: 1.6, color: "#FBBF24", paddingLeft: 1.6 }}>THE 60-SECOND TEST</span>
         <span style={{ marginTop: 10, fontSize: 30, fontWeight: 900, letterSpacing: -0.5, lineHeight: 1.1 }}>Every key.<br />One minute.</span>
         <span style={{ marginTop: 12, fontSize: 14, fontWeight: 500, color: "rgba(255,255,255,0.6)", lineHeight: 1.45 }}>
           A degree in a new key each question. Tap the note on the keyboard.

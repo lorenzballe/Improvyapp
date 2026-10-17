@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import type { Plugin } from "vite";
-import { APP_IMAGES } from "./degree-pages";
+import { APP_IMAGES, imageObject } from "./degree-pages";
 
 /**
  * Structured data for search engines, built from the same sources the page
@@ -57,7 +57,7 @@ export function seo(): Plugin {
         "@id": `${SITE}#org`,
         name: "Improvy",
         url: SITE,
-        logo: `${SITE}images/improvy-app-icon.png`,
+        logo: imageObject(APP_IMAGES[0]),
         email: "thebalecompany@gmail.com",
         sameAs: [APP_STORE, PLAY_STORE],
       };
@@ -89,13 +89,7 @@ export function seo(): Plugin {
           "Improvy trains you to see every note as its scale degree, instantly, in all 12 keys — for improvising, transposing and composing without mental math.",
         url,
         image: [`${SITE}images/improvy-app-icon.png`, `${SITE}og-image.png`],
-        screenshot: APP_IMAGES.filter((i) => i.h > i.w).map((i) => ({
-          "@type": "ImageObject",
-          url: `${SITE}images/${i.file}`,
-          caption: i.title,
-          width: i.w,
-          height: i.h,
-        })),
+        screenshot: APP_IMAGES.filter((i) => i.h > i.w).map(imageObject),
         inLanguage: ["en", "it", "es", "fr", "de", "pt"],
         publisher: { "@id": `${SITE}#org` },
         offers,

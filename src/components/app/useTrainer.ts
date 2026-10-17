@@ -1,14 +1,30 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { nextQuestion, randomKey, type Question } from "../../lib/quiz";
 import type { KeyName } from "../../lib/harmony";
+import { midiFor, playNote } from "../../lib/noteSound";
+import { pitchOf } from "./appColors";
 
 /** How long an answer stays lit before the next question: the app's own timings. */
 const SHOW_RIGHT_MS = 380;
 const SHOW_WRONG_MS = 1800;
+/** After a wrong answer, or none, the right note follows the tapped one by this much. */
+const RIGHT_NOTE_AFTER_MS = 450;
+
+/** Where the question's or an answer's note sounds, as the app places it. */
+const midiOf = (q: Question, pitch: number) => midiFor(pitch, pitchOf(q.key));
+
+/** The phone's own reply to an answer, where a browser can give one (Android). */
+function buzz(right: boolean) {
+  try {
+    navigator.vibrate?.(right ? 20 : 45);
+  } catch {
+    // No vibration here: nothing to do.
+  }
+}
 
 export interface Feedback {
   right: boolean;
-  /** The key that was tapped, 0 = C. */
+  /** The key that was tapped, 0 = C; -1 when the question ran out of time. */
   picked: number;
 }
 
@@ -30,11 +46,23 @@ export type Phase = "ready" | "run" | "done";
  * a moment, the next question.
  *
  *  - With [length]: a session of that many questions in one key, like the
- *    app's — it starts at once.
+ *    app's — it starts at once. With [limitMs] too, each question has the
+ *    app's clock: unanswered, it is wrong when the time is up. The clock runs
+ *    only from the visitor's first answer and only while [active] (the phone
+ *    on screen): the page shows the session before anyone has chosen to play.
  *  - With [durationMs]: a run against the clock in every key, like the Daily
- *    Challenge — it waits for start().
+ *    Challenge — it waits for start(), and no question times out on its own.
+ *
+ * Each question sounds its note as it comes up, and each answer the note
+ * tapped, as in the app (lib/noteSound).
  */
-export function useTrainer(opts: { length?: number; durationMs?: number; onFinish?: (r: TrainerResult) => void }) {
+export function useTrainer(opts: {
+  length?: number;
+  durationMs?: number;
+  limitMs?: number;
+  active?: boolean;
+  onFinish?: (r: TrainerResult) => void;
+}) {
   const timed = opts.durationMs !== undefined;
   const [sessionKey, setSessionKey] = useState<KeyName>(() => randomKey());
   const [question, setQuestion] = useState<Question>(() => nextQuestion(null, timed ? undefined : sessionKey));
@@ -57,6 +85,9 @@ export function useTrainer(opts: { length?: number; durationMs?: number; onFinis
   const missed = useRef<Question[]>([]);
   const counts = useRef({ correct: 0, answered: 0, streak: 0, best: 0 });
   const nextTimer = useRef<number | null>(null);
+  const rightNoteTimer = useRef<number | null>(null);
+  // Whether the visitor has answered yet: until then a question waits for them.
+  const [engaged, setEngaged] = useState(false);
   const onFinish = useRef(opts.onFinish);
   onFinish.current = opts.onFinish;
 
@@ -64,6 +95,7 @@ export function useTrainer(opts: { length?: number; durationMs?: number; onFinis
     if (phaseRef.current !== "run") return;
     phaseRef.current = "done";
     if (nextTimer.current) window.clearTimeout(nextTimer.current);
+    if (rightNoteTimer.current) window.clearTimeout(rightNoteTimer.current);
     const t = times.current;
     const r: TrainerResult = {
       correct: counts.current.correct,
@@ -82,6 +114,7 @@ export function useTrainer(opts: { length?: number; durationMs?: number; onFinis
   /** A fresh run: a new key for a session, the clock reset for a timed one. */
   const start = useCallback(() => {
     if (nextTimer.current) window.clearTimeout(nextTimer.current);
+    if (rightNoteTimer.current) window.clearTimeout(rightNoteTimer.current);
     times.current = [];
     marks.current = [];
     missed.current = [];
@@ -104,6 +137,7 @@ export function useTrainer(opts: { length?: number; durationMs?: number; onFinis
   /** Stops a run where it stands, with no result: the app's ✕ before the end. */
   const abort = useCallback(() => {
     if (nextTimer.current) window.clearTimeout(nextTimer.current);
+    if (rightNoteTimer.current) window.clearTimeout(rightNoteTimer.current);
     phaseRef.current = timed ? "ready" : "run";
     setFeedback(null);
     setPhase(timed ? "ready" : "run");
@@ -131,9 +165,15 @@ export function useTrainer(opts: { length?: number; durationMs?: number; onFinis
   useEffect(
     () => () => {
       if (nextTimer.current) window.clearTimeout(nextTimer.current);
+      if (rightNoteTimer.current) window.clearTimeout(rightNoteTimer.current);
     },
     []
   );
+
+  // Each question sounds its note as it comes up.
+  useEffect(() => {
+    if (phaseRef.current === "run") playNote(midiOf(question, question.answerPc));
+  }, [question]);
 
   const pick = useCallback(
     (pitch: number) => {
@@ -156,6 +196,15 @@ export function useTrainer(opts: { length?: number; durationMs?: number; onFinis
       setStreak(c.streak);
       setLastRight(right);
       setFeedback({ right, picked: pitch });
+      if (pitch >= 0) setEngaged(true);
+      buzz(right);
+      // The tapped note, and after a wrong one (or none) the right note, so
+      // the sound that stays is the answer's.
+      if (pitch >= 0) playNote(midiOf(question, pitch));
+      if (!right) {
+        const answer = midiOf(question, question.answerPc);
+        rightNoteTimer.current = window.setTimeout(() => playNote(answer), RIGHT_NOTE_AFTER_MS);
+      }
       nextTimer.current = window.setTimeout(
         () => {
           if (phaseRef.current !== "run") return;
@@ -172,6 +221,20 @@ export function useTrainer(opts: { length?: number; durationMs?: number; onFinis
     },
     [feedback, question, timed, opts.length, finish]
   );
+
+  // The question's own clock, as in the app's sessions: felt, not watched —
+  // nothing on screen counts down, and the time up is a wrong answer.
+  const limit = timed ? undefined : opts.limitMs;
+  const active = opts.active ?? true;
+  useEffect(() => {
+    if (!active || phase !== "run" || feedback) return;
+    // A question is timed from when it is on screen: one that was scrolled
+    // away gets its whole time again.
+    askedAt.current = performance.now();
+    if (!limit || !engaged) return;
+    const id = window.setTimeout(() => pick(-1), limit);
+    return () => window.clearTimeout(id);
+  }, [limit, engaged, active, phase, feedback, question, pick]);
 
   return {
     phase,

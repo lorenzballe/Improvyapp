@@ -1,8 +1,9 @@
-import { Fragment, useState, type CSSProperties, type ReactNode } from "react";
+import { Fragment, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { NoteText } from "./NoteText";
 import { LEXEND, noteColor } from "./appColors";
 import type { Feedback } from "./useTrainer";
 import type { Question } from "../../lib/quiz";
+import { preloadNotes } from "../../lib/noteSound";
 
 /**
  * The app's trainer screen (lib/screens/trainer_screen.dart), drawn at the
@@ -157,24 +158,34 @@ export interface TrainerScreenProps {
   lastRight?: boolean;
 }
 
-/** The phone's own reply to an answer, where a browser can give one (Android). */
-function buzz(right: boolean) {
-  try {
-    navigator.vibrate?.(right ? 20 : 45);
-  } catch {
-    // No vibration here: nothing to do.
-  }
-}
-
 export function TrainerScreen(p: TrainerScreenProps) {
   const [piano, setPiano] = useState(true);
   const q = p.question;
-  const pick = (pitch: number) => {
-    buzz(pitch === q.answerPc);
-    p.onPick(pitch);
-  };
+  const pick = p.onPick;
+  // The piano notes are fetched once the screen is close to being seen, so
+  // the first tap already sounds.
+  const root = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const el = root.current;
+    if (!el || typeof IntersectionObserver === "undefined") {
+      void preloadNotes();
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          void preloadNotes();
+          io.disconnect();
+        }
+      },
+      { rootMargin: "400px" }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
   return (
     <div
+      ref={root}
       style={{
         width: SCREEN_W,
         height: SCREEN_H,
@@ -248,8 +259,9 @@ export function TrainerScreen(p: TrainerScreenProps) {
                 borderRadius: 30,
                 background: "transparent",
                 border: "1px solid transparent",
-                backdropFilter: "blur(16px)",
-                WebkitBackdropFilter: "blur(16px)",
+                // The app blurs what is behind the pill; behind it here there
+                // is only the background, already as soft as a blur can make
+                // it, so the blur would change nothing but the frame rate.
                 color: "#fff",
                 cursor: "pointer",
                 fontFamily: LEXEND,
@@ -266,7 +278,7 @@ export function TrainerScreen(p: TrainerScreenProps) {
                 borderColor="rgba(255,255,255,0.2)"
                 shadows={[{ color: "rgba(0,0,0,0.502)", blurRadius: 30, dy: -10 }]}
               />
-              <span style={{ ...line(12), fontWeight: 900, ...tracking(4.8) }}>{piano ? "GRID VIEW" : "PIANO KEYBOARD"}</span>
+              <span style={{ ...line(12), fontWeight: 800, ...tracking(2.4) }}>{piano ? "GRID VIEW" : "PIANO KEYBOARD"}</span>
               <span style={{ position: "relative", display: "flex" }}>{piano ? <GridIcon /> : <PianoIcon />}</span>
             </button>
           </div>
@@ -380,7 +392,7 @@ function TopBar(p: TrainerScreenProps) {
                 </span>
               </>
             ) : (
-              <span style={{ ...line(10), fontWeight: 900, color: "rgba(255,255,255,0.7)", ...tracking(4) }}>PROGRESS</span>
+              <span style={{ ...line(10), fontWeight: 700, color: "rgba(255,255,255,0.7)", ...tracking(2.2) }}>PROGRESS</span>
             )}
           </div>
           {/* The bar clips its fill, glow and all: the glow shows only inside
@@ -401,8 +413,8 @@ function TopBar(p: TrainerScreenProps) {
           </div>
         </div>
         <div style={{ ...circle, borderRadius: "50%", border: "1.2px solid rgba(255,255,255,0.2)", flexDirection: "column" }}>
-          <span style={{ ...line(7), fontWeight: 900, color: "rgba(255,255,255,0.6)", ...tracking(1.5) }}>KEY</span>
-          <NoteText text={p.question.key} style={{ ...line(16, 1.1), fontWeight: 900 }} />
+          <span style={{ ...line(7), fontWeight: 700, color: "rgba(255,255,255,0.6)", ...tracking(1) }}>KEY</span>
+          <NoteText text={p.question.key} style={{ ...line(16, 1.1), fontWeight: 800 }} />
         </div>
       </div>
       <div
@@ -431,7 +443,7 @@ function TopBar(p: TrainerScreenProps) {
 function Stat({ label, value, color }: { label: string; value: string; color: string }) {
   return (
     <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
-      <span style={{ ...line(9), fontWeight: 900, color: "rgba(255,255,255,0.6)", ...tracking(2) }}>{label}</span>
+      <span style={{ ...line(9), fontWeight: 700, color: "rgba(255,255,255,0.6)", ...tracking(1.1) }}>{label}</span>
       <span style={{ ...line(18), fontWeight: 900, color, fontVariantNumeric: "tabular-nums" }}>{value}</span>
     </div>
   );
@@ -475,7 +487,7 @@ function QuestionDisplay({ degree, streak, pop: popNow }: { degree: string; stre
         boxShadow: `0 0 ${blur(15)} ${streak >= 10 ? "rgba(249,115,22,0.4)" : "rgba(34,197,94,0.4)"}`,
         fontSize: 13,
         lineHeight: "19px",
-        fontWeight: 900,
+        fontWeight: 800,
         color: streak >= 10 ? "#fff" : "#000",
         alignSelf: "flex-start",
         transform: "translateX(-2px)",
@@ -486,7 +498,7 @@ function QuestionDisplay({ degree, streak, pop: popNow }: { degree: string; stre
   );
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-      <span style={{ ...line(12, 1), fontWeight: 900, color: "rgba(255,255,255,0.8)", ...tracking(7.2) }}>DEGREE</span>
+      <span style={{ ...line(12, 1), fontWeight: 800, color: "rgba(255,255,255,0.8)", ...tracking(2.4) }}>DEGREE</span>
       <div className={pop ? "app-pop" : undefined} style={{ marginTop: 8, display: "flex", alignItems: "flex-start" }}>
         {badge && <span style={{ visibility: "hidden", display: "flex" }}>{badge}</span>}
         <NoteText
@@ -524,8 +536,8 @@ function Keyboard({ question, feedback, onPick }: { question: Question; feedback
           padding: 8,
           borderRadius: 28,
           border: "1px solid transparent",
-          backdropFilter: "blur(12px)",
-          WebkitBackdropFilter: "blur(12px)",
+          // No backdrop blur, for the reason the toggle has none: it would
+          // look the same and redraw the frame on every key's animation.
         }}
       >
         {/* Its shadow is clipped to the frame: what is left of it darkens the rim. */}
@@ -609,11 +621,11 @@ function PianoKey({
   if (feedback && pitch === question.answerPc) {
     bg = color;
     label = "#fff";
-    shadow = `0 0 ${blur(30)} ${color}88`;
+    shadow = `0 0 ${blur(30)} ${color}58`;
   } else if (feedback && !feedback.right && pitch === feedback.picked) {
     bg = ROSE;
     label = "#fff";
-    shadow = `0 0 ${blur(30)} rgba(244,63,94,0.702)`;
+    shadow = `0 0 ${blur(30)} rgba(244,63,94,0.455)`;
   }
   const dy = pressed && tappable ? (black ? 6 : 10) : 0;
   return (
@@ -642,6 +654,7 @@ function PianoKey({
         alignItems: "center",
         paddingBottom: black ? 10 : 16,
         cursor: tappable ? "pointer" : "default",
+        touchAction: "manipulation",
         fontFamily: LEXEND,
       }}
     >
@@ -700,7 +713,7 @@ function GridButton({
   if (feedback && isAnswer && isPicked) {
     bg = "#fff";
     ink = "#020617";
-    shadow = { color: "rgba(255,255,255,0.5)", blurRadius: 50 };
+    shadow = { color: "rgba(255,255,255,0.33)", blurRadius: 36 };
     tint = false;
   } else if (feedback && isAnswer) {
     bg = "rgba(16,185,129,0.5)";
@@ -741,6 +754,7 @@ function GridButton({
         // from. Only the press eases, and only until then.
         transition: feedback && (isPicked || isAnswer) ? "none" : "transform 80ms linear",
         cursor: feedback ? "default" : "pointer",
+        touchAction: "manipulation",
         fontFamily: LEXEND,
       }}
     >
@@ -828,7 +842,7 @@ function FeedbackCard({ feedback, question }: { feedback: Feedback; question: Qu
             borderRadius: "50%",
             // Color.lerp(accent, white, 0.35) at Alignment(-0.3, -0.4), radius 0.5.
             background: `radial-gradient(circle 30px at 35% 30%, ${feedback.right ? "#64D2AD" : "#F88296"}, ${accent})`,
-            boxShadow: `0 0 ${blur(24)} -2px ${accent}8c`,
+            boxShadow: `0 0 ${blur(24)} -2px ${accent}5c`,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -836,13 +850,13 @@ function FeedbackCard({ feedback, question }: { feedback: Feedback; question: Qu
         >
           <MaterialIcon path={feedback.right ? CHECK_ROUNDED : CLOSE_ROUNDED} size={34} color="#fff" />
         </div>
-        <span style={{ marginTop: 16, ...line(16), fontWeight: 900, color: accent, ...tracking(4) }}>
+        <span style={{ marginTop: 16, ...line(16), fontWeight: 800, color: accent, ...tracking(2.2) }}>
           {feedback.right ? "CORRECT" : "WRONG"}
         </span>
         {!feedback.right && (
           <>
             <div style={{ position: "relative", marginTop: 16, height: 1, width: 64, background: "rgba(255,255,255,0.1)" }} />
-            <span style={{ marginTop: 16, ...line(9), fontWeight: 900, color: "rgba(255,255,255,0.45)", ...tracking(2) }}>
+            <span style={{ marginTop: 16, ...line(9), fontWeight: 700, color: "rgba(255,255,255,0.45)", ...tracking(1.1) }}>
               CORRECT ANSWER
             </span>
             <NoteText

@@ -41,7 +41,7 @@ export function ResultCard({
   const gap = Math.min(0.07, (2 * Math.PI) / n / 3);
   const seg = (2 * Math.PI) / n - gap;
   const accuracy = result.answered ? Math.round((100 * result.correct) / result.answered) : 0;
-  const label = { fontSize: 9.5, fontWeight: 900, letterSpacing: 1.6, color: "rgba(255,255,255,0.38)" } as const;
+  const label = { fontSize: 9.5, fontWeight: 700, letterSpacing: 1, color: "rgba(255,255,255,0.38)" } as const;
   const value = { fontSize: 21, fontWeight: 900, color: "#fff", letterSpacing: -0.5, fontVariantNumeric: "tabular-nums" } as const;
 
   return (
@@ -62,7 +62,7 @@ export function ResultCard({
         color: "#fff",
       }}
     >
-      <span style={{ fontSize: 11, fontWeight: 900, letterSpacing: 3, color: "#FBBF24", paddingLeft: 3 }}>{title}</span>
+      <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.6, color: "#FBBF24", paddingLeft: 1.6 }}>{title}</span>
       <NoteText text={subtitle} style={{ marginTop: 6, fontSize: 15, fontWeight: 700, color: "rgba(255,255,255,0.8)" }} />
 
       {/* The card, with the app's rainbow edge. */}
@@ -88,8 +88,8 @@ export function ResultCard({
           }}
         >
           <div style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontSize: 15, fontWeight: 900, letterSpacing: 3 }}>IMPROVY</span>
-            <span style={{ fontSize: 9.5, fontWeight: 900, letterSpacing: 2, color: "rgba(255,255,255,0.38)" }}>
+            <span style={{ fontSize: 15, fontWeight: 800, letterSpacing: 1.6 }}>IMPROVY</span>
+            <span style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: 1.1, color: "rgba(255,255,255,0.38)" }}>
               {timed ? "60 SECONDS" : `${result.answered} QUESTIONS`}
             </span>
           </div>
@@ -159,8 +159,8 @@ export function ResultCard({
               boxShadow: `0 0 18px ${tier.color}26`,
               color: tier.color,
               fontSize: 11.5,
-              fontWeight: 900,
-              letterSpacing: 1.6,
+              fontWeight: 800,
+              letterSpacing: 1,
             }}
           >
             <svg width="15" height="15" viewBox="0 0 24 24" fill={tier.color}>
@@ -218,8 +218,8 @@ export function AppButton({ children, onClick, variant = "gold" }: { children: R
         color: gold ? "#2A1B04" : "#fff",
         fontFamily: LEXEND,
         fontSize: 13,
-        fontWeight: 900,
-        letterSpacing: 3,
+        fontWeight: 800,
+        letterSpacing: 1.6,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",

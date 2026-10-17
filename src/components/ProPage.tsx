@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { ReturnHome } from "./ReturnHome";
 import { motion, AnimatePresence } from "motion/react";
 import { ArrowLeft, Check, ShieldCheck, Lock, Mail, RefreshCw, Sparkle, LogOut, CircleCheck, Hourglass, Ticket, X } from "lucide-react";
 import { cn } from "../lib/utils";
@@ -63,13 +64,7 @@ export default function ProPage({ onBack, onOpenTerms, onOpenPrivacy }: ProPageP
 
   return (
     <div className="w-full max-w-6xl mx-auto px-6 pt-24 pb-16 md:pt-32 md:pb-24 font-sans relative z-30">
-      <button
-        onClick={onBack}
-        className="group mb-8 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-zinc-400 hover:text-white transition-colors duration-200 cursor-pointer focus:outline-none"
-      >
-        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-        Back to Home
-      </button>
+      <ReturnHome onBack={onBack} />
 
       <motion.div
         initial={{ opacity: 0, y: 15 }}

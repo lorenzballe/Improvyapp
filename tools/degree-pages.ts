@@ -262,68 +262,137 @@ function keyboardSvg(marks: { pos: number; color: string; label: string }[]) {
 
 // ── The page around it ───────────────────────────────────────────────────────
 
-const CSS = `
-:root{color-scheme:dark}
-*{box-sizing:border-box}
-html{background:#06030c}
-body{margin:0;min-height:100vh;color:#d4d4db;font-family:"Plus Jakarta Sans",system-ui,-apple-system,sans-serif;line-height:1.65;-webkit-font-smoothing:antialiased;
-background:radial-gradient(900px 520px at 6% -8%,rgba(244,63,94,.16),transparent 62%),radial-gradient(820px 560px at 98% 2%,rgba(168,85,247,.17),transparent 62%),radial-gradient(900px 600px at 72% 104%,rgba(229,169,60,.09),transparent 62%),#06030c}
-a{color:#e5a93c;text-decoration:none;transition:color .2s}a:hover{color:#fff}
-.wrap{max-width:820px;margin:0 auto;padding:18px 20px 72px}
-.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 8px 8px 18px;border:1px solid rgba(255,255,255,.08);border-radius:999px;background:rgba(7,4,15,.72);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 16px 50px rgba(7,4,15,.7)}
-.brand{font-weight:900;font-style:italic;font-size:20px;color:#fff;letter-spacing:-.01em}
-.brand:hover{color:#fff}
-.pill{font-size:10px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:#09090b;background:#fff;padding:9px 14px;border-radius:999px;white-space:nowrap}
-.pill:hover{color:#09090b;opacity:.88}
-.crumbs{margin-top:40px;font-size:10.5px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:#71717a}
-.crumbs a{color:#a1a1aa}.crumbs a:hover{color:#fff}
-.eyebrow{display:block;margin-top:22px;font-size:11px;font-weight:900;letter-spacing:.24em;text-transform:uppercase;background:linear-gradient(90deg,#f43f5e,#d946ef,#6366f1);-webkit-background-clip:text;background-clip:text;color:transparent}
-h1{color:#fff;font-size:clamp(36px,8vw,64px);line-height:1.02;letter-spacing:-.035em;font-weight:800;margin:12px 0 18px}
-h1 em{font-style:italic;font-weight:300;background:linear-gradient(90deg,#e5a93c,#f43f5e 55%,#a855f7);-webkit-background-clip:text;background-clip:text;color:transparent;padding-right:.1em}
-.lead{font-size:17px;line-height:1.7;color:#a1a1aa;margin:0;font-weight:300}
-.lead b{color:#fff;font-weight:700}
-.kb{margin:34px 0 8px;padding:22px 18px 18px;border:1px solid rgba(255,255,255,.08);border-radius:28px;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.012));box-shadow:0 30px 70px -24px rgba(0,0,0,.8)}
-.legend{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:center;margin-top:16px;font-size:13px;color:#a1a1aa}
-.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:7px;vertical-align:middle;box-shadow:0 0 10px currentColor}
-h2{margin:50px 0 12px;font-size:11px;font-weight:900;letter-spacing:.22em;text-transform:uppercase;color:#e5a93c}
-p{margin:10px 0;font-weight:300;color:#c4c4cc}
-p b{color:#fff;font-weight:700}
-.tones{font-size:22px;color:#fff;font-weight:800;letter-spacing:.01em}
-table{width:100%;border-collapse:separate;border-spacing:0;font-size:15px;border:1px solid rgba(255,255,255,.07);border-radius:20px;overflow:hidden;background:rgba(255,255,255,.015)}
-th,td{padding:11px 16px;border-bottom:1px solid rgba(255,255,255,.06);text-align:left}
-tr:last-child td{border-bottom:0}
-th{font-size:10px;text-transform:uppercase;letter-spacing:.18em;color:#71717a;font-weight:900;background:rgba(255,255,255,.02)}
-td{color:#d4d4db}
-td a{font-weight:800}
-td b{color:#fff}
-tr.here td{background:rgba(229,169,60,.09)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px;margin-top:14px}
-.chip{display:block;padding:10px 14px;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:rgba(255,255,255,.025);color:#a1a1aa;font-size:14px;transition:border-color .2s,background .2s}
-.chip b{color:#fff;font-weight:800}
-.chip:hover{border-color:rgba(229,169,60,.55);background:rgba(229,169,60,.06);color:#d4d4db}
-.cta{margin-top:64px;padding:32px 28px;border-radius:30px;border:1px solid rgba(229,169,60,.26);background:radial-gradient(520px 260px at 0% 0%,rgba(229,169,60,.13),transparent 70%),radial-gradient(520px 260px at 100% 100%,rgba(168,85,247,.12),transparent 70%),rgba(7,4,15,.65);box-shadow:0 30px 70px -24px rgba(0,0,0,.8)}
-.cta h3{margin:0 0 12px;font-size:clamp(26px,5vw,38px);line-height:1.04;letter-spacing:-.02em;font-weight:900;text-transform:uppercase;color:#fff}
-.cta h3 span{background:linear-gradient(90deg,#f43f5e,#a855f7,#6366f1);-webkit-background-clip:text;background-clip:text;color:transparent}
-.cta p{max-width:560px}
-.btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
-.store{display:flex;align-items:center;gap:12px;padding:12px 20px;border-radius:16px;background:#18181b;border:1px solid rgba(255,255,255,.1);color:#fff;min-width:190px}
-.store:hover{color:#fff;border-color:rgba(229,169,60,.5);box-shadow:0 0 20px rgba(229,169,60,.15)}
-.store small{display:block;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:#71717a;font-weight:800;line-height:1.2}
-.store strong{display:block;font-size:16px;line-height:1.2}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 22px;border-radius:14px;background:#fff;color:#09090b;font-weight:900;font-size:11.5px;letter-spacing:.16em;text-transform:uppercase}
-.btn:hover{color:#09090b;opacity:.88}
-.shots{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:18px;margin-top:22px}
-.shots figure{margin:0}
-.shots img{display:block;width:100%;height:auto;border-radius:26px;border:1px solid rgba(255,255,255,.08);box-shadow:0 24px 60px -24px rgba(0,0,0,.85)}
-.shots figcaption{margin-top:10px;font-size:13.5px;color:#a1a1aa;line-height:1.5}
-.shots figcaption b{color:#fff}
-.icon{display:flex;align-items:center;gap:18px;margin-top:28px}
-.icon img{width:96px;height:96px;border-radius:22px;box-shadow:0 18px 40px -16px rgba(0,0,0,.9)}
-.banner{display:block;width:100%;height:auto;margin-top:34px;border-radius:24px;border:1px solid rgba(255,255,255,.08)}
-footer{margin-top:64px;padding-top:22px;border-top:1px solid rgba(255,255,255,.06);font-size:12px;color:#71717a;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
-footer a{color:#a1a1aa}
-footer .brand{font-size:16px;margin-right:auto}
-`;
+/**
+ * The stylesheet the React site is drawn with, as the build named it. Every
+ * static page links the same file and uses the same classes for its header,
+ * background, buttons and footer, so a page here and a page there are one
+ * site, not two that look alike (src/index.css scans this file for them).
+ */
+let STYLESHEET = "assets/index.css";
+
+const ARROW_LEFT = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-3.5 w-3.5 text-rose-500 transition-transform group-hover:-translate-x-0.5" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>`;
+const APPLE_LOGO = `<svg class="fill-current shrink-0 w-7 h-7 text-white group-hover:scale-110 group-hover:rotate-3 transition-all duration-300" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 1.15-3.27 1.2-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5 1.07 3.29 1.07.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.02.07-.43 1.44-1.38 2.82M15.97 4.17c.66-.8 1.1-1.89 1.08-3.17-.91.04-2.01.6-2.67 1.38-.56.66-1.05 1.76-.9 3.01 1.05.08 2.06-.51 2.49-1.22z"/></svg>`;
+const PLAY_LOGO = `<svg class="shrink-0 w-7 h-7 group-hover:scale-110 group-hover:-rotate-3 transition-all duration-300" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3.25 1.75C3.06 1.93 2.95 2.22 2.95 2.6V21.4C2.95 21.78 3.06 22.07 3.25 22.25L3.32 22.32L13.84 11.8V11.53L3.32 1.01L3.25 1.75Z" fill="#00A0FF"/><path d="M17.34 15.33L13.84 11.82V11.51L17.34 8L17.42 8.04L21.57 10.4C22.75 11.07 22.75 12.26 21.57 12.93L17.42 15.29L17.34 15.33Z" fill="#FFE000"/><path d="M13.84 11.66L3.25 22.25C3.59 22.59 4.19 22.61 4.88 22.22L17.34 15.14L13.84 11.66Z" fill="#FF2C00"/><path d="M13.84 11.66L17.34 8.18L4.88 1.1C4.19 0.71 3.59 0.73 3.25 1.07L13.84 11.66Z" fill="#00E676"/></svg>`;
+
+/** The two store badges, as StoreBadges draws them. */
+function storeBadges(className = "") {
+  const base =
+    "flex items-center gap-4 bg-zinc-900 border border-white/10 text-white rounded-2xl transition-all duration-300 active:scale-95 cursor-pointer shadow-lg group relative overflow-hidden focus:outline-none focus:ring-0 px-6 py-4 w-full sm:w-[220px]";
+  const shine =
+    `<span class="absolute inset-0 w-[200%] h-full bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out pointer-events-none"></span>`;
+  const label = (small: string, big: string) =>
+    `<div class="flex flex-col items-start leading-none text-left"><span class="text-[10.5px] text-zinc-500 font-sans tracking-[0.12em] font-bold uppercase mb-1 whitespace-nowrap">${small}</span><span class="text-base font-sans font-bold text-white">${big}</span></div>`;
+  return `<div class="flex flex-wrap gap-4 ${className}">
+<a href="${APP_STORE}" target="_blank" rel="noopener noreferrer" aria-label="Download Improvy on the App Store" class="${base} hover:border-[#e5a93c]/50 hover:shadow-[0_0_20px_rgba(229,169,60,0.15)]">${shine}${APPLE_LOGO}${label("Download on the", "App Store")}</a>
+<a href="${PLAY_STORE}" target="_blank" rel="noopener noreferrer" aria-label="Get Improvy on Google Play" class="${base} hover:border-indigo-500/50 hover:shadow-[0_0_20px_rgba(99,102,241,0.15)]">${shine}${PLAY_LOGO}${label("Get it on", "Google Play")}</a>
+</div>`;
+}
+
+/** The floating header of every page but the home page, link for button. */
+function header(up: string) {
+  const item =
+    "hover:text-white text-[8.5px] sm:text-[10.5px] font-sans font-extrabold uppercase tracking-[0.10em] sm:tracking-[0.18em] transition-colors duration-200 cursor-pointer focus:outline-none";
+  return `<header class="fixed top-0 inset-x-0 z-50 w-full bg-gradient-to-b from-[#07040f] via-[#07040f]/80 to-transparent px-4 sm:px-6 pt-4 pb-7 flex justify-center transition-all duration-500 ease-out transform opacity-100 translate-y-0 pointer-events-auto">
+<nav aria-label="Main" class="w-auto max-w-[95vw] bg-[#07040f]/85 backdrop-blur-xl border border-white/[0.08] py-1.5 px-2.5 sm:py-2.5 sm:px-6 rounded-full shadow-[0_16px_50px_rgba(7,4,15,0.7)] flex items-center justify-center gap-2 sm:gap-7">
+<a href="${up}" class="hover:text-white flex items-center gap-1.5 text-[8.5px] sm:text-[10.5px] font-sans font-extrabold uppercase tracking-[0.10em] sm:tracking-[0.18em] text-zinc-350 transition-colors duration-200 cursor-pointer focus:outline-none"><span>HOME</span></a>
+<a href="${up}#method" class="${item} text-zinc-400">Method</a>
+<a href="${up}#faq" class="${item} text-zinc-400">FAQ</a>
+<div class="relative group/btn p-[1.5px] rounded-xl bg-gradient-to-r from-rose-500/50 via-purple-500/50 to-[#e5a93c]/60 hover:from-rose-500 hover:via-purple-500 hover:to-[#e5a93c] bg-[length:200%_auto] animate-rainbow-shift transition-all duration-500">
+<div class="absolute -inset-[3px] rounded-xl bg-gradient-to-r from-rose-500 via-purple-500 to-[#e5a93c] opacity-0 group-hover/btn:opacity-60 blur-[8px] transition-all duration-500 bg-[length:200%_auto] group-hover/btn:animate-rainbow-shift"></div>
+<a href="${up}#pro" class="relative block px-2 py-1 sm:px-4 sm:py-2 rounded-[11px] text-[8px] sm:text-[10px] font-black uppercase tracking-widest transition-all duration-350 active:scale-95 cursor-pointer whitespace-nowrap focus:outline-none bg-white text-zinc-950 hover:bg-transparent hover:text-white"><span class="inline sm:hidden">Improvy Pro</span><span class="hidden sm:inline">Get Improvy Pro</span></a>
+</div>
+</nav>
+</header>`;
+}
+
+/** The site's footer, as App.tsx draws it; [current] is lit like a page there. */
+function footer(up: string, current: "degrees" | "app" | null) {
+  const link = "hover:text-white transition-colors duration-200 cursor-pointer text-left focus:outline-none";
+  const here = (on: boolean) => (on ? " text-[#e5a93c]" : "");
+  return `<footer class="border-t border-white/5 pt-10 pb-6 md:pt-12 md:pb-8 px-6 md:px-12 relative z-30 bg-[#07040f]/95 backdrop-blur-xl overflow-hidden mt-8 w-full">
+<div class="absolute top-0 right-1/4 w-48 h-48 bg-indigo-500/5 rounded-full blur-3xl pointer-events-none"></div>
+<div class="absolute bottom-0 left-10 w-48 h-48 bg-rose-500/5 rounded-full blur-3xl pointer-events-none"></div>
+<div class="max-w-7xl mx-auto font-sans text-zinc-400">
+<div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 text-left mb-0">
+<div class="col-span-2 md:col-span-1 flex flex-col gap-3">
+<div><a href="${up}" class="flex items-center gap-2.5"><img src="${up}images/improvy-app-icon.png" alt="Improvy logo" width="512" height="512" loading="lazy" decoding="async" class="h-8 w-8 rounded-[22%] border border-white/10"><span class="font-display text-xl sm:text-2xl font-black text-white italic tracking-tight">Improvy</span></a></div>
+<p class="text-xs text-zinc-400 leading-relaxed font-light">Train your mind to see every note before you play it. Instant scale-degree mastery across all 12 keys for real musical fluency.</p>
+</div>
+<div class="flex flex-col gap-3.5">
+<h4 class="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-[#e5a93c]">Explore</h4>
+<div class="flex flex-col gap-2 text-xs font-medium text-zinc-400 font-normal">
+<a href="${up}" class="${link}">Home</a>
+<a href="${up}#method" class="${link}">The Method</a>
+<a href="${up}#pricing" class="${link}">Pricing</a>
+<a href="${up}#pro" class="${link}">Get Improvy Pro</a>
+<a href="${up}#quiz" class="${link}">60-second test</a>
+<a href="${up}degrees/" class="${link}${here(current === "degrees")}">Degree finder</a>
+<a href="${up}app/" class="${link}${here(current === "app")}">The app &amp; screenshots</a>
+<a href="${up}#teachers" class="${link}">For teachers</a>
+</div>
+</div>
+<div class="flex flex-col gap-3.5">
+<h4 class="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-rose-400">Company</h4>
+<div class="flex flex-col gap-2 text-xs font-medium text-zinc-400">
+<a href="${up}#about" class="${link}">About Us</a>
+<a href="${up}#about" class="${link}">Affiliates</a>
+<a href="${up}#feedback" class="${link}">Feedback</a>
+</div>
+</div>
+<div class="flex flex-col gap-3.5">
+<h4 class="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-indigo-400">Help &amp; Legal</h4>
+<div class="flex flex-col gap-2 text-xs font-medium text-zinc-400">
+<a href="${up}#about" class="${link}">Contact Us</a>
+<a href="${up}#privacy" class="${link}">Privacy Policy</a>
+<a href="${up}#terms" class="${link}">Terms of Service</a>
+</div>
+<div class="pt-6 mt-2 text-[11px] text-zinc-500 font-light"><p>© 2026 The Bale Company. All rights reserved.</p></div>
+</div>
+</div>
+</div>
+</footer>`;
+}
+
+/** BackgroundGradientAnimation's moving light, the same five blobs and the
+ *  pointer that follows the mouse. */
+const BLOBS = `<div id="blobs" style="mask-image:linear-gradient(to bottom, black 0%, black 45%, transparent 68%);-webkit-mask-image:linear-gradient(to bottom, black 0%, black 45%, transparent 68%)" class="absolute inset-0 pointer-events-none z-10 select-none overflow-hidden [filter:url(#blurMe)_blur(60px)] opacity-40">
+<div class="absolute [background:radial-gradient(circle_at_center,_var(--first-color)_0,_var(--first-color)_50%)_no-repeat] [mix-blend-mode:var(--blending-value)] w-[var(--size)] h-[var(--size)] top-[calc(50%-var(--size)/2)] left-[calc(50%-var(--size)/2)] [transform-origin:center_center] animate-first"></div>
+<div class="absolute [background:radial-gradient(circle_at_center,_var(--second-color)_0,_var(--second-color)_50%)_no-repeat] [mix-blend-mode:var(--blending-value)] w-[var(--size)] h-[var(--size)] top-[calc(50%-var(--size)/2)] left-[calc(50%-var(--size)/2)] animate-second"></div>
+<div class="absolute [background:radial-gradient(circle_at_center,_var(--third-color)_0,_var(--third-color)_50%)_no-repeat] [mix-blend-mode:var(--blending-value)] w-[var(--size)] h-[var(--size)] top-[calc(50%-var(--size)/2)] left-[calc(50%-var(--size)/2)] animate-third"></div>
+<div class="absolute [background:radial-gradient(circle_at_center,_var(--fourth-color)_0,_var(--fourth-color)_50%)_no-repeat] [mix-blend-mode:var(--blending-value)] w-[var(--size)] h-[var(--size)] top-[calc(50%-var(--size)/2)] left-[calc(50%-var(--size)/2)] animate-fourth"></div>
+<div class="absolute [background:radial-gradient(circle_at_center,_var(--fifth-color)_0,_var(--fifth-color)_50%)_no-repeat] [mix-blend-mode:var(--blending-value)] w-[var(--size)] h-[var(--size)] top-[calc(50%-var(--size)/2)] left-[calc(50%-var(--size)/2)] animate-fifth"></div>
+<div id="pointer" class="absolute [background:radial-gradient(circle_at_center,_var(--pointer-color)_0,_var(--pointer-color)_50%)_no-repeat] [mix-blend-mode:var(--blending-value)] w-[400px] h-[400px] top-0 left-0 pointer-events-none opacity-60"></div>
+</div>`;
+
+/** The pointer's lag and colour, and Safari's lighter blur, as the component
+ *  sets them. */
+const BLOBS_SCRIPT = `<script>
+(function () {
+  var blobs = document.getElementById("blobs"), p = document.getElementById("pointer"), box = document.getElementById("bg");
+  if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
+    blobs.classList.remove("[filter:url(#blurMe)_blur(60px)]", "opacity-40");
+    blobs.classList.add("blur-3xl", "opacity-30");
+  }
+  var C = [[59, 130, 246], [147, 51, 234], [234, 83, 88], [249, 115, 22], [247, 186, 43]];
+  var x = 0, y = 0, tx = 0, ty = 0, mx = innerWidth / 2, my = innerHeight / 2, cx = mx, cy = my;
+  box.addEventListener("mousemove", function (e) {
+    var r = box.getBoundingClientRect();
+    tx = e.clientX - r.left; ty = e.clientY - r.top; mx = e.clientX; my = e.clientY;
+  });
+  (function step() {
+    x += (tx - x) / 11; y += (ty - y) / 11; cx += (mx - cx) / 11; cy += (my - cy) / 11;
+    p.style.transform = "translate(" + Math.round(x - 200) + "px, " + Math.round(y - 200) + "px)";
+    var s = Math.min(Math.max(cx / (innerWidth || 800), 0), 1) * 4, i = Math.floor(s), f = s - i, c;
+    if (i >= 4) c = C[4];
+    else {
+      var a = C[i], b = C[i + 1], e = f * f * (3 - 2 * f);
+      c = [0, 1, 2].map(function (k) { return Math.round(a[k] + (b[k] - a[k]) * e); });
+    }
+    p.style.setProperty("--pointer-color", "rgb(" + c.join(", ") + ")");
+    requestAnimationFrame(step);
+  })();
+})();
+</script>`;
 
 function page(opts: {
   /** From this page back to the site root: "../../../". */
@@ -333,64 +402,102 @@ function page(opts: {
   description: string;
   crumbs: { name: string; path: string }[];
   body: string;
+  /** Lit in the footer, as the React pages light theirs. */
+  current: "degrees" | "app";
+  /** The page's own picture for link previews; the site's card otherwise. */
+  image?: { url: string; width: number; height: number; alt: string };
+  /** The content's measure: a column of text, or the full width. */
+  wide?: boolean;
+  /** More structured data for the page, beside its breadcrumbs. */
+  ld?: object[];
 }) {
   const url = SITE + opts.path;
   const crumbs = [{ name: "Improvy", path: "" }, ...opts.crumbs];
-  const ld = {
-    "@context": "https://schema.org",
+  const breadcrumbs = {
     "@type": "BreadcrumbList",
     itemListElement: crumbs.map((c, i) => ({ "@type": "ListItem", position: i + 1, name: c.name, item: SITE + c.path })),
+  };
+  const ld = { "@context": "https://schema.org", "@graph": [breadcrumbs, ...(opts.ld ?? [])] };
+  const image = opts.image ?? {
+    url: `${SITE}og-image.png`,
+    width: 1200,
+    height: 630,
+    alt: "Improvy — see every note as its scale degree, in all 12 keys",
   };
   return `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#06030c">
 <title>${esc(opts.title)}</title>
 <meta name="description" content="${esc(opts.description)}">
+<meta name="robots" content="index, follow, max-image-preview:large">
 <link rel="canonical" href="${url}">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Improvy">
 <meta property="og:url" content="${url}">
 <meta property="og:title" content="${esc(opts.title)}">
 <meta property="og:description" content="${esc(opts.description)}">
-<meta property="og:image" content="${SITE}og-image.png">
+<meta property="og:image" content="${image.url}">
+<meta property="og:image:width" content="${image.width}">
+<meta property="og:image:height" content="${image.height}">
+<meta property="og:image:alt" content="${esc(image.alt)}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="apple-itunes-app" content="app-id=6775236759">
 <link rel="icon" type="image/png" href="${opts.up}favicon.png">
 <link rel="apple-touch-icon" href="${opts.up}apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=Lexend:wght@800..900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=Lexend:wght@400..900&display=swap">
+<link rel="stylesheet" href="${opts.up}${STYLESHEET}">
 <script type="application/ld+json">${JSON.stringify(ld).replace(/</g, "\\u003c")}</script>
-<style>${CSS}</style>
 </head>
-<body>
-<div class="wrap">
-<div class="top"><a class="brand" href="${opts.up}">Improvy</a><a class="pill" href="${opts.up}#quiz">60-second test</a></div>
-<div class="crumbs">${crumbs
-    .map((c, i) => (i === crumbs.length - 1 ? esc(c.name) : `<a href="${opts.up}${c.path}">${esc(c.name)}</a>`))
-    .join(" › ")}</div>
+<body style="--gradient-background-start:rgb(6, 3, 12);--gradient-background-end:rgb(2, 1, 4);--first-color:rgb(67, 56, 202);--second-color:rgb(234, 83, 88);--third-color:rgb(247, 186, 43);--fourth-color:rgb(147, 51, 234);--fifth-color:rgb(59, 130, 246);--pointer-color:rgb(234, 83, 88);--size:60%;--blending-value:screen">
+<div id="bg" class="min-h-screen w-full relative overflow-hidden bg-[linear-gradient(to_bottom,var(--gradient-background-start)_0%,var(--gradient-background-end)_55%,#000000_80%)]">
+<svg class="hidden" aria-hidden="true"><defs><filter id="blurMe"><feGaussianBlur in="SourceGraphic" stdDeviation="12" result="blur"/><feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -8" result="goo"/><feBlend in="SourceGraphic" in2="goo"/></filter></defs></svg>
+<div class="relative z-20 w-full h-full">
+<div class="w-full relative z-20 min-h-screen text-[#d4d4db] font-sans pb-0">
+${header(opts.up)}
+<main class="relative z-30 mx-auto w-full max-w-5xl px-4 pt-24 pb-16 md:pt-28 text-zinc-300 font-sans">
+<div class="mb-10 text-left"><a href="${opts.up}" class="group inline-flex items-center gap-2 rounded-xl border border-white/[0.06] bg-zinc-900/80 px-3.5 py-2 text-[10px] font-black uppercase tracking-widest text-rose-500 transition-all duration-200 hover:bg-zinc-800 hover:text-white active:scale-95 cursor-pointer">${ARROW_LEFT}<span>Return to Home</span></a></div>
+${
+  // The trail only where there is one to follow — a key, a degree in a key.
+  // One step down, it would only repeat the page's own title.
+  crumbs.length > 2
+    ? `<nav aria-label="Breadcrumb" class="mb-5 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">${crumbs
+        .map((c, i) =>
+          i === crumbs.length - 1
+            ? `<span class="text-zinc-400" aria-current="page">${esc(c.name)}</span>`
+            : `<a href="${opts.up}${c.path}" class="hover:text-white transition-colors duration-200">${esc(c.name)}</a>`
+        )
+        .join(` <span aria-hidden="true">›</span> `)}</nav>`
+    : ""
+}
+<div class="doc${opts.wide ? "" : " max-w-3xl"}">
 ${opts.body}
-<div class="cta">
-<h3>Name it before<br><span>you can count it.</span></h3>
-<p>Improvy trains every degree in all 12 keys — the 3, the ♭7, the ♯11 — until you see the note without working it out. A few minutes a day. Free to start; Pro is one payment, never a subscription.</p>
-<div class="btns">
-<a class="store" href="${APP_STORE}"><svg width="26" height="26" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 1.15-3.27 1.2-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5 1.07 3.29 1.07.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.02.07-.43 1.44-1.38 2.82M15.97 4.17c.66-.8 1.1-1.89 1.08-3.17-.91.04-2.01.6-2.67 1.38-.56.66-1.05 1.76-.9 3.01 1.05.08 2.06-.51 2.49-1.22z"/></svg><span><small>Download on the</small><strong>App Store</strong></span></a>
-<a class="store" href="${PLAY_STORE}"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.25 1.75C3.06 1.93 2.95 2.22 2.95 2.6V21.4C2.95 21.78 3.06 22.07 3.25 22.25L3.32 22.32L13.84 11.8V11.53L3.32 1.01L3.25 1.75Z" fill="#00A0FF"/><path d="M17.34 15.33L13.84 11.82V11.51L17.34 8L17.42 8.04L21.57 10.4C22.75 11.07 22.75 12.26 21.57 12.93L17.42 15.29L17.34 15.33Z" fill="#FFE000"/><path d="M13.84 11.66L3.25 22.25C3.59 22.59 4.19 22.61 4.88 22.22L17.34 15.14L13.84 11.66Z" fill="#FF2C00"/><path d="M13.84 11.66L17.34 8.18L4.88 1.1C4.19 0.71 3.59 0.73 3.25 1.07L13.84 11.66Z" fill="#00E676"/></svg><span><small>Get it on</small><strong>Google Play</strong></span></a>
-<a class="btn" href="${opts.up}#quiz">The 60-second test →</a>
+</div>
+<section class="mt-20 rounded-[28px] border border-[#e5a93c]/25 bg-[#e5a93c]/[0.05] p-6 sm:p-10">
+<p class="text-[11px] font-black uppercase tracking-[0.24em] text-[#e5a93c]">Free on iPhone and Android</p>
+<h2 class="mt-3 font-display text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Name it before<br><span class="italic font-normal font-serif text-transparent bg-clip-text bg-gradient-to-r from-[#e5a93c] via-rose-500 to-purple-500 pr-2">you can count it.</span></h2>
+<p class="mt-4 text-sm sm:text-base text-zinc-300 font-light leading-relaxed max-w-2xl">Improvy trains every degree in all 12 keys — the 3, the ♭7, the ♯11 — until you see the note without working it out. A few minutes a day. Free to start; Pro is one payment, never a subscription.</p>
+${storeBadges("mt-8")}
+<a href="${opts.up}#quiz" class="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-white hover:text-[#e5a93c] transition-colors duration-200">Or try the 60-second test in your browser <span aria-hidden="true">→</span></a>
+</section>
+</main>
+${footer(opts.up, opts.current)}
 </div>
 </div>
-<footer><a class="brand" href="${opts.up}">Improvy</a><a href="${opts.up}degrees/">Every degree in every key</a><a href="${opts.up}app/">The app</a><a href="${opts.up}#teachers">For teachers</a><a href="${opts.up}#about">About</a><span>© 2026 The Bale Company</span></footer>
+${BLOBS}
 </div>
+${BLOBS_SCRIPT}
 </body>
 </html>
 `;
 }
 
 function chipList(items: { href: string; html: string }[]) {
-  return `<div class="grid">${items.map((i) => `<a class="chip" href="${i.href}">${i.html}</a>`).join("")}</div>`;
+  return `<div class="chips">${items.map((i) => `<a class="chip" href="${i.href}">${i.html}</a>`).join("")}</div>`;
 }
 
 function degreePage(key: KeyName, d: DegreeInfo) {
@@ -483,6 +590,7 @@ ${others}
           ? `The ${d.token} of ${key} is ${titleN} · Improvy`
           : `The ${d.token} of ${key} (${ascii(d.token)} of ${ascii(key)}) is ${titleN} · Improvy`,
       description: `The ${d.token} (${d.words}) of ${key} is ${N}, a ${d.interval} above the root. See it on the keyboard, why it is spelled ${N}, where you meet it, and the ${d.token} in all 12 keys.`,
+      current: "degrees",
       crumbs: [
         { name: "Degrees", path: "degrees/" },
         { name: key, path: `degrees/${keySlug(key)}/` },
@@ -521,6 +629,7 @@ ${chipList(KEYS.filter((k) => k !== key).map((k) => ({ href: `../${keySlug(k)}/`
       path,
       title: `Scale degrees in ${key}${ascii(key) !== key ? ` (${ascii(key)})` : ""} major, every one spelled · Improvy`,
       description: `Every scale degree of ${key} major, from the ♭2 to the 13: the ${key} major scale, the chromatic degrees and the jazz extensions, spelled correctly, on a keyboard.`,
+      current: "degrees",
       crumbs: [
         { name: "Degrees", path: "degrees/" },
         { name: key, path },
@@ -552,6 +661,7 @@ ${blocks}
       path,
       title: "Scale degree finder: every degree in all 12 keys · Improvy",
       description: "Find any scale degree in any key: the 3, the ♭7, the ♯11, the 13 in all 12 major keys, spelled correctly and shown on a keyboard.",
+      current: "degrees",
       crumbs: [{ name: "Degrees", path }],
       body,
     }),
@@ -559,50 +669,119 @@ ${blocks}
 }
 
 /** The app's own pictures, under public/images: what an image search for
- *  "Improvy" should find — the icon and the store screenshots. */
+ *  "Improvy" should find — the icon and the store screenshots, each a named
+ *  file with words that say what is in it. */
 export const APP_IMAGES = [
-  { file: "improvy-app-icon.png", w: 512, h: 512, title: "Improvy app icon",
-    caption: "<b>The Improvy icon</b> — the app on iPhone and Android." },
-  { file: "improvy-app-chromatic-scale-degree-trainer.jpg", w: 660, h: 1434, title: "Improvy app: chromatic scale-degree trainer",
-    caption: "<b>The trainer.</b> A degree is asked — ♭3, ♯11, 13 — and you find its note in the key, against the clock." },
-  { file: "improvy-app-daily-challenge.jpg", w: 660, h: 1434, title: "Improvy app: the Daily Challenge",
-    caption: "<b>The Daily Challenge.</b> The same run for everyone, once a day, with a score to share." },
-  { file: "improvy-app-progress-stats.jpg", w: 660, h: 1434, title: "Improvy app: progress and statistics",
-    caption: "<b>Stats.</b> Mastery in each of the 12 keys, response time, and the degrees that still cost you." },
-  { file: "improvy-app-pocket-mode.jpg", w: 660, h: 1434, title: "Improvy app: Pocket Mode, hands-free audio training",
-    caption: "<b>Pocket Mode.</b> A voice asks, waits, and answers — training with the screen off." },
-  { file: "improvy-app-home-screen-widgets.jpg", w: 660, h: 1434, title: "Improvy app: Home Screen widgets",
-    caption: "<b>Widgets.</b> A question, the daily and your key on the Home Screen." },
-  { file: "improvy-app-banner.jpg", w: 1920, h: 823, title: "Improvy — see every note as its scale degree, in all 12 keys",
-    caption: "" },
+  { file: "improvy-app-icon.png", w: 512, h: 512, alt: "Improvy app icon", name: "", text: "" },
+  {
+    file: "improvy-app-chromatic-scale-degree-trainer.jpg", w: 660, h: 1434,
+    alt: "Improvy app: the chromatic scale-degree trainer",
+    name: "The trainer",
+    text: "A degree is asked — ♭3, ♯11, 13 — and you find its note in the key, against the clock.",
+  },
+  {
+    file: "improvy-app-daily-challenge.jpg", w: 660, h: 1434,
+    alt: "Improvy app: the Daily Challenge",
+    name: "The Daily Challenge",
+    text: "The same run for everyone, once a day, with a score to share and a streak to keep.",
+  },
+  {
+    file: "improvy-app-progress-stats.jpg", w: 660, h: 1434,
+    alt: "Improvy app: progress and statistics",
+    name: "Stats",
+    text: "Mastery in each of the 12 keys, your response time, and the degrees that still cost you.",
+  },
+  {
+    file: "improvy-app-pocket-mode.jpg", w: 660, h: 1434,
+    alt: "Improvy app: Pocket Mode, hands-free audio training",
+    name: "Pocket Mode",
+    text: "A voice asks, waits and answers — training on a walk, with the screen off.",
+  },
+  {
+    file: "improvy-app-home-screen-widgets.jpg", w: 660, h: 1434,
+    alt: "Improvy app: Home Screen widgets",
+    name: "Widgets",
+    text: "A question, the Daily Challenge and your weakest key, right on the Home Screen.",
+  },
+  {
+    file: "improvy-app-banner.jpg", w: 1920, h: 823,
+    alt: "Improvy — every note is a number: the scale degrees 1 to 7 on a keyboard",
+    name: "",
+    text: "",
+  },
 ];
+
+/** One of the app's pictures as Google's image metadata reads it: what it
+ *  shows, and whose it is. */
+export function imageObject(i: (typeof APP_IMAGES)[number]) {
+  return {
+    "@type": "ImageObject",
+    contentUrl: `${SITE}images/${i.file}`,
+    url: `${SITE}images/${i.file}`,
+    name: i.name || i.alt,
+    caption: i.alt,
+    width: i.w,
+    height: i.h,
+    creator: { "@type": "Organization", name: "Improvy", url: SITE },
+    creditText: "Improvy",
+    copyrightNotice: "© 2026 The Bale Company",
+  };
+}
 
 function appPage() {
   const up = "../";
   const path = "app/";
-  const [icon, ...rest] = APP_IMAGES;
-  const shots = rest.filter((i) => i.caption);
-  const banner = rest.find((i) => !i.caption)!;
+  const icon = APP_IMAGES[0];
+  const shots = APP_IMAGES.filter((i) => i.name);
+  const banner = APP_IMAGES[APP_IMAGES.length - 1];
   const body = `
+<header class="text-left max-w-3xl">
 <span class="eyebrow">The app</span>
-<h1>Improvy,<br><em>on your phone.</em></h1>
-<p class="lead">Improvy is a music app for iPhone and Android that trains you to see every note as its <b>scale degree</b> — the 3, the ♭7, the ♯11 — instantly, in all 12 keys. For improvising, transposing and reading chord charts without counting.</p>
-<div class="icon"><img src="${up}images/${icon.file}" width="${icon.w}" height="${icon.h}" alt="${esc(icon.title)}"><p>Free to download. <b>Improvy Pro</b> is one payment, never a subscription.</p></div>
+<h1>Every note is a number.<br><em>Improvy, on your phone.</em></h1>
+<p class="lead">Improvy is an app for iPhone and Android that trains you to see every note as its <b>scale degree</b> — the 3, the ♭7, the ♯11 — at once, in all 12 keys. For improvising, transposing and reading a chart without counting.</p>
+</header>
+<div class="mt-10 flex items-center gap-5">
+<img src="${up}images/${icon.file}" width="${icon.w}" height="${icon.h}" alt="${esc(icon.alt)}" class="h-20 w-20 sm:h-24 sm:w-24 shrink-0 rounded-[22%] border border-white/[0.08] shadow-[0_18px_40px_-16px_rgba(0,0,0,0.9)]">
+<div class="text-left">
+<span class="block text-base sm:text-lg font-extrabold text-white tracking-tight">Improvy — Music Trainer</span>
+<span class="mt-1 block text-sm text-zinc-400 font-light">Free to download. Pro is one payment, never a subscription.</span>
+</div>
+</div>
+${storeBadges("mt-8")}
 <h2>Screenshots</h2>
-<div class="shots">${shots
-    .map((i) => `<figure><img src="${up}images/${i.file}" width="${i.w}" height="${i.h}" alt="${esc(i.title)}" loading="lazy"><figcaption>${i.caption}</figcaption></figure>`)
-    .join("")}</div>
-<img class="banner" src="${up}images/${banner.file}" width="${banner.w}" height="${banner.h}" alt="${esc(banner.title)}" loading="lazy">
+<p class="max-w-2xl">The five screens from the App Store and Google Play: the trainer, the Daily Challenge, the stats, Pocket Mode and the widgets.</p>
+<div class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">${shots
+    .map(
+      (i) => `<figure class="m-0">
+<img src="${up}images/${i.file}" width="${i.w}" height="${i.h}" alt="${esc(i.alt)}" loading="lazy" decoding="async" class="block w-full h-auto rounded-[28px] border border-white/[0.06] shadow-[0_24px_60px_-24px_rgba(0,0,0,0.85)]">
+<figcaption class="mt-4 text-left"><span class="block text-base font-extrabold text-white tracking-tight">${esc(i.name)}</span><span class="mt-1 block text-sm text-zinc-400 font-light leading-relaxed">${esc(i.text)}</span></figcaption>
+</figure>`
+    )
+    .join("\n")}</div>
+<img src="${up}images/${banner.file}" width="${banner.w}" height="${banner.h}" alt="${esc(banner.alt)}" loading="lazy" decoding="async" class="mt-16 block w-full h-auto rounded-[28px] border border-white/[0.06]">
 `;
   return {
     path,
-    images: APP_IMAGES.map((i) => ({ loc: `${SITE}images/${i.file}`, title: i.title })),
+    images: APP_IMAGES.map((i) => ({ loc: `${SITE}images/${i.file}`, title: i.alt })),
     html: page({
       up,
       path,
-      title: "Improvy app — screenshots of the scale-degree trainer for iPhone and Android",
-      description: "See the Improvy app: the scale-degree trainer, the Daily Challenge, stats, Pocket Mode and widgets. Free on the App Store and Google Play.",
+      title: "Improvy app — screenshots for iPhone and Android",
+      description:
+        "See the Improvy app: the scale-degree trainer, the Daily Challenge, stats, Pocket Mode and widgets. Free on the App Store and Google Play.",
+      current: "app",
+      wide: true,
+      image: { url: `${SITE}images/${banner.file}`, width: banner.w, height: banner.h, alt: banner.alt },
       crumbs: [{ name: "The app", path }],
+      ld: [
+        {
+          "@type": "ImageGallery",
+          name: "Improvy app screenshots",
+          url: SITE + path,
+          primaryImageOfPage: imageObject(banner),
+          image: APP_IMAGES.map(imageObject),
+        },
+      ],
       body,
     }),
   };
@@ -618,14 +797,15 @@ export function allPages() {
   return out;
 }
 
-function sitemap(pages: { path: string; images?: { loc: string; title: string }[] }[]) {
-  // The home page carries the app's pictures too: it is the page an image
-  // search for the name lands on.
-  const home = { path: "", images: APP_IMAGES.map((i) => ({ loc: `${SITE}images/${i.file}`, title: i.title })) };
+function sitemap(pages: { path: string; images?: { loc: string; title: string }[] }[], homeImages: string[]) {
+  // Each page lists the pictures that are on it: Google ties an image to the
+  // page that shows it. The home page shows the logo (in the footer) and the
+  // app's home screen; the store screenshots are on app/.
+  const home = { path: "", images: homeImages.map((loc) => ({ loc, title: "" })) };
   const urls = [home, ...pages]
     .map((p) => {
       const imgs = (p.images ?? [])
-        .map((i) => `\n    <image:image>\n      <image:loc>${i.loc}</image:loc>\n      <image:title>${esc(i.title)}</image:title>\n    </image:image>`)
+        .map((i) => `\n    <image:image>\n      <image:loc>${i.loc}</image:loc>\n    </image:image>`)
         .join("");
       return `  <url>\n    <loc>${SITE}${p.path}</loc>\n    <changefreq>${p.path === "" ? "weekly" : "monthly"}</changefreq>\n    <priority>${p.path === "" ? "1.0" : p.path === "degrees/" || p.path === "app/" ? "0.8" : "0.6"}</priority>${imgs}\n  </url>`;
     })
@@ -645,10 +825,16 @@ export function degreePages(): Plugin {
   return {
     name: "improvy-degree-pages",
     apply: "build",
-    generateBundle() {
+    generateBundle(_options, bundle) {
+      const css = Object.keys(bundle).find((f) => /^assets\/index-[\w-]+\.css$/.test(f));
+      if (!css) this.error("the site's stylesheet is not in the bundle, and the static pages are drawn with it");
+      STYLESHEET = css;
       const pages = allPages();
       for (const p of pages) this.emitFile({ type: "asset", fileName: `${p.path}index.html`, source: p.html });
-      this.emitFile({ type: "asset", fileName: "sitemap.xml", source: sitemap(pages) });
+      const hero = Object.keys(bundle).find((f) => /^assets\/method_home_progress-[\w-]+\.webp$/.test(f));
+      if (!hero) this.error("the home page's screenshot is not in the bundle, and the sitemap lists it");
+      const homeImages = [`${SITE}images/${APP_IMAGES[0].file}`, `${SITE}${hero}`];
+      this.emitFile({ type: "asset", fileName: "sitemap.xml", source: sitemap(pages, homeImages) });
     },
   };
 }

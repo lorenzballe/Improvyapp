@@ -2,6 +2,11 @@
    the browser find them only after downloading this whole stylesheet. */
 @import "tailwindcss";
 
+/* The static pages (every degree in every key, the app's page) are written by
+   tools/degree-pages.ts and link this same stylesheet, so their header,
+   background, buttons and footer use the classes the React pages use. */
+@source "../tools";
+
 @theme {
   --font-sans: "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Plus Jakarta Sans", "Inter", sans-serif;
@@ -379,4 +384,77 @@
 
 @media (prefers-reduced-motion: reduce) {
   .app-pop, .app-feedback, .app-bounce, .app-shake { animation: none; }
+}
+
+/* ── The static pages' text ───────────────────────────────────────────────────
+   Their content is plain HTML written by tools/degree-pages.ts; inside .doc it
+   takes the type and the cards of the React pages — the Teachers page's
+   heading, lead and sections — from the same tokens, so the two never drift. */
+.doc .eyebrow {
+  @apply block text-[11px] font-black uppercase tracking-[0.24em] text-[#e5a93c];
+}
+.doc h1 {
+  @apply mt-4 font-display text-4xl sm:text-6xl font-extrabold text-white tracking-tight leading-[1.05];
+}
+.doc h1 em {
+  @apply italic font-normal font-serif text-transparent bg-clip-text bg-gradient-to-r from-[#e5a93c] via-rose-500 to-purple-500 pr-2;
+}
+.doc .lead {
+  @apply mt-6 text-base sm:text-lg text-zinc-400 font-light leading-relaxed;
+}
+.doc h2 {
+  @apply mt-16 font-display text-2xl sm:text-3xl font-extrabold text-white tracking-tight;
+}
+.doc h2 a {
+  @apply text-white transition-colors duration-200 hover:text-[#e5a93c];
+}
+.doc p {
+  @apply mt-3 text-sm sm:text-base text-zinc-400 font-light leading-relaxed;
+}
+.doc p b,
+.doc .lead b {
+  @apply font-semibold text-white;
+}
+.doc p a,
+.doc td a {
+  @apply text-[#e5a93c] transition-colors duration-200 hover:text-white;
+}
+.doc .kb {
+  @apply mt-10 rounded-[28px] border border-white/[0.06] bg-[#07040f]/60 backdrop-blur-3xl px-4 pt-6 pb-5 sm:px-8 sm:pt-8 sm:pb-7;
+}
+.doc .legend {
+  @apply mt-5 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-zinc-400;
+}
+.doc .dot {
+  @apply mr-2 inline-block h-2.5 w-2.5 rounded-full align-middle;
+}
+.doc .tones {
+  @apply mt-2 text-xl sm:text-2xl font-extrabold text-white tracking-tight;
+}
+.doc table {
+  @apply mt-6 w-full border-separate border-spacing-0 overflow-hidden rounded-[24px] border border-white/[0.06] bg-[#07040f]/60 text-sm sm:text-[15px];
+}
+.doc th {
+  @apply bg-white/[0.02] px-4 py-3 text-left text-[10px] font-black uppercase tracking-[0.22em] text-zinc-500;
+}
+.doc td {
+  @apply border-t border-white/[0.06] px-4 py-3 text-zinc-300;
+}
+.doc td a {
+  @apply font-extrabold;
+}
+.doc td b {
+  @apply font-bold text-white;
+}
+.doc tr.here td {
+  @apply bg-[#e5a93c]/[0.08];
+}
+.doc .chips {
+  @apply mt-5 grid grid-cols-[repeat(auto-fill,minmax(112px,1fr))] gap-2;
+}
+.doc .chip {
+  @apply block rounded-xl border border-white/[0.06] bg-zinc-900/60 px-3.5 py-2.5 text-sm text-zinc-400 transition-colors duration-200 hover:border-[#e5a93c]/50 hover:bg-[#e5a93c]/[0.06] hover:text-white;
+}
+.doc .chip b {
+  @apply font-extrabold text-white;
 }

@@ -29,6 +29,12 @@ let started = false;
 let client: PostHog | null = null;
 const pending: Array<(ph: PostHog) => void> = [];
 
+/**
+ * The account this visit is signed in as. Kept here rather than asked of the
+ * SDK, so deliver() knows it even while the SDK is still loading.
+ */
+let signedIn: string | null = null;
+
 function withClient(fn: (ph: PostHog) => void) {
   if (client) {
     try {
@@ -110,11 +116,13 @@ export function track(event: string, properties?: Record<string, unknown>) {
  * old one would then belong to nobody.
  */
 export function identifyVisitor(uid: string) {
+  signedIn = uid;
   withClient((posthog) => posthog.identify(uid, { signed_in_on: "web" }));
 }
 
 /** Back to nobody on sign-out. */
 export function resetVisitor() {
+  signedIn = null;
   withClient((posthog) => posthog.reset());
 }
 
@@ -132,15 +140,17 @@ export async function deliver(
   properties: Record<string, unknown>,
   timeoutMs = 8000,
 ): Promise<boolean> {
-  let distinctId: string | undefined;
-  try {
-    distinctId = client?.get_distinct_id();
-  } catch {
-    /* ignore */
+  // Signed in on the site: the message joins that person. Otherwise this
+  // visit's own id when the SDK has one, so the message sits next to the
+  // pages it came from, or a one-off id; and no person profile for either.
+  let distinctId = signedIn ?? undefined;
+  if (!distinctId) {
+    try {
+      distinctId = client?.get_distinct_id();
+    } catch {
+      /* ignore */
+    }
   }
-  // Signed in on the site: the message joins that person. Otherwise a
-  // one-off id, and no person profile made for it.
-  const anonymous = !distinctId;
   if (!distinctId) {
     distinctId =
       typeof crypto !== "undefined" && "randomUUID" in crypto
@@ -152,7 +162,10 @@ export async function deliver(
   try {
     const r = await fetch(`${HOST}/i/v0/e/`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      // Plain text keeps this a simple request: no CORS preflight before it,
+      // one round trip. Capture reads the body as JSON whatever the type says,
+      // unless it is a form.
+      headers: { "Content-Type": "text/plain" },
       body: JSON.stringify({
         api_key: KEY,
         event,
@@ -162,11 +175,10 @@ export async function deliver(
           ...properties,
           $current_url: window.location.href,
           $lib: "web",
-          ...(anonymous ? { $process_person_profile: false } : {}),
+          ...(signedIn ? {} : { $process_person_profile: false }),
         },
       }),
       signal: controller.signal,
-      keepalive: true,
     });
     return r.ok;
   } catch {

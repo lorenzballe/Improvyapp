@@ -24,7 +24,7 @@ export const testimonialsList: Testimonial[] = [
   {
     text: "It truly works, and it's excellent, especially at the start. It really unlocks improvisation.",
     name: "Roberto Bisi",
-    role: "Jazz Composition · Conservatorio Vecchi-Tonelli, Modena",
+    role: "Composition · Conservatorio Vecchi-Tonelli, Modena",
     image: ""
   },
   {
