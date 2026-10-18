@@ -3,7 +3,7 @@ import { ReturnHome } from "./ReturnHome";
 import { motion, AnimatePresence } from "motion/react";
 import { ArrowLeft, Check, ShieldCheck, Lock, Mail, RefreshCw, Sparkle, LogOut, CircleCheck, Hourglass, Ticket, X } from "lucide-react";
 import { cn } from "../lib/utils";
-import { PRO_PRICE_WEB, PRO_PRICE_STORE, CURRENCY, money, type Currency } from "../lib/pricing";
+import { PRO_PRICE_WEB, PRO_PRICE_STORE, CURRENCY, money, isCurrency } from "../lib/pricing";
 import { StoreBadges } from "./StoreBadges";
 import { identifyVisitor, resetVisitor, track } from "../lib/analytics";
 import { getRef } from "../lib/referral";
@@ -713,10 +713,10 @@ function Faq({ q, a }: { q: string; a: React.ReactNode }) {
   );
 }
 
-/** Cents in the quote's currency, in the site's price style: 1709 → "€17.09". */
-function formatPrice(cents: number, currency: string) {
+/** Minor units in the quote's currency, written the visitor's way: 1709 → "17,09 €". */
+function formatPrice(minor: number, currency: string) {
   const c = currency.toLowerCase();
-  return money(cents, c === "usd" || c === "gbp" || c === "eur" ? (c as Currency) : CURRENCY);
+  return money(minor, isCurrency(c) ? c : CURRENCY);
 }
 
 /**

@@ -116,7 +116,7 @@ export default function TermsOfServicePage({ onBack }: TermsOfServicePageProps) 
 
           <Section n="06" title="Buying on This Website" color="text-purple-500/90">
             <Point title="Seller">Lorenzo Ballestrazzi, Italy. Contact details are at the end of these Terms.</Point>
-            <Point title="Price">The price is shown on the site and at checkout in your currency — euro, US dollars or British pounds — and includes VAT where it applies. It may differ from the in-app price.</Point>
+            <Point title="Price">The price is shown on the site and at checkout in your own currency where the site has a price in it (euro, pound sterling, US, Canadian, Australian or New Zealand dollar, Swiss franc, Swedish, Norwegian or Danish krone) and otherwise in US dollars, which Stripe may offer to convert into your currency at checkout. It includes VAT where it applies and may differ from the in-app price.</Point>
             <Point title="Payment">Payments are processed by Stripe. We never see your card details. You receive Stripe’s receipt by email.</Point>
             <Point title="Delivery">The licence is delivered immediately after payment, by being attached to the account you signed in with. It appears in the App the next time that account signs in.</Point>
             <Point title="Right of withdrawal">
