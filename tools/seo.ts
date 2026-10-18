@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import type { Plugin } from "vite";
 import { APP_IMAGES, imageObject } from "./degree-pages";
+import { PRO_PRICES, PRO_STORE_EUR, type Currency } from "../src/lib/pricing";
 
 /**
  * Structured data for search engines, built from the same sources the page
@@ -21,12 +22,8 @@ function read(root: string, file: string) {
   return readFileSync(path.join(root, file), "utf8");
 }
 
-/** "€19.99" → "19.99". Fails the build rather than publishing a wrong price. */
-function price(src: string, name: string) {
-  const m = src.match(new RegExp(`export const ${name} = "€([0-9]+[.,][0-9]{2})"`));
-  if (!m) throw new Error(`seo: could not read ${name} from src/lib/pricing.ts`);
-  return m[1].replace(",", ".");
-}
+/** 1899 → "18.99": the same table the page and the checkout use. */
+const decimal = (cents: number) => (cents / 100).toFixed(2);
 
 /** The { q, a } pairs of FaqSection, in order. */
 function faqs(src: string) {
@@ -47,9 +44,6 @@ export function seo(): Plugin {
       root = c.root;
     },
     transformIndexHtml() {
-      const pricing = read(root, "src/lib/pricing.ts");
-      const web = price(pricing, "PRO_PRICE_WEB");
-      const store = price(pricing, "PRO_PRICE_STORE");
       const faq = faqs(read(root, "src/components/FaqSection.tsx"));
 
       const org = {
@@ -63,18 +57,19 @@ export function seo(): Plugin {
       };
       const offers = [
         { "@type": "Offer", name: "Free", price: "0", priceCurrency: "EUR", url: SITE },
-        {
+        // On the website, in each currency it sells in.
+        ...(Object.keys(PRO_PRICES) as Currency[]).map((c) => ({
           "@type": "Offer",
           name: "Improvy Pro — lifetime, on the website",
-          price: web,
-          priceCurrency: "EUR",
+          price: decimal(PRO_PRICES[c]),
+          priceCurrency: c.toUpperCase(),
           url: `${SITE}#pro`,
           availability: "https://schema.org/InStock",
-        },
+        })),
         {
           "@type": "Offer",
           name: "Improvy Pro — lifetime, in the app",
-          price: store,
+          price: decimal(PRO_STORE_EUR),
           priceCurrency: "EUR",
           availability: "https://schema.org/InStock",
         },

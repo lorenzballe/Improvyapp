@@ -3,7 +3,7 @@ import { ReturnHome } from "./ReturnHome";
 import { motion, AnimatePresence } from "motion/react";
 import { ArrowLeft, Check, ShieldCheck, Lock, Mail, RefreshCw, Sparkle, LogOut, CircleCheck, Hourglass, Ticket, X } from "lucide-react";
 import { cn } from "../lib/utils";
-import { PRO_PRICE_WEB, PRO_PRICE_STORE } from "../lib/pricing";
+import { PRO_PRICE_WEB, PRO_PRICE_STORE, CURRENCY, money, type Currency } from "../lib/pricing";
 import { StoreBadges } from "./StoreBadges";
 import { identifyVisitor, resetVisitor, track } from "../lib/analytics";
 import { getRef } from "../lib/referral";
@@ -174,7 +174,7 @@ function BuyView({
     setCodeError(null);
   };
 
-  const price = promo?.valid ? formatEuro(promo.amount) : PRO_PRICE_WEB;
+  const price = promo?.valid ? formatPrice(promo.amount, promo.currency) : PRO_PRICE_WEB;
 
   // Signed in: is this account Pro already? Nobody should pay twice.
   useEffect(() => {
@@ -228,8 +228,9 @@ function BuyView({
         </h1>
         <p className="text-sm sm:text-base text-zinc-400 font-light leading-relaxed">
           One payment of <span className="text-white font-semibold">{PRO_PRICE_WEB}</span>, no subscription, and the licence lives on
-          your account — so it follows you to any phone, iPhone or Android. Here it costs a euro less than in the app
-          stores ({PRO_PRICE_STORE}), because there is no store in between.
+          your account — so it follows you to any phone, iPhone or Android.
+          {PRO_PRICE_STORE &&
+            ` Here it costs a euro less than in the app stores (${PRO_PRICE_STORE}), because there is no store in between.`}
         </p>
       </div>
 
@@ -712,9 +713,10 @@ function Faq({ q, a }: { q: string; a: React.ReactNode }) {
   );
 }
 
-/** Cents to the site's own price style: 1709 → "€17.09". */
-function formatEuro(cents: number) {
-  return `€${(cents / 100).toFixed(2)}`;
+/** Cents in the quote's currency, in the site's price style: 1709 → "€17.09". */
+function formatPrice(cents: number, currency: string) {
+  const c = currency.toLowerCase();
+  return money(cents, c === "usd" || c === "gbp" || c === "eur" ? (c as Currency) : CURRENCY);
 }
 
 /**
@@ -740,13 +742,13 @@ function PromoField({
   onRemove: () => void;
 }) {
   if (promo?.valid) {
-    const off = promo.percentOff ? `${promo.percentOff}% off` : promo.amountOff ? `${formatEuro(promo.amountOff)} off` : "applied";
+    const off = promo.percentOff ? `${promo.percentOff}% off` : promo.amountOff ? `${formatPrice(promo.amountOff, promo.currency)} off` : "applied";
     return (
       <div className="flex items-center gap-3 rounded-xl border border-[#e5a93c]/40 bg-[#e5a93c]/[0.08] px-4 py-3">
         <Ticket className="w-4 h-4 text-[#e5a93c] shrink-0" />
         <div className="flex-1 min-w-0">
           <div className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#e5a93c]">Code {promo.code}</div>
-          <div className="text-xs text-white font-semibold">{off} — you pay {formatEuro(promo.amount)}</div>
+          <div className="text-xs text-white font-semibold">{off} — you pay {formatPrice(promo.amount, promo.currency)}</div>
         </div>
         <button type="button" onClick={onRemove} aria-label="Remove code" className="p-1.5 rounded-md text-zinc-400 hover:text-white hover:bg-white/5 cursor-pointer">
           <X className="w-3.5 h-3.5" />

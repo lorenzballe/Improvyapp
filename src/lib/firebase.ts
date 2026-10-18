@@ -16,6 +16,7 @@ import {
 } from "firebase/auth";
 import { getFunctions, httpsCallable } from "firebase/functions";
 import { getRef } from "./referral";
+import { CURRENCY, type Currency } from "./pricing";
 import { firebaseConfig, firebaseReady } from "./firebase-config";
 
 /**
@@ -169,9 +170,10 @@ export type PromoQuote = {
  * brought this visitor — and returns the price it gives. No account needed.
  */
 export async function quotePromo(code?: string): Promise<PromoQuote> {
-  const call = httpsCallable<{ code?: string; ref?: string }, PromoQuote>(functions(), "quotePromo");
+  const call = httpsCallable<{ code?: string; ref?: string; currency: Currency }, PromoQuote>(functions(), "quotePromo");
   const ref = getRef();
-  return (await call({ ...(code ? { code } : {}), ...(ref ? { ref } : {}) })).data;
+  // In the currency the page shows the price in.
+  return (await call({ currency: CURRENCY, ...(code ? { code } : {}), ...(ref ? { ref } : {}) })).data;
 }
 
 /**
@@ -180,13 +182,14 @@ export async function quotePromo(code?: string): Promise<PromoQuote> {
  * checks again before applying.
  */
 export async function createCheckoutSession(code?: string): Promise<CheckoutAnswer> {
-  const call = httpsCallable<{ consent: true; ref?: string; code?: string }, CheckoutAnswer>(
+  const call = httpsCallable<{ consent: true; currency: Currency; ref?: string; code?: string }, CheckoutAnswer>(
     functions(),
     "createCheckoutSession"
   );
   // The creator who sent them, so the sale is credited — see lib/referral.ts.
   const ref = getRef();
-  return (await call({ consent: true, ...(ref ? { ref } : {}), ...(code ? { code } : {}) })).data;
+  // Charged in the currency the page showed, at the figure it showed.
+  return (await call({ consent: true, currency: CURRENCY, ...(ref ? { ref } : {}), ...(code ? { code } : {}) })).data;
 }
 
 /**

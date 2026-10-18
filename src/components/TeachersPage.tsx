@@ -1,6 +1,7 @@
 import { ArrowLeft, BarChart3, CalendarCheck, Headphones, Mail, SlidersHorizontal } from "lucide-react";
 import { DownloadFree } from "./StoreBadges";
 import type { Platform } from "../lib/platform";
+import { CURRENCY, PACK_PRICES, money } from "../lib/pricing";
 
 const EMAIL = "thebalecompany@gmail.com";
 
@@ -17,10 +18,16 @@ const CLASS_PACK = mailto(
   "Hi Lorenzo,\n\nI'd like Pro for my students.\nHow many students: \nSchool or studio: \nName and address for the invoice: \n\nThanks!"
 );
 
-/** What a pack costs. One payment, Pro for life for every student in it. */
+/** What a pack costs, in the visitor's currency. One payment, Pro for life for every student in it. */
+const pack = (name: string, students: number, cents: number) => ({
+  name,
+  students,
+  price: money(cents, CURRENCY),
+  each: `${money(Math.round(cents / students / 10) * 10, CURRENCY)} a student`,
+});
 const PACKS = [
-  { name: "Class", students: 10, price: "€99", each: "€9.90 a student" },
-  { name: "School", students: 30, price: "€249", each: "€8.30 a student" },
+  pack("Class", 10, PACK_PRICES[CURRENCY].class),
+  pack("School", 30, PACK_PRICES[CURRENCY].school),
 ];
 
 const USES = [

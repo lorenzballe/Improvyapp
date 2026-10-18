@@ -7,7 +7,7 @@ import { TestimonialsColumn, testimonialsList } from "./components/TestimonialsC
 import { Sparkle, ArrowUp, ArrowRight, Check, X } from "lucide-react";
 import { WhyImprovySection } from "./components/WhyImprovySection";
 import { cn } from "./lib/utils";
-import { PRO_PRICE_WEB, PRO_PRICE_NOTE, PRO_PRICE_STORE_NOTE } from "./lib/pricing";
+import { PRO_PRICE_WEB, PRO_PRICE_NOTE, PRO_PRICE_STORE_NOTE, CURRENCY, money } from "./lib/pricing";
 // Only the Pro page needs Firebase and the checkout client, and they are
 // most of the JavaScript on the site. Nobody reading the home page pays for
 // them.
@@ -573,7 +573,7 @@ export default function App() {
                 </span>
               </h2>
               <p className="text-xs sm:text-sm text-zinc-400 font-light max-w-xl mx-auto leading-relaxed">
-                Start free — diatonic training in every key. Go Pro once, for good — {PRO_PRICE_WEB} here, a euro less than in the app stores, no subscription.
+                Start free — diatonic training in every key. Go Pro once, for good — {PRO_PRICE_WEB} here{PRO_PRICE_STORE_NOTE ? ", a euro less than in the app stores" : ""}, no subscription.
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto items-stretch">
@@ -600,7 +600,7 @@ export default function App() {
 
                   <div className="py-5 border-t border-b border-white/[0.05]">
                     <div className="flex items-baseline gap-1">
-                      <span className="text-5xl font-black text-white font-sans tracking-tight">€0</span>
+                      <span className="text-5xl font-black text-white font-sans tracking-tight">{money(0, CURRENCY)}</span>
                       <span className="text-xs text-zinc-500 font-sans font-medium">/ lifetime</span>
                     </div>
                     <span className="text-[9px] text-[#e5a93c] block mt-1.5 uppercase tracking-widest font-extrabold">FREE FOREVER</span>
@@ -697,7 +697,7 @@ export default function App() {
                         <span className="text-5xl font-black text-white font-sans tracking-tight">{PRO_PRICE_WEB}</span>
                         <span className="text-xs text-zinc-500 font-sans font-medium">{PRO_PRICE_NOTE}</span>
                       </div>
-                      <span className="text-[9px] text-[#e5a93c] block mt-1.5 uppercase tracking-widest font-extrabold">ON THIS SITE · {PRO_PRICE_STORE_NOTE}</span>
+                      <span className="text-[9px] text-[#e5a93c] block mt-1.5 uppercase tracking-widest font-extrabold">ON THIS SITE · {PRO_PRICE_STORE_NOTE ?? "NO SUBSCRIPTION"}</span>
                     </div>
 
                     <div className="space-y-4">
