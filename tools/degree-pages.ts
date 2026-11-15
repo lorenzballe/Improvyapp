@@ -1,4 +1,14 @@
+import { existsSync } from "node:fs";
+import path from "node:path";
 import type { Plugin } from "vite";
+import {
+  APP_BANNER,
+  APP_ICON,
+  APP_PAGE_IMAGES,
+  HOME_IMAGES,
+  STORE_SCREENSHOTS,
+  type AppImage,
+} from "../src/lib/appImages";
 import {
   KEYS,
   degreeColor,
@@ -668,52 +678,9 @@ ${blocks}
   };
 }
 
-/** The app's own pictures, under public/images: what an image search for
- *  "Improvy" should find — the icon and the store screenshots, each a named
- *  file with words that say what is in it. */
-export const APP_IMAGES = [
-  { file: "improvy-app-icon.png", w: 512, h: 512, alt: "Improvy app icon", name: "", text: "" },
-  {
-    file: "improvy-app-chromatic-scale-degree-trainer.jpg", w: 660, h: 1434,
-    alt: "Improvy app: the chromatic scale-degree trainer",
-    name: "The trainer",
-    text: "A degree is asked — ♭3, ♯11, 13 — and you find its note in the key, against the clock.",
-  },
-  {
-    file: "improvy-app-daily-challenge.jpg", w: 660, h: 1434,
-    alt: "Improvy app: the Daily Challenge",
-    name: "The Daily Challenge",
-    text: "The same run for everyone, once a day, with a score to share and a streak to keep.",
-  },
-  {
-    file: "improvy-app-progress-stats.jpg", w: 660, h: 1434,
-    alt: "Improvy app: progress and statistics",
-    name: "Stats",
-    text: "Mastery in each of the 12 keys, your response time, and the degrees that still cost you.",
-  },
-  {
-    file: "improvy-app-pocket-mode.jpg", w: 660, h: 1434,
-    alt: "Improvy app: Pocket Mode, hands-free audio training",
-    name: "Pocket Mode",
-    text: "A voice asks, waits and answers — training on a walk, with the screen off.",
-  },
-  {
-    file: "improvy-app-home-screen-widgets.jpg", w: 660, h: 1434,
-    alt: "Improvy app: Home Screen widgets",
-    name: "Widgets",
-    text: "A question, the Daily Challenge and your weakest key, right on the Home Screen.",
-  },
-  {
-    file: "improvy-app-banner.jpg", w: 1920, h: 823,
-    alt: "Improvy — every note is a number: the scale degrees 1 to 7 on a keyboard",
-    name: "",
-    text: "",
-  },
-];
-
 /** One of the app's pictures as Google's image metadata reads it: what it
  *  shows, and whose it is. */
-export function imageObject(i: (typeof APP_IMAGES)[number]) {
+export function imageObject(i: AppImage) {
   return {
     "@type": "ImageObject",
     contentUrl: `${SITE}images/${i.file}`,
@@ -731,9 +698,9 @@ export function imageObject(i: (typeof APP_IMAGES)[number]) {
 function appPage() {
   const up = "../";
   const path = "app/";
-  const icon = APP_IMAGES[0];
-  const shots = APP_IMAGES.filter((i) => i.name);
-  const banner = APP_IMAGES[APP_IMAGES.length - 1];
+  const icon = APP_ICON;
+  const shots = STORE_SCREENSHOTS;
+  const banner = APP_BANNER;
   const body = `
 <header class="text-left max-w-3xl">
 <span class="eyebrow">The app</span>
@@ -754,7 +721,7 @@ ${storeBadges("mt-8")}
     .map(
       (i) => `<figure class="m-0">
 <img src="${up}images/${i.file}" width="${i.w}" height="${i.h}" alt="${esc(i.alt)}" loading="lazy" decoding="async" class="block w-full h-auto rounded-[28px] border border-white/[0.06] shadow-[0_24px_60px_-24px_rgba(0,0,0,0.85)]">
-<figcaption class="mt-4 text-left"><span class="block text-base font-extrabold text-white tracking-tight">${esc(i.name)}</span><span class="mt-1 block text-sm text-zinc-400 font-light leading-relaxed">${esc(i.text)}</span></figcaption>
+<figcaption class="mt-4 text-left"><span class="block text-base font-extrabold text-white tracking-tight">${esc(i.name ?? "")}</span><span class="mt-1 block text-sm text-zinc-400 font-light leading-relaxed">${esc(i.text ?? "")}</span></figcaption>
 </figure>`
     )
     .join("\n")}</div>
@@ -762,7 +729,7 @@ ${storeBadges("mt-8")}
 `;
   return {
     path,
-    images: APP_IMAGES.map((i) => ({ loc: `${SITE}images/${i.file}`, title: i.alt })),
+    images: APP_PAGE_IMAGES.map((i) => ({ loc: `${SITE}images/${i.file}`, title: i.alt })),
     html: page({
       up,
       path,
@@ -779,7 +746,7 @@ ${storeBadges("mt-8")}
           name: "Improvy app screenshots",
           url: SITE + path,
           primaryImageOfPage: imageObject(banner),
-          image: APP_IMAGES.map(imageObject),
+          image: APP_PAGE_IMAGES.map(imageObject),
         },
       ],
       body,
@@ -799,8 +766,8 @@ export function allPages() {
 
 function sitemap(pages: { path: string; images?: { loc: string; title: string }[] }[], homeImages: string[]) {
   // Each page lists the pictures that are on it: Google ties an image to the
-  // page that shows it. The home page shows the logo (in the footer) and the
-  // app's home screen; the store screenshots are on app/.
+  // page that shows it. The home page shows the app's home screen, the five
+  // store screenshots and the logo; app/ shows them again with the banner.
   const home = { path: "", images: homeImages.map((loc) => ({ loc, title: "" })) };
   const urls = [home, ...pages]
     .map((p) => {
@@ -831,9 +798,14 @@ export function degreePages(): Plugin {
       STYLESHEET = css;
       const pages = allPages();
       for (const p of pages) this.emitFile({ type: "asset", fileName: `${p.path}index.html`, source: p.html });
-      const hero = Object.keys(bundle).find((f) => /^assets\/method_home_progress-[\w-]+\.webp$/.test(f));
-      if (!hero) this.error("the home page's screenshot is not in the bundle, and the sitemap lists it");
-      const homeImages = [`${SITE}images/${APP_IMAGES[0].file}`, `${SITE}${hero}`];
+      // A picture the sitemap lists and the site does not serve would be a
+      // dead link handed to Google: the build stops instead.
+      for (const i of [...HOME_IMAGES, ...APP_PAGE_IMAGES]) {
+        if (!existsSync(path.join(process.cwd(), "public", "images", i.file))) {
+          this.error(`public/images/${i.file} is missing, and the sitemap lists it`);
+        }
+      }
+      const homeImages = HOME_IMAGES.map((i) => `${SITE}images/${i.file}`);
       this.emitFile({ type: "asset", fileName: "sitemap.xml", source: sitemap(pages, homeImages) });
     },
   };

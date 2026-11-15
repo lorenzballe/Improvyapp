@@ -35,7 +35,8 @@ import { CreatorWelcome } from "./components/CreatorWelcome";
 import { ProofStrip } from "./components/ProofStrip";
 import { TryOne } from "./components/quiz/TryOne";
 import { detectPlatform } from "./lib/platform";
-import heroHomeScreenImg from "./assets/images/method_home_progress.webp";
+import { AppScreens } from "./components/AppScreens";
+import { HOME_SCREEN } from "./lib/appImages";
 
 const revealVariants = {
   visible: (i: number) => ({
@@ -479,9 +480,13 @@ export default function App() {
                     leaves the status bar's band and the home indicator's strip
                     free — so the phone draws them, where an iPhone does. */}
                 <PhoneMockup>
+                  {/* A file of its own under images/, at an address that
+                      never changes: the picture an image search finds. */}
                   <img
-                    src={heroHomeScreenImg}
-                    alt="Improvy training home screen with total progress and all-keys mastery"
+                    src={`images/${HOME_SCREEN.file}`}
+                    width={HOME_SCREEN.w}
+                    height={HOME_SCREEN.h}
+                    alt={HOME_SCREEN.alt}
                     className="w-full h-full object-cover"
                     referrerPolicy="no-referrer"
                   />
@@ -510,6 +515,9 @@ export default function App() {
               window.scrollTo({ top: 0, behavior: "smooth" });
             }} />
           </motion.div>
+          {/* The app's store screenshots: what an image search for
+              "Improvy" shows from this page. */}
+          <AppScreens platform={platform} />
           {/* SECTION 3: SIGNATURE LIFE-TIME ACCESS PRICING (Side-by-side comparison) */}
           <motion.section 
             id="pricing" 

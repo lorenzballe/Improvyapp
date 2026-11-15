@@ -5,7 +5,6 @@ import { FaqSection } from "./FaqSection";
 import { HarmonyTeaser } from "./HarmonyTeaser";
 import { MethodVideo } from "./MethodVideo";
 import methodDiatonicImg from "../assets/images/method_diatonic_grid.webp";
-import methodHomeImg from "../assets/images/method_home_progress.webp";
 import methodChromaticImg from "../assets/images/method_chromatic.webp";
 import methodN2NImg from "../assets/images/method_n2n.webp";
 import methodPianoImg from "../assets/images/method_piano_answer.webp";
