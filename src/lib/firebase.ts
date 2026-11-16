@@ -256,28 +256,54 @@ export function describeAuthError(e: unknown): string {
   }
 }
 
+/**
+ * What Improvy is left with from a sale: the price less the VAT inside it and
+ * the payment's cost (Stripe's fee, or the store's commission), in minor units
+ * of [currency] — euro for the site, the buyer's for the stores.
+ */
+export type CreatorNet = {
+  amount: number;
+  currency: string;
+  vat: number;
+  fee: number;
+  vatRate: number;
+  /** True when a figure is worked out rather than reported (no balance transaction, no store estimate). */
+  estimated: boolean;
+};
+
 export type CreatorSale = {
   source: "site" | "app_store" | "play_store" | "store";
-  /** In minor units of [currency]; null when the store did not say. */
+  /** What the buyer paid, in minor units of [currency]; null when the store did not say. */
   amount: number | null;
   currency: string | null;
   /** Milliseconds since the epoch. */
   at: number;
   refunded?: boolean;
   disputed?: boolean;
+  net?: CreatorNet | null;
+  /** Their share of [net], in its currency; null while no share is agreed. */
+  share?: number | null;
 };
+
+/** What one sale earns them, for a buyer in Italy, every step in euro cents. */
+export type CreatorExample = { price: number; currency: string; vat: number; fee: number; net: number; share: number };
 
 export type CreatorDashboard = {
   ref: string;
-  /** Their share of each sale, in %; null while it is still to be agreed. */
+  /** Their share of each sale's net, in %; null while it is still to be agreed. */
   pct: number | null;
   since: string | null;
+  /** One sale on the site and one in the app, worked out; null with no share agreed. */
+  examples?: { site: CreatorExample; app: CreatorExample } | null;
   totals: {
     sales: number;
     refunded: number;
     site: number;
     app: number;
-    revenue: { currency: string; amount: number; commission: number | null }[];
+    /** What buyers paid, per currency. */
+    revenue: { currency: string; amount: number }[];
+    /** The net, and their share of it, per currency it was paid out in. */
+    earnings?: { currency: string; net: number; commission: number | null }[];
   };
   sales: CreatorSale[];
   proCode: { code: string; uses: number; maxUses: number } | null;
