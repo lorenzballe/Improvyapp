@@ -389,13 +389,20 @@ function SuccessView({ user, sessionId, onBack }: { user: User | null | undefine
   // the webhook is not wired up yet, which on day one it may not be. Then it
   // falls back to asking whether the licence has landed, a few times over
   // half a minute, before saying anything discouraging.
-  const [landed, setLanded] = useState<"waiting" | "yes" | "slow">("waiting");
+  // "pending": Stripe says the payment has not cleared yet — a bank debit,
+  // say, which takes a day or two; the webhook writes the licence when it
+  // does. "elsewhere": the checkout was opened from another account.
+  const [landed, setLanded] = useState<"waiting" | "yes" | "slow" | "pending" | "elsewhere">("waiting");
   const tries = useRef(0);
+  const pending = useRef(false);
 
   useEffect(() => {
     if (!user) return;
     let alive = true;
     let timer: number | undefined;
+    tries.current = 0;
+    pending.current = false;
+    setLanded("waiting");
     const ask = async () => {
       try {
         if (sessionId && tries.current === 0) {
@@ -406,9 +413,19 @@ function SuccessView({ user, sessionId, onBack }: { user: User | null | undefine
             track("purchase_confirmed", { by: "return" });
             return;
           }
+          if (c.outcome === "not-paid") {
+            pending.current = true;
+            setLanded("pending");
+          }
         }
-      } catch {
-        /* the webhook may still do it — fall through and watch for it */
+      } catch (e: unknown) {
+        // Signed in as somebody other than the buyer: no amount of waiting
+        // helps, signing in with the right account does.
+        if (String((e as { code?: string })?.code ?? "").endsWith("permission-denied")) {
+          if (alive) setLanded("elsewhere");
+          return;
+        }
+        /* otherwise the webhook may still do it — fall through and watch for it */
       }
       try {
         const s = await proStatus();
@@ -423,7 +440,8 @@ function SuccessView({ user, sessionId, onBack }: { user: User | null | undefine
       }
       tries.current += 1;
       if (tries.current >= 12) {
-        setLanded("slow");
+        // A payment still clearing is not late: it says so, not "write to us".
+        setLanded(pending.current ? "pending" : "slow");
         return;
       }
       timer = window.setTimeout(ask, 2500);
@@ -447,7 +465,7 @@ function SuccessView({ user, sessionId, onBack }: { user: User | null | undefine
       >
         {landed === "yes" ? (
           <CircleCheck className="w-10 h-10" />
-        ) : landed === "slow" || signedOut ? (
+        ) : landed === "slow" || landed === "pending" || landed === "elsewhere" || signedOut ? (
           <Hourglass className="w-9 h-9" />
         ) : (
           <RefreshCw className="w-9 h-9 animate-spin [animation-duration:2.5s]" />
@@ -457,7 +475,17 @@ function SuccessView({ user, sessionId, onBack }: { user: User | null | undefine
       <div className="space-y-3">
         <span className="text-[10px] font-extrabold uppercase tracking-[0.25em] text-[#e5a93c]">IMPROVY PRO</span>
         <h1 className="text-3xl sm:text-5xl font-black text-white font-display tracking-tight leading-[1.1]">
-          {landed === "yes" ? "Pro is on your account." : signedOut ? "Thank you." : landed === "slow" ? "Almost there." : "Thank you — one moment."}
+          {landed === "yes"
+            ? "Pro is on your account."
+            : signedOut
+              ? "Thank you."
+              : landed === "pending"
+                ? "Payment being confirmed."
+                : landed === "elsewhere"
+                  ? "That was another account."
+                  : landed === "slow"
+                    ? "Almost there."
+                    : "Thank you — one moment."}
         </h1>
         <p className="text-sm sm:text-base text-zinc-400 font-light leading-relaxed max-w-lg mx-auto">
           {landed === "yes" && (
@@ -470,7 +498,21 @@ function SuccessView({ user, sessionId, onBack }: { user: User | null | undefine
               {sessionId ? <> and quote <code className="text-zinc-300">{sessionId.slice(0, 18)}…</code></> : null}.</>
           )}
           {signedOut && <>Your payment went through. Sign in on this page with the account you used, and you will see Pro on it.</>}
+          {landed === "pending" && !signedOut && (
+            <>Your bank is still confirming this payment — with some methods, a bank debit for one, that takes a day or two. Pro lands on this account by itself the moment it clears: there is nothing else to do.</>
+          )}
+          {landed === "elsewhere" && !signedOut && (
+            <>This payment was made from a different account than <span className="text-white font-medium">{user?.email ?? "this one"}</span>. Sign in with the account you paid with, and Pro is on it.</>
+          )}
         </p>
+        {landed === "elsewhere" && !signedOut && (
+          <button
+            onClick={() => signOutUser()}
+            className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-zinc-300 hover:text-white cursor-pointer"
+          >
+            <LogOut className="w-3.5 h-3.5" /> Use another account
+          </button>
+        )}
       </div>
 
       {/* Back from Stripe in a browser that is not signed in (an in-app
