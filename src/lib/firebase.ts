@@ -135,6 +135,8 @@ export interface CheckoutAnswer {
   url?: string;
   sessionId?: string;
   alreadyPro?: boolean;
+  /** An earlier payment from this account is still clearing (a bank debit): nothing to pay again. */
+  pendingPayment?: boolean;
 }
 
 /**
@@ -145,8 +147,8 @@ export interface CheckoutAnswer {
  * with its secret key and writes the licence if Stripe says it was paid. The
  * browser supplies an id and nothing more — the answer is Stripe's.
  */
-export async function confirmCheckout(sessionId: string): Promise<{ pro: boolean; outcome: string }> {
-  const call = httpsCallable<{ sessionId: string }, { pro: boolean; outcome: string }>(
+export async function confirmCheckout(sessionId: string): Promise<{ pro: boolean; outcome: string; refunded?: boolean }> {
+  const call = httpsCallable<{ sessionId: string }, { pro: boolean; outcome: string; refunded?: boolean }>(
     functions(),
     "confirmCheckout"
   );

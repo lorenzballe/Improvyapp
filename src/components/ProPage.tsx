@@ -117,7 +117,9 @@ function BuyView({
   onOpenTerms: () => void;
   onOpenPrivacy: () => void;
 }) {
-  const [status, setStatus] = useState<"unknown" | "checking" | "pro" | "free">("unknown");
+  // "clearing": an earlier payment from this account is still being
+  // confirmed by the bank, so the page does not offer to take a second one.
+  const [status, setStatus] = useState<"unknown" | "checking" | "pro" | "free" | "clearing">("unknown");
   const [consent, setConsent] = useState(false);
   const [paying, setPaying] = useState(false);
   const [payError, setPayError] = useState<string | null>(null);
@@ -203,6 +205,11 @@ function BuyView({
         setStatus("pro");
         return;
       }
+      if (answer.pendingPayment) {
+        setStatus("clearing");
+        setPaying(false);
+        return;
+      }
       if (!answer.url) throw new Error("no url");
       window.location.assign(answer.url);
     } catch (e: unknown) {
@@ -274,6 +281,14 @@ function BuyView({
                 <p className="text-sm text-white font-medium">This account already has Pro. There is nothing to pay.</p>
                 <p className="text-xs text-zinc-400 leading-relaxed">Install the app and sign in with the same account — it is unlocked.</p>
                 <StoreBadges compact />
+              </div>
+            ) : status === "clearing" ? (
+              <div className="space-y-3">
+                <p className="text-sm text-white font-medium">A payment for Pro from this account is still clearing.</p>
+                <p className="text-xs text-zinc-400 leading-relaxed">
+                  Your bank is still confirming it — with a bank debit that takes a day or two. Pro lands on this account by itself the moment it
+                  clears, so there is nothing to pay again.
+                </p>
               </div>
             ) : status === "checking" ? (
               <p className="text-xs text-zinc-500">Checking this account…</p>
@@ -395,6 +410,9 @@ function SuccessView({ user, sessionId, onBack }: { user: User | null | undefine
   const [landed, setLanded] = useState<"waiting" | "yes" | "slow" | "pending" | "elsewhere">("waiting");
   const tries = useRef(0);
   const pending = useRef(false);
+  // Paid on top of a licence the account already had (two checkouts open
+  // at once): the server gives this payment back, and the page says so.
+  const [second, setSecond] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -402,6 +420,7 @@ function SuccessView({ user, sessionId, onBack }: { user: User | null | undefine
     let timer: number | undefined;
     tries.current = 0;
     pending.current = false;
+    setSecond(false);
     setLanded("waiting");
     const ask = async () => {
       try {
@@ -409,8 +428,9 @@ function SuccessView({ user, sessionId, onBack }: { user: User | null | undefine
           const c = await confirmCheckout(sessionId);
           if (!alive) return;
           if (c.pro) {
+            setSecond(c.outcome === "duplicate-payment");
             setLanded("yes");
-            track("purchase_confirmed", { by: "return" });
+            track("purchase_confirmed", { by: "return", duplicate: c.outcome === "duplicate-payment" });
             return;
           }
           if (c.outcome === "not-paid") {
@@ -490,6 +510,11 @@ function SuccessView({ user, sessionId, onBack }: { user: User | null | undefine
         <p className="text-sm sm:text-base text-zinc-400 font-light leading-relaxed max-w-lg mx-auto">
           {landed === "yes" && (
             <>Signed in as <span className="text-white font-medium">{user?.email ?? "your account"}</span>. Install the app, sign in with the same account, and everything is unlocked.</>
+          )}
+          {landed === "yes" && second && (
+            <>
+              {" "}This account already had Pro, so this second payment is being refunded in full — it shows on your statement within a few days.
+            </>
           )}
           {landed === "waiting" && !signedOut && <>Your payment went through. The licence is being written to your account right now; this page will update by itself.</>}
           {landed === "slow" && (
