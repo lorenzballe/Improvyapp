@@ -13,6 +13,7 @@ import { PRO_PRICE_WEB, PRO_PRICE_NOTE, PRO_PRICE_STORE_NOTE, CURRENCY, money } 
 // them.
 // Every page but home is its own chunk: someone landing on the site should
 // download the page they are looking at, not the terms of service.
+import { PageBoundary } from "./components/PageBoundary";
 const ProPage = lazy(() => import("./components/ProPage"));
 const WhyImprovyPage = lazy(() =>
   import("./components/WhyImprovyPage").then((m) => ({ default: m.WhyImprovyPage }))
@@ -336,7 +337,10 @@ export default function App() {
           </div>
         </header>
 
-        {/* PAGES COMPONENT */}
+        {/* PAGES COMPONENT — a page that fails to download says so, and the
+            header and footer stay (see PageBoundary). Keyed by the page, so
+            going to another one starts afresh. */}
+        <PageBoundary key={currentPage}>
         <Suspense fallback={<div className="min-h-[60vh]" aria-busy="true" />}>
         {currentPage === "why" ? (
           <WhyImprovyPage
@@ -791,12 +795,14 @@ export default function App() {
               a promise about tomorrow never stands between someone and today's
               app. */}
           <div id="harmony-teaser" className="pb-4">
+            <PageBoundary quiet>
             <Suspense fallback={<div className="min-h-[420px]" aria-busy="true" />}>
               <HarmonyTeaser onOpen={() => {
                 setCurrentPage("next");
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }} />
             </Suspense>
+            </PageBoundary>
           </div>
 
           {/* SECTION 2.5: UNLIMITED SCROLLING TESTIMONIALS */}
@@ -938,6 +944,7 @@ export default function App() {
           </>
         )}
         </Suspense>
+        </PageBoundary>
 
         {/* EDITORIAL PREMIUM FOOTER */}
         <motion.footer 

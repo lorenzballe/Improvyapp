@@ -60,14 +60,20 @@ export const PACK_PRICES: Record<Currency, { class: number; school: number }> = 
   dkk: { class: 75900, school: 190900 },
 };
 
-/** Time zones whose country has a price of its own, by currency. */
+/**
+ * Time zones whose country has a price of its own, by currency.
+ *
+ * A zone can have two spellings, and both are listed: Chrome still answers
+ * with the older one for some (America/Indianapolis, America/Louisville,
+ * Atlantic/Faeroe) where Safari and Firefox give today's.
+ */
 const ZONES: Record<string, Currency> = {};
 const zones = (currency: Currency, list: string) => list.split(" ").forEach((z) => (ZONES[z] = currency));
 zones("gbp", "Europe/London Europe/Belfast Europe/Guernsey Europe/Isle_of_Man Europe/Jersey Europe/Gibraltar");
 zones("chf", "Europe/Zurich Europe/Vaduz Europe/Busingen");
 zones("sek", "Europe/Stockholm");
 zones("nok", "Europe/Oslo Arctic/Longyearbyen");
-zones("dkk", "Europe/Copenhagen Atlantic/Faroe America/Nuuk America/Godthab America/Danmarkshavn America/Scoresbysund America/Thule");
+zones("dkk", "Europe/Copenhagen Atlantic/Faroe Atlantic/Faeroe America/Nuuk America/Godthab America/Danmarkshavn America/Scoresbysund America/Thule");
 zones(
   "cad",
   "America/Toronto America/Montreal America/Vancouver America/Edmonton America/Winnipeg America/Regina America/Halifax " +
@@ -94,7 +100,8 @@ zones(
   "usd",
   "America/New_York America/Detroit America/Chicago America/Denver America/Phoenix America/Los_Angeles " +
     "America/Anchorage America/Juneau America/Sitka America/Metlakatla America/Yakutat America/Nome America/Adak " +
-    "America/Boise America/Menominee Pacific/Honolulu America/Puerto_Rico America/St_Thomas Pacific/Guam " +
+    "America/Boise America/Menominee America/Indianapolis America/Fort_Wayne America/Knox_IN America/Louisville " +
+    "Pacific/Honolulu America/Puerto_Rico America/St_Thomas Pacific/Guam " +
     "Pacific/Saipan Pacific/Pago_Pago America/Panama America/Guayaquil America/El_Salvador"
 );
 

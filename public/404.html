@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Improvy</title>
+<script>
+  // GitHub Pages answers with this page for any address it has no file for.
+  // Most of those are a real address typed a little differently: with a
+  // capital (improvy.app/Saffirio), with the full stop or bracket of the
+  // sentence it was copied from, or a page's name without its # (/pro).
+  // Put right, they go where they were meant to; anything else goes to the
+  // home page, keeping a creator's ?ref= if it carries one.
+  (function () {
+    var raw = location.pathname;
+    try { raw = decodeURIComponent(raw); } catch (e) {}
+    var path = raw.toLowerCase().replace(/[\s.,;:!?'"()\[\]<>*]+$/, "").replace(/\/{2,}/g, "/").replace(/\/+$/, "");
+    var pages = {
+      pro: "#pro", pricing: "#pricing", prezzi: "#pricing", method: "#method", metodo: "#method", faq: "#faq",
+      quiz: "#quiz", test: "#quiz", teachers: "#teachers", next: "#next", feedback: "#feedback",
+      about: "#about", support: "#about", privacy: "#privacy", terms: "#terms"
+    };
+    var page = pages[path.replace(/^\//, "")];
+    if (page) { location.replace("/" + location.search + page); return; }
+    // Already in its tidy form: then there is nothing at this address.
+    if (path && path !== location.pathname.replace(/\/+$/, "")) {
+      location.replace(path + "/" + location.search + location.hash);
+      return;
+    }
+    location.replace("/" + location.search + location.hash);
+  })();
+</script>
+<meta http-equiv="refresh" content="3; url=/">
+</head>
+<body style="background:#09090b;color:#a1a1aa;font-family:system-ui,sans-serif;text-align:center;padding-top:30vh">
+<noscript><a href="/" style="color:#e5a93c">improvy.app</a></noscript>
+</body>
+</html>
