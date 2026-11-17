@@ -473,6 +473,16 @@ function SuccessView({ user, sessionId, onBack }: { user: User | null | undefine
         </p>
       </div>
 
+      {/* Back from Stripe in a browser that is not signed in (an in-app
+          browser that handed the payment to Safari, say): the page asks them
+          to sign in, so it has to offer the way to. Signing in re-runs the
+          check above with this session id. */}
+      {signedOut && (
+        <div className="max-w-sm mx-auto text-left rounded-[24px] border border-white/[0.06] bg-[#07040f]/60 p-6">
+          <SignInForm />
+        </div>
+      )}
+
       <div className="space-y-4">
         <p className="text-[10px] font-extrabold uppercase tracking-[0.25em] text-zinc-500">Now get the app</p>
         <StoreBadges className="justify-center" />
